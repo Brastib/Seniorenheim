@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
 <style>
-/* Layout: ein Bedienfeld oben (Kategorie, Rate-Modus, Lautstärke, Stopp), darunter ein Raster aus großen Klang-Knöpfen. */
+/* Layout: Reiter oben, darunter Raster aus großen Klang-Knöpfen, Ratespiel-Karte oder Geschichten-Liste; Stopp-Knopf schwebt unten rechts. */
 :root{
   --bg:#EEF2EF; --surface:#FFFFFF; --fg:#17262A; --muted:#55676A; --line:#CBD6D2;
   --alltag:#25577F; --alltag-soft:#DCE8F2;
@@ -47,6 +47,8 @@ header p{margin:8px 0 0;color:var(--muted);max-width:60ch}
 .tab[aria-selected="true"][data-cat="alltag"]{background:var(--alltag);border-color:var(--alltag);color:var(--surface)}
 .tab[aria-selected="true"][data-cat="natur"]{background:var(--natur);border-color:var(--natur);color:var(--surface)}
 .tab[aria-selected="true"][data-cat="eigen"]{background:var(--eigen);border-color:var(--eigen);color:var(--surface)}
+.tab[aria-selected="true"][data-cat="quiz"],.tab[aria-selected="true"][data-cat="story"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+#quiz .btn:not(.ghost),#story .btn:not(.ghost){background:var(--alltag)}
 .controls{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center}
 .switch{display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer;min-height:44px;user-select:none}
 .switch input{width:26px;height:26px;accent-color:var(--alltag);margin:0}
@@ -61,7 +63,7 @@ main{padding-bottom:70px}
 .play[data-cat="natur"]{--c:var(--natur);--soft:var(--natur-soft)}
 .play[data-custom]{--c:var(--eigen);--soft:var(--eigen-soft)}
 .play:active{transform:scale(.97)}
-.play:focus-visible,.tab:focus-visible,.stop:focus-visible,.reveal:focus-visible,.btn:focus-visible{outline:3px solid var(--play);outline-offset:3px}
+.play:focus-visible,.tab:focus-visible,.stop:focus-visible,.qplay:focus-visible,.sbtn:focus-visible,.seg label:focus-within,.btn:focus-visible{outline:3px solid var(--play);outline-offset:3px}
 .ico{font-size:52px;line-height:1}
 .nm{font-weight:700;font-size:20px;line-height:1.15;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word;max-width:100%}
 .tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
@@ -72,7 +74,33 @@ main{padding-bottom:70px}
 .play[aria-pressed="true"] .tag,.play[aria-pressed="true"] .num{color:var(--play-ink)}
 .play[aria-pressed="true"]{padding-bottom:30px}
 .play[aria-pressed="true"]::after{content:"läuft · antippen stoppt";white-space:nowrap;overflow:hidden;position:absolute;bottom:-1px;left:0;right:0;font-size:12px;font-weight:700;padding:3px;border-radius:0 0 15px 15px;background:var(--play-ink);color:var(--play)}
-.reveal{font:700 15px/1 var(--f-body);padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:44px}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg label{display:flex;align-items:center;gap:6px;font-weight:700;padding:10px 14px;border:2px solid var(--line);border-radius:999px;cursor:pointer;min-height:48px}
+.seg input{width:22px;height:22px;margin:0;accent-color:var(--alltag)}
+.qcount{margin:0;font:800 22px/1.2 var(--f-display);color:var(--muted)}
+.qcard{display:flex;gap:16px;align-items:center;background:var(--bg);border-radius:16px;padding:16px}
+.qcard .ico{font-size:64px}
+.qtext{min-width:0}
+.qname{margin:0;font:800 clamp(26px,6vw,36px)/1.1 var(--f-display);overflow-wrap:break-word;hyphens:auto}
+.qtip{margin:6px 0 0;color:var(--muted)}
+.qplay{font:700 26px/1 var(--f-body);min-height:84px;border-radius:18px;border:3px solid transparent;background:var(--alltag);color:var(--surface);cursor:pointer}
+.qplay[aria-pressed="true"]{background:var(--play);color:var(--play-ink);border-color:var(--play-ink)}
+.qnav{display:flex;gap:10px;flex-wrap:wrap}
+.btn:disabled{opacity:.4;cursor:default}
+.shead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.slist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.sitem{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap}
+.sbtn{flex:1 1 240px;min-width:0;display:flex;align-items:center;gap:12px;text-align:left;padding:12px 14px;min-height:76px;border-radius:16px;border:3px solid transparent;background:var(--natur-soft);color:var(--fg);cursor:pointer;font-family:var(--f-body)}
+.sitem.next .sbtn{border-color:var(--play)}
+.sbtn[aria-pressed="true"]{background:var(--play);color:var(--play-ink);border-color:var(--play-ink)}
+.sbtn .ico{font-size:40px}
+.snum{font:800 24px/1 var(--f-display);min-width:1.6em;text-align:center}
+.stext{display:flex;flex-direction:column;min-width:0}
+.stext b{font-size:20px;line-height:1.2}
+.stext small{font-size:15px;opacity:.85;overflow-wrap:break-word}
+.sedit{display:flex;gap:6px}
+.sedit .btn{min-width:48px;padding:10px}
+.seditor{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line);padding-top:14px}
 @media (prefers-reduced-motion: no-preference){
   .play[aria-pressed="true"] .ico{animation:pulse 1s ease-in-out infinite}
   @keyframes pulse{50%{transform:scale(1.12)}}
@@ -109,10 +137,11 @@ main{padding-bottom:70px}
     <div class="tabs" role="tablist" aria-label="Kategorie">
       <button class="tab" role="tab" data-cat="alltag" id="tab-alltag" aria-selected="true">Alltag</button>
       <button class="tab" role="tab" data-cat="natur" id="tab-natur" aria-selected="false">Natur &amp; Geschichten</button>
+      <button class="tab" role="tab" data-cat="quiz" id="tab-quiz" aria-selected="false">Ratespiel</button>
+      <button class="tab" role="tab" data-cat="story" id="tab-story" aria-selected="false">Geschichte</button>
       <button class="tab" role="tab" data-cat="eigen" id="tab-eigen" aria-selected="false">Eigene Aufnahmen</button>
     </div>
     <div class="controls">
-      <label class="switch"><input type="checkbox" id="opt-rate"> Rate-Modus</label>
       <label class="switch"><input type="checkbox" id="opt-loop"> Dauerschleife</label>
       <label class="vol" for="opt-vol">Lautstärke <input type="range" id="opt-vol" min="0" max="100" value="70"></label>
     </div>
@@ -122,6 +151,31 @@ main{padding-bottom:70px}
 
   <main>
     <div class="grid" id="grid" role="tabpanel" aria-live="polite"></div>
+    <div id="quiz" class="panel" hidden>
+      <div class="seg" role="radiogroup" aria-label="Welche Klänge">
+        <label><input type="radio" name="qcat" value="alltag" checked> Alltag</label>
+        <label><input type="radio" name="qcat" value="natur"> Natur</label>
+        <label><input type="radio" name="qcat" value="beide"> Beides</label>
+      </div>
+      <p class="qcount" id="q-count"></p>
+      <div class="qcard"><span class="ico" id="q-ico" aria-hidden="true"></span><div class="qtext"><p class="qname" id="q-name"></p><p class="qtip" id="q-tip"></p></div></div>
+      <button class="qplay" id="q-play">▶ Abspielen</button>
+      <div class="qnav"><button class="btn ghost" id="q-prev">◀ Zurück</button><button class="btn ghost" id="q-mix">Neu mischen</button><button class="btn" id="q-next">Weiter ▶</button></div>
+      <p class="small">Den Namen siehst nur du. Abspielen und dann fragen: „Was könnte das sein?“ Wenn niemand darauf kommt, hilft der Tipp. Lieber zweimal abspielen.</p>
+    </div>
+    <div id="story" class="panel" hidden>
+      <div class="shead"><h2>Klänge zur Geschichte</h2><div class="qnav"><button class="btn ghost" id="s-restart">Von vorn</button><button class="btn" id="s-edit">Bearbeiten</button></div></div>
+      <p class="small" id="s-note"></p>
+      <ol class="slist" id="s-list"></ol>
+      <div id="s-editor" class="seditor" hidden>
+        <form class="form" id="s-form">
+          <label for="s-sound">Klang<select id="s-sound"></select></label>
+          <label for="s-cue">Stichwort im Text<input id="s-cue" type="text" maxlength="60" placeholder="z.B. als es an der Tür klopft"></label>
+          <button class="btn" type="submit">Hinzufügen</button>
+        </form>
+        <button class="btn ghost" id="s-clear">Liste leeren</button>
+      </div>
+    </div>
     <div id="own" class="panel" hidden>
       <h2>Echte Aufnahme hinzufügen</h2>
       <p class="small">Lade eine Audiodatei (MP3, WAV, M4A, OGG) von deinem Handy. Sie wird nur auf diesem Gerät gespeichert. Wenn du einen nachgebauten Klang ersetzt, spielt sein Knopf ab dann deine Aufnahme.</p>
@@ -141,7 +195,7 @@ main{padding-bottom:70px}
   <div class="info">
     <section>
       <h2>Woher kommen die Klänge?</h2>
-      <p>Alle eingebauten Klänge sind <strong>nachgebaut</strong>: Das Handy erzeugt sie live aus Tönen und Rauschen. Es sind keine echten Aufnahmen. Regen, Bach, Meer, Wind, Feuer, Uhr und Klingeln klingen meist recht ähnlich. Kuh, Eule, Frosch, Kaffeemaschine und Dampflok sind nur grob angenähert.</p>
+      <p>Alle eingebauten Klänge sind <strong>nachgebaut</strong>: Das Handy erzeugt sie live aus Tönen und Rauschen. Es sind keine echten Aufnahmen. Regen, Bach, Meer, Wind, Feuer, Uhr und Klingeln klingen meist recht ähnlich. Tierstimmen (Kuh, Hund, Katze, Hahn, Schaf, Eule, Frosch) sowie Kaffeemaschine und Dampflok sind nur grob angenähert.</p>
       <p>Bessere Klänge: im Reiter „Eigene Aufnahmen“ echte Dateien laden. Lizenzfreie Quellen:</p>
       <ul>
         <li><a href="https://freesound.org/search/?f=license:%22Creative+Commons+0%22" target="_blank" rel="noopener">Freesound.org</a> mit Filter „Creative Commons 0“ (kostenloses Konto nötig)</li>
@@ -153,7 +207,8 @@ main{padding-bottom:70px}
       <h2>Tipps für den Besuch</h2>
       <ul>
         <li>Leise anfangen. Plötzliche laute Klänge (markiert mit „plötzlich“) können Menschen mit Demenz erschrecken.</li>
-        <li>Rate-Modus: Namen sind versteckt und die Reihenfolge gemischt. Erst raten lassen, dann „Auflösen“ tippen.</li>
+        <li>Ratespiel: Ihr spielt ab, die Gruppe rät. Den Namen und einen Tipp seht nur ihr auf dem Handy.</li>
+        <li>Geschichte: Klänge vorher in der Reihenfolge des Buchs eintragen, mit Stichwort. Beim Vorlesen tippt einer einfach den nächsten an.</li>
         <li>Dauerschleife: Regen, Bach, Meer, Feuer usw. laufen weiter, bis du stoppst. Gut als Hintergrund beim Vorlesen.</li>
         <li>iPhone: Stummschalter an der Seite ausschalten, sonst bleibt es still. Über Bluetooth-Box klingt es deutlich besser.</li>
       </ul>
@@ -167,7 +222,7 @@ const R=(a,b)=>a+Math.random()*(b-a);
 let ctx=null, master=null, comp=null, buf={};
 const active=new Map();
 const store={get(k,d){try{const v=localStorage.getItem("kk-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("kk-"+k,JSON.stringify(v))}catch(e){}}};
-const settings={tab:store.get("tab","alltag"),rate:false,loop:store.get("loop",false),vol:store.get("vol",70)};
+const settings={tab:store.get("tab","alltag"),loop:store.get("loop",false),vol:store.get("vol",70)};
 
 function makeNoise(c){
   const len=c.sampleRate*4, out={};
@@ -293,6 +348,52 @@ const SOUNDS=[
    const o=v.osc("square",fr,t+s,len+0.05),fl=v.f("lowpass",1800,1),g=v.g(0);o.connect(fl).connect(g).connect(v.out);
    g.gain.setValueAtTime(0,t+s);g.gain.linearRampToValueAtTime(0.12,t+s+0.02);g.gain.setValueAtTime(0.12,t+s+len-0.03);g.gain.linearRampToValueAtTime(0,t+s+len)}}},
 
+ {id:"klopfen",cat:"alltag",name:"Klopfen an der Tür",ico:"✊",dur:2.8,lvl:0.4,
+  fn(v,t){for(const s of [0,0.22,0.44,1.5,1.72,1.94]){const tt=t+s;burst(v,tt,{type:"lowpass",freq:350,Q:1,dur:0.08,gain:0.9,kind:"pink"});burst(v,tt,{freq:650,Q:3,dur:0.05,gain:0.4});tone(v,tt,v.out,140,70,0.09,0.5)}}},
+ {id:"fahrrad",cat:"alltag",name:"Fahrradklingel",ico:"🚲",dur:2.4,lvl:0.99,
+  fn(v,t){for(const s of [0,0.7])for(let i=0;i<6;i++)strike(v,t+s+i/15,i%2?2350:2200,RING,0.5,0.18)}},
+ {id:"sauger",cat:"alltag",name:"Staubsauger",ico:"🧹",dur:9,amb:true,lvl:1.02,
+  fn(v,t){const L=v.layer(t);
+   const o=v.osc("sawtooth",60,t,L);o.frequency.exponentialRampToValueAtTime(190,t+1.5);const of=v.f("lowpass",900,1),og=v.g(0.12);o.connect(of).connect(og).connect(v.out);
+   const n=v.noise("white",t,L),nf=v.f("bandpass",1500,0.5),ng=v.g(0);ng.gain.setValueAtTime(0,t);ng.gain.linearRampToValueAtTime(0.45,t+1.5);n.connect(nf).connect(ng).connect(v.out);
+   v.every(()=>R(0.5,1.5),tt=>{nf.frequency.setTargetAtTime(R(1100,2200),tt,0.3);ng.gain.setTargetAtTime(R(0.3,0.55),tt,0.3)},t+1.6)}},
+ {id:"foehn",cat:"alltag",name:"Föhn",ico:"💨",dur:8,amb:true,lvl:1.24,
+  fn(v,t){const L=v.layer(t);
+   const n=v.noise("white",t,L),nf=v.f("bandpass",1800,0.6),ng=v.g(0);ng.gain.setValueAtTime(0,t);ng.gain.linearRampToValueAtTime(0.5,t+0.6);n.connect(nf).connect(ng).connect(v.out);
+   const o=v.osc("sawtooth",120,t,L);o.frequency.exponentialRampToValueAtTime(330,t+0.6);const of=v.f("bandpass",660,4),og=v.g(0.06);o.connect(of).connect(og).connect(v.out)}},
+ {id:"mikro",cat:"alltag",name:"Mikrowelle",ico:"📦",dur:7.5,lvl:0.68,
+  fn(v,t){const T=5.2;
+   const o=v.osc("sawtooth",100,t,T),of=v.f("lowpass",400,1),og=v.g(0);o.connect(of).connect(og).connect(v.out);
+   og.gain.setValueAtTime(0,t);og.gain.linearRampToValueAtTime(0.25,t+0.1);og.gain.setValueAtTime(0.25,t+T-0.1);og.gain.linearRampToValueAtTime(0,t+T);
+   const lfo=v.osc("sine",0.4,t,T),lg=v.g(0.06);lfo.connect(lg).connect(og.gain);
+   const n=v.noise("pink",t,T),ng=v.g(0.04);n.connect(ng).connect(v.out);ng.gain.setValueAtTime(0.04,t+T-0.05);ng.gain.linearRampToValueAtTime(0,t+T);
+   for(let i=0;i<3;i++)tone(v,t+T+0.3+i*0.6,v.out,1050,1050,0.35,0.18,"triangle")}},
+ {id:"hahnwasser",cat:"alltag",name:"Wasserhahn",ico:"🚰",dur:10,amb:true,lvl:1.77,
+  fn(v,t){const L=v.layer(t),n=v.noise("white",t,L);
+   const f=v.f("bandpass",1400,0.6),g=v.g(0.35);n.connect(f).connect(g).connect(v.out);
+   const lp=v.f("lowpass",500,0.7),lg=v.g(0.3);n.connect(lp).connect(lg).connect(v.out);
+   const res=v.f("bandpass",400,8),rg=v.g(0.25);n.connect(res).connect(rg).connect(v.out);
+   if(L)res.frequency.exponentialRampToValueAtTime(1500,t+L);
+   v.every(()=>R(0.03,0.12),tt=>bubble(v,tt,R(600,1300),1.6,R(0.015,0.03),R(0.03,0.07)))}},
+ {id:"pfanne",cat:"alltag",name:"Bratpfanne (brutzeln)",ico:"🍳",dur:12,amb:true,lvl:3.33,
+  fn(v,t){const L=v.layer(t),n=v.noise("white",t,L),f=v.f("highpass",3000,0.7),g=v.g(0.12);n.connect(f).connect(g).connect(v.out);
+   v.every(()=>R(0.3,1),tt=>g.gain.setTargetAtTime(R(0.06,0.2),tt,0.2));
+   v.every(()=>R(0.005,0.04),tt=>burst(v,tt,{type:"highpass",freq:R(2500,5000),Q:0.7,dur:R(0.002,0.006),gain:R(0.05,0.5)}))}},
+ {id:"martinshorn",cat:"alltag",name:"Martinshorn",ico:"🚑",dur:4.4,lvl:0.55,loud:true,
+  fn(v,t){const g=v.g(0),lp=v.f("lowpass",2500,0.7);lp.connect(g).connect(v.out);
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.18,t+0.05);g.gain.setValueAtTime(0.18,t+4.1);g.gain.linearRampToValueAtTime(0,t+4.2);
+   for(const [type,a] of [["sawtooth",0.6],["square",0.4]]){const o=v.osc(type,440,t,4.25),og=v.g(a);o.connect(og).connect(lp);
+    for(let i=0;i<7;i++)o.frequency.setValueAtTime(i%2?585:440,t+i*0.6)}}},
+ {id:"waehl",cat:"alltag",name:"Wählscheibe",ico:"📞",dur:6.5,lvl:6.42,
+  fn(v,t){let s=t;for(const d of [4,7,2,9]){
+    const sc=v.noise("white",s,0.45),sf=v.f("bandpass",900,2),sg=v.g(0);sc.connect(sf).connect(sg).connect(v.out);sg.gain.setValueAtTime(0,s);sg.gain.linearRampToValueAtTime(0.08,s+0.05);sg.gain.setValueAtTime(0.08,s+0.35);sg.gain.linearRampToValueAtTime(0,s+0.4);
+    s+=0.5;for(let i=0;i<d;i++){burst(v,s,{freq:2500,Q:4,dur:0.012,gain:0.7});burst(v,s,{freq:900,Q:3,dur:0.02,gain:0.4});s+=0.1}
+    s+=0.35}}},
+ {id:"spieluhr",cat:"alltag",name:"Spieluhr (Wiegenlied)",ico:"🎵",dur:15,lvl:0.78,
+  fn(v,t){const N={C:523.25,D:587.33,E:659.25,F:698.46,G:783.99,A:880,H:987.77,c:1046.5};
+   const mel="E1 E1 G4 E1 E1 G4 E1 G1 c2 H2 A2 A2 G2 D1 E1 F2 D2 D1 E1 F4 D1 F1 H1 A1 G2 H2 c4";let s=t;
+   for(const tk of mel.split(" ")){const n=N[tk[0]],d=+tk.slice(1)*0.22;strike(v,s,n,[[1,1],[3.9,0.12,0.25],[2,0.08,0.5]],1.4,0.3);s+=d}}},
+
  {id:"voegel",cat:"natur",name:"Vogelgezwitscher",ico:"🐦",dur:14,amb:true,lvl:2.83,
   fn(v,t){const L=v.layer(t);const n=v.noise("brown",t,L),f=v.f("lowpass",400),g=v.g(0.04);n.connect(f).connect(g).connect(v.out);
    v.every(()=>R(0.25,1.4),tt=>{const d=panned(v,R(-0.8,0.8)),amp=R(0.05,0.13),k=Math.random();
@@ -359,6 +460,39 @@ const SOUNDS=[
    const w=t+1.2,wg=v.g(0);wg.connect(v.out);wg.gain.setValueAtTime(0,w);wg.gain.linearRampToValueAtTime(1,w+0.08);wg.gain.setValueAtTime(1,w+1.4);wg.gain.linearRampToValueAtTime(0,w+1.6);
    for(const fr of [554,659,831]){const o=v.osc("sine",fr,w,1.7),og=v.g(0.07),vib=v.osc("sine",6,w,1.7),vg=v.g(fr*0.004);vib.connect(vg).connect(o.frequency);o.connect(og).connect(wg)}
    burst(v,w,{freq:1500,Q:5,dur:1.5,gain:0.08,a:0.08})}},
+ {id:"hund",cat:"natur",name:"Hund",ico:"🐕",dur:3,lvl:1.29,
+  fn(v,t){for(const s of [0,0.35,1.3,1.62,1.94]){const tt=t+s,o=v.osc("sawtooth",R(320,360),tt,0.2),bp=v.f("bandpass",900,1.5),g=v.g(0);
+    o.frequency.exponentialRampToValueAtTime(210,tt+0.17);o.connect(bp).connect(g).connect(v.out);g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(0.9,tt+0.015);g.gain.exponentialRampToValueAtTime(0.001,tt+0.18);
+    burst(v,tt,{freq:1200,Q:1,dur:0.08,gain:0.25})}}},
+ {id:"katze",cat:"natur",name:"Katze",ico:"🐈",dur:2.4,lvl:0.43,
+  fn(v,t){for(const s of [0,1.2]){const tt=t+s,o=v.osc("sawtooth",480,tt,0.95),lp=v.f("lowpass",900,6),g=v.g(0);
+    o.frequency.linearRampToValueAtTime(700,tt+0.3);o.frequency.linearRampToValueAtTime(430,tt+0.85);
+    lp.frequency.setValueAtTime(900,tt);lp.frequency.linearRampToValueAtTime(2600,tt+0.3);lp.frequency.linearRampToValueAtTime(800,tt+0.85);
+    o.connect(lp).connect(g).connect(v.out);g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(0.4,tt+0.08);g.gain.setValueAtTime(0.4,tt+0.6);g.gain.linearRampToValueAtTime(0,tt+0.9)}}},
+ {id:"schaf",cat:"natur",name:"Schaf",ico:"🐑",dur:2.6,lvl:0.77,
+  fn(v,t){for(const s of [0,1.3]){const tt=t+s,o=v.osc("sawtooth",360,tt,1),am=v.g(0.6),lfo=v.osc("sine",7,tt,1),lg=v.g(0.4),
+    f1=v.f("peaking",750,3),f2=v.f("peaking",1800,4),lp=v.f("lowpass",3000),g=v.g(0);f1.gain.value=10;f2.gain.value=8;
+    o.frequency.linearRampToValueAtTime(320,tt+0.9);lfo.connect(lg).connect(am.gain);o.connect(f1).connect(f2).connect(lp).connect(am).connect(g).connect(v.out);
+    g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(0.25,tt+0.06);g.gain.setValueAtTime(0.25,tt+0.75);g.gain.linearRampToValueAtTime(0,tt+0.95)}}},
+ {id:"hahn",cat:"natur",name:"Hahn",ico:"🐓",dur:2.4,lvl:0.47,
+  fn(v,t){const syl=[[0,0.11,620,700],[0.15,0.11,650,660],[0.3,0.14,720,760],[0.5,0.85,820,600]];
+   for(const [s,len,f1,f2] of syl){const tt=t+s,o=v.osc("sawtooth",f1,tt,len+0.05),b1=v.f("bandpass",1500,2),b2=v.f("bandpass",2800,3),g=v.g(0),rough=v.osc("sine",33,tt,len+0.05),rg=v.g(25);
+    o.frequency.linearRampToValueAtTime(f2,tt+len);rough.connect(rg).connect(o.frequency);o.connect(b1);o.connect(b2);b1.connect(g);b2.connect(g);g.connect(v.out);
+    g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(0.7,tt+0.02);g.gain.setValueAtTime(0.7,tt+len-0.04);g.gain.linearRampToValueAtTime(0,tt+len)}}},
+ {id:"bienen",cat:"natur",name:"Bienen",ico:"🐝",dur:12,amb:true,lvl:2.31,
+  fn(v,t){const L=v.layer(t);
+   for(let i=0;i<5;i++){const o=v.osc("sawtooth",R(200,250),t,L),bp=v.f("bandpass",R(400,700),1.2),g=v.g(R(0.05,0.12)),d=panned(v,R(-0.8,0.8));
+    const l=v.osc("sine",R(0.3,1.2),t,L),lg=v.g(R(5,15));l.connect(lg).connect(o.frequency);
+    const l2=v.osc("sine",R(0.1,0.5),t,L),lg2=v.g(0.05);l2.connect(lg2).connect(g.gain);o.connect(bp).connect(g).connect(d)}}},
+ {id:"schritte",cat:"natur",name:"Schritte im Laub",ico:"🍂",dur:9,amb:true,lvl:3.23,
+  fn(v,t){v.every(()=>R(0.5,0.62),tt=>{for(let i=0;i<14;i++)burst(v,tt+R(0,0.14),{type:"highpass",freq:R(1500,4000),Q:0.7,dur:R(0.003,0.01),gain:R(0.1,0.5)});
+   burst(v,tt,{type:"lowpass",freq:200,Q:0.7,dur:0.08,gain:0.5,kind:"pink"})})}},
+ {id:"wolf",cat:"natur",name:"Wolf heult",ico:"🐺",dur:5,lvl:0.33,
+  fn(v,t){const dl=ctx.createDelay(1),fb=v.g(0.35),mix=v.g(1);dl.delayTime.value=0.18;mix.connect(v.out);mix.connect(dl);dl.connect(fb).connect(dl);fb.connect(v.out);
+   const g=v.g(0);g.connect(mix);
+   for(const [type,a] of [["sine",1],["triangle",0.3]]){const o=v.osc(type,330,t,3.6),og=v.g(a);o.frequency.linearRampToValueAtTime(560,t+1);o.frequency.setValueAtTime(560,t+2);o.frequency.linearRampToValueAtTime(380,t+3.4);
+    const vb=v.osc("sine",5,t,3.6),vg=v.g(6);vb.connect(vg).connect(o.frequency);o.connect(og).connect(g)}
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.3,t+0.4);g.gain.setValueAtTime(0.3,t+2.8);g.gain.linearRampToValueAtTime(0,t+3.5)}},
 ];
 
 /* ---------- eigene Aufnahmen (IndexedDB, nur auf diesem Gerät) ---------- */
@@ -414,42 +548,102 @@ setInterval(()=>{
 
 /* ---------- Oberfläche ---------- */
 const $=s=>document.querySelector(s);
-const grid=$("#grid"),ownPanel=$("#own");
-let order={},revealed=new Set();
+const grid=$("#grid");
+const TIPS={klingel:"Jemand steht vor der Haustür.",telefon:"Stand früher im Flur, mit Hörer und Schnur.",wecker:"Klingelt morgens neben dem Bett.",kaffee:"Läuft morgens in der Küche, und es duftet.",kocher:"Wasser für den Tee wird heiß.",standuhr:"Große Uhr aus Holz im Wohnzimmer.",kuckuck:"Ein kleiner Vogel kommt aus einem Holzhäuschen an der Wand.",kirche:"Läutet am Sonntagmorgen.",schreibm:"Damit hat man früher Briefe geschrieben.",hupe:"Auf der Straße: Vorsicht!",klopfen:"Jemand möchte hereinkommen.",fahrrad:"Achtung, hier kommt jemand auf zwei Rädern!",sauger:"Beim Putzen in der Wohnung.",foehn:"Nach dem Haarewaschen.",mikro:"Essen wird warm gemacht, dann macht es pling.",hahnwasser:"In der Küche oder im Bad, ein Glas wird voll.",pfanne:"Bratkartoffeln oder Spiegeleier in der Pfanne.",martinshorn:"Krankenwagen oder Feuerwehr, tatü-tata.",waehl:"So hat man früher eine Telefonnummer gewählt.",spieluhr:"Ein Schlaflied: „Guten Abend, gut' Nacht“.",
+voegel:"Morgens im Garten oder im Wald.",frosch:"Sitzt am Teich.",bach:"Wasser fließt über Steine.",regen:"Tropfen auf dem Dach und am Fenster.",wind:"Draußen stürmt es.",gewitter:"Blitz und Donner.",meer:"Wellen am Strand, Urlaub an der See.",kuh:"Steht auf der Weide und gibt Milch.",eule:"Ein Vogel, der nachts wach ist.",pferd:"Ein Tier zieht eine Kutsche über die Straße.",tuer:"Eine alte Tür geht langsam auf.",feuer:"Im Ofen oder Kamin, schön warm.",lok:"Ein alter Zug mit Dampf fährt los.",hund:"Bellt, wenn jemand ans Tor kommt.",katze:"Liegt gern auf dem Sofa und schnurrt.",schaf:"Hat dicke Wolle.",hahn:"Weckt morgens alle auf dem Bauernhof.",bienen:"Fliegen von Blume zu Blume und machen Honig.",schritte:"Ein Spaziergang im Herbstwald.",wolf:"Kommt im Märchen vom Rotkäppchen vor."};
+const EXAMPLE=[{id:"hahn",cue:"Morgens auf dem Bauernhof"},{id:"kuh",cue:"Die Kühe gehen auf die Weide"},{id:"pferd",cue:"Der Bauer fährt mit der Kutsche"},{id:"wind",cue:"Ein Sturm zieht auf"},{id:"gewitter",cue:"Es blitzt und donnert"},{id:"regen",cue:"Es regnet"},{id:"feuer",cue:"Abends am warmen Ofen"},{id:"spieluhr",cue:"Gute Nacht"}];
+let story=store.get("story",null),storyExample=!story;if(!story)story=EXAMPLE.slice();
+let storyNext=0,storyEdit=false;
+const quiz={cat:"alltag",order:[],i:0};
+
 function shuffled(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
 function tilesFor(cat){
   const base=SOUNDS.filter(s=>s.cat===cat).map(s=>({id:s.id,name:s.name,ico:s.ico,loud:s.loud,cat,real:own.some(r=>r.replaces===s.id)}));
   const extra=own.filter(r=>!r.replaces&&r.cat===cat).map(r=>({id:"own-"+r.id,name:r.name,ico:"🎙️",cat,real:true,custom:true}));
-  let list=base.concat(extra);
-  if(settings.rate){const ids=order[cat];if(ids&&ids.length===list.length)list=ids.map(i=>list.find(x=>x.id===i)).filter(Boolean);else{list=shuffled(list);order[cat]=list.map(x=>x.id)}}
-  return list;
+  return base.concat(extra);
 }
+function info(id){return tilesFor("alltag").concat(tilesFor("natur")).find(x=>x.id===id)}
 function render(){
-  const cat=settings.tab;
-  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.cat===cat)));
-  grid.hidden=cat==="eigen";ownPanel.hidden=cat!=="eigen";
-  if(cat==="eigen"){renderOwn();return}
-  grid.innerHTML="";
-  tilesFor(cat).forEach((s,i)=>{
-    const hide=settings.rate&&!revealed.has(s.id);
-    const tile=document.createElement("div");tile.className="tile";
-    const b=document.createElement("button");b.className="play";b.dataset.cat=cat;b.dataset.id=s.id;if(s.custom)b.dataset.custom="";
-    b.setAttribute("aria-label",hide?"Geräusch "+(i+1):s.name);
-    b.innerHTML=(settings.rate?'<span class="num">'+(i+1)+'</span>':"")+(s.loud&&!hide?'<span class="warnchip">plötzlich</span>':"")+
-      '<span class="ico" aria-hidden="true">'+(hide?"❓":s.ico)+'</span><span class="nm"></span><span class="tag'+(s.real?" real":"")+'">'+(s.real?"echte Aufnahme":"nachgebaut")+'</span>';
-    b.querySelector(".nm").textContent=hide?"Geräusch "+(i+1):s.name;
-    b.addEventListener("click",()=>play(s.id));
-    tile.appendChild(b);
-    if(settings.rate){const r=document.createElement("button");r.className="reveal";r.textContent=hide?"Auflösen":"Verstecken";
-      r.addEventListener("click",()=>{hide?revealed.add(s.id):revealed.delete(s.id);render()});tile.appendChild(r)}
-    grid.appendChild(tile);
-  });
+  const tab=settings.tab;
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.cat===tab)));
+  grid.hidden=!(tab==="alltag"||tab==="natur");
+  for(const [id,t] of [["#quiz","quiz"],["#story","story"],["#own","eigen"]])$(id).hidden=tab!==t;
+  if(tab==="eigen")renderOwn();
+  else if(tab==="quiz")renderQuiz();
+  else if(tab==="story")renderStory();
+  else{
+    grid.innerHTML="";
+    tilesFor(tab).forEach(s=>{
+      const b=document.createElement("button");b.className="play";b.dataset.cat=tab;b.dataset.id=s.id;if(s.custom)b.dataset.custom="";
+      b.innerHTML=(s.loud?'<span class="warnchip">plötzlich</span>':"")+'<span class="ico" aria-hidden="true">'+s.ico+'</span><span class="nm"></span><span class="tag'+(s.real?" real":"")+'">'+(s.real?"echte Aufnahme":"nachgebaut")+'</span>';
+      b.querySelector(".nm").textContent=s.name;
+      b.addEventListener("click",()=>play(s.id));
+      grid.appendChild(b);
+    });
+  }
   paint();
 }
 function paint(){
-  document.querySelectorAll(".play").forEach(b=>b.setAttribute("aria-pressed",String(active.has(b.dataset.id))));
+  document.querySelectorAll("[data-id]").forEach(b=>b.setAttribute("aria-pressed",String(active.has(b.dataset.id))));
+  const q=$("#q-play");if(q.dataset.id)q.textContent=active.has(q.dataset.id)?"■ Stoppen":"▶ Abspielen";
   $("#stop-all").hidden=active.size===0;
 }
+
+/* Ratespiel: ihr spielt ab, die Gruppe rät */
+function quizList(){return quiz.cat==="beide"?tilesFor("alltag").concat(tilesFor("natur")):tilesFor(quiz.cat)}
+function newQuiz(){quiz.order=shuffled(quizList().map(x=>x.id));quiz.i=0}
+function renderQuiz(){
+  if(!quiz.order.length||quiz.order.some(id=>!info(id)))newQuiz();
+  const s=info(quiz.order[quiz.i]);
+  $("#q-count").textContent="Geräusch "+(quiz.i+1)+" von "+quiz.order.length;
+  $("#q-ico").textContent=s.ico;$("#q-name").textContent=s.name;
+  $("#q-tip").textContent="Tipp zum Helfen: "+(TIPS[s.id]||"Kein Tipp hinterlegt.");
+  $("#q-play").dataset.id=s.id;
+  $("#q-prev").disabled=quiz.i===0;$("#q-next").textContent=quiz.i===quiz.order.length-1?"Von vorn ▶":"Weiter ▶";
+  paint();
+}
+function quizGo(d){const cur=quiz.order[quiz.i];if(active.has(cur))stop(cur);quiz.i+=d;if(quiz.i>=quiz.order.length)newQuiz();if(quiz.i<0)quiz.i=0;renderQuiz()}
+$("#q-play").addEventListener("click",()=>play($("#q-play").dataset.id));
+$("#q-prev").addEventListener("click",()=>quizGo(-1));
+$("#q-next").addEventListener("click",()=>quizGo(1));
+$("#q-mix").addEventListener("click",()=>{stopAll();newQuiz();renderQuiz()});
+document.querySelectorAll('input[name="qcat"]').forEach(r=>r.addEventListener("change",()=>{quiz.cat=r.value;stopAll();newQuiz();renderQuiz()}));
+
+/* Geschichte: Klänge in der Reihenfolge des Textes */
+function saveStory(){storyExample=false;store.set("story",story)}
+function renderStory(){
+  $("#s-note").textContent=storyExample?"Das ist ein Beispiel. Tippe „Bearbeiten“ und stellt eure eigene Liste für euer Buch zusammen.":"Der gelb umrandete Klang ist als Nächstes dran. Du kannst aber jeden jederzeit antippen.";
+  $("#s-edit").textContent=storyEdit?"Fertig":"Bearbeiten";$("#s-editor").hidden=!storyEdit;
+  const sel=$("#s-sound"),cur=sel.value;
+  sel.innerHTML="";for(const [cat,label] of [["alltag","Alltag"],["natur","Natur & Geschichten"]]){const og=document.createElement("optgroup");og.label=label;tilesFor(cat).forEach(s=>{const o=document.createElement("option");o.value=s.id;o.textContent=s.name;og.appendChild(o)});sel.appendChild(og)}
+  if(cur)sel.value=cur;
+  const ul=$("#s-list");ul.innerHTML="";
+  if(!story.length){const li=document.createElement("li");li.className="small";li.textContent="Noch keine Klänge. Unten einen Klang und ein Stichwort wählen und „Hinzufügen“ tippen.";ul.appendChild(li)}
+  story.forEach((st,i)=>{
+    const s=info(st.id);if(!s)return;
+    const li=document.createElement("li");li.className="sitem"+(i===storyNext&&!storyEdit?" next":"");
+    const b=document.createElement("button");b.className="sbtn";b.dataset.id=st.id;
+    b.innerHTML='<span class="snum">'+(i+1)+'</span><span class="ico" aria-hidden="true">'+s.ico+'</span><span class="stext"><b></b><small></small></span>';
+    b.querySelector("b").textContent=s.name;b.querySelector("small").textContent=st.cue||"";
+    b.addEventListener("click",()=>{if(!active.has(st.id))storyNext=i+1;play(st.id);renderStory()});
+    li.appendChild(b);
+    if(storyEdit){
+      const box=document.createElement("div");box.className="sedit";
+      for(const [lbl,fn,dis] of [["↑",()=>{[story[i-1],story[i]]=[story[i],story[i-1]]},i===0],["↓",()=>{[story[i+1],story[i]]=[story[i],story[i+1]]},i===story.length-1],["✕",()=>story.splice(i,1),false]]){
+        const e=document.createElement("button");e.className="btn ghost";e.textContent=lbl;e.disabled=dis;e.setAttribute("aria-label",{"↑":"nach oben","↓":"nach unten","✕":"entfernen"}[lbl]);
+        e.addEventListener("click",()=>{fn();saveStory();renderStory()});box.appendChild(e)}
+      li.appendChild(box);
+    }
+    ul.appendChild(li);
+  });
+  paint();
+}
+$("#s-edit").addEventListener("click",()=>{storyEdit=!storyEdit;renderStory()});
+$("#s-form").addEventListener("submit",e=>{e.preventDefault();story.push({id:$("#s-sound").value,cue:$("#s-cue").value.trim()});$("#s-cue").value="";saveStory();renderStory()});
+$("#s-clear").addEventListener("click",e=>{const b=e.currentTarget;if(b.dataset.sure){delete b.dataset.sure;b.textContent="Liste leeren";story=[];storyNext=0;saveStory();renderStory()}else{b.dataset.sure="1";b.textContent="Wirklich alles leeren?"}});
+$("#s-restart").addEventListener("click",()=>{storyNext=0;stopAll();renderStory()});
+
+/* Eigene Aufnahmen */
 function showMsg(t){$("#own-msg").textContent=t}
 function renderOwn(){
   const sel=$("#own-rep"),cur=sel.value;
@@ -478,7 +672,6 @@ $("#own-form").addEventListener("submit",async e=>{
   }catch(err){showMsg("Speichern hat nicht geklappt. Im privaten Modus oder ohne Speicherplatz geht das nicht.")}
 });
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{settings.tab=b.dataset.cat;store.set("tab",settings.tab);render()}));
-$("#opt-rate").addEventListener("change",e=>{settings.rate=e.target.checked;order={};revealed.clear();render()});
 $("#opt-loop").checked=settings.loop;
 $("#opt-loop").addEventListener("change",e=>{settings.loop=e.target.checked;store.set("loop",settings.loop)});
 $("#opt-vol").value=settings.vol;
