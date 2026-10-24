@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+<title>Klangkoffer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
+<style>
+/* Layout: ein Bedienfeld oben (Kategorie, Rate-Modus, Lautstärke, Stopp), darunter ein Raster aus großen Klang-Knöpfen. */
+:root{
+  --bg:#EEF2EF; --surface:#FFFFFF; --fg:#17262A; --muted:#55676A; --line:#CBD6D2;
+  --alltag:#25577F; --alltag-soft:#DCE8F2;
+  --natur:#2F6D45; --natur-soft:#DCEDE1;
+  --eigen:#7A4E8C; --eigen-soft:#EDE2F2;
+  --play:#E3A92B; --play-ink:#2A1F05; --warn:#A2401F;
+  --f-display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", Verdana, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101716; --surface:#1A2422; --fg:#E7EFEC; --muted:#9DB0AB; --line:#2E3D3A;
+    --alltag:#8AB8E0; --alltag-soft:#1C2E3D;
+    --natur:#8ECB9F; --natur-soft:#1A3124;
+    --eigen:#CDA6DD; --eigen-soft:#2E2235;
+    --play:#F0BE52; --play-ink:#241A03; --warn:#F09A78;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101716; --surface:#1A2422; --fg:#E7EFEC; --muted:#9DB0AB; --line:#2E3D3A;
+  --alltag:#8AB8E0; --alltag-soft:#1C2E3D;
+  --natur:#8ECB9F; --natur-soft:#1A3124;
+  --eigen:#CDA6DD; --eigen-soft:#2E2235;
+  --play:#F0BE52; --play-ink:#241A03; --warn:#F09A78;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:20px}
+header h1{font-family:var(--f-display);font-weight:800;font-size:clamp(34px,7vw,52px);line-height:1;margin:0;letter-spacing:-0.01em}
+header p{margin:8px 0 0;color:var(--muted);max-width:60ch}
+
+.bar{padding-block:4px 14px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{font:700 18px/1.2 var(--f-body);padding:12px 18px;border-radius:999px;border:2px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:52px}
+.tab[aria-selected="true"][data-cat="alltag"]{background:var(--alltag);border-color:var(--alltag);color:var(--surface)}
+.tab[aria-selected="true"][data-cat="natur"]{background:var(--natur);border-color:var(--natur);color:var(--surface)}
+.tab[aria-selected="true"][data-cat="eigen"]{background:var(--eigen);border-color:var(--eigen);color:var(--surface)}
+.controls{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center}
+.switch{display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer;min-height:44px;user-select:none}
+.switch input{width:26px;height:26px;accent-color:var(--alltag);margin:0}
+.vol{display:flex;align-items:center;gap:8px;font-weight:700;flex:1 1 200px;min-width:0}
+.vol input{flex:1;min-width:0;height:32px;accent-color:var(--alltag)}
+.stop{position:fixed;z-index:20;bottom:calc(16px + env(safe-area-inset-bottom, 0px));right:max(16px, env(safe-area-inset-right, 0px));font:700 20px/1 var(--f-body);background:var(--warn);color:var(--surface);border:3px solid var(--surface);border-radius:999px;padding:16px 26px;min-height:60px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+main{padding-bottom:70px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;gap:6px;min-width:0}
+.play{--c:var(--alltag);--soft:var(--alltag-soft);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:150px;padding:14px 10px 12px;border-radius:18px;border:3px solid transparent;background:var(--soft);color:var(--fg);cursor:pointer;font-family:var(--f-body);text-align:center;transition:transform .08s ease}
+.play[data-cat="natur"]{--c:var(--natur);--soft:var(--natur-soft)}
+.play[data-custom]{--c:var(--eigen);--soft:var(--eigen-soft)}
+.play:active{transform:scale(.97)}
+.play:focus-visible,.tab:focus-visible,.stop:focus-visible,.reveal:focus-visible,.btn:focus-visible{outline:3px solid var(--play);outline-offset:3px}
+.ico{font-size:52px;line-height:1}
+.nm{font-weight:700;font-size:20px;line-height:1.15;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word;max-width:100%}
+.tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.tag.real{color:var(--c)}
+.warnchip{position:absolute;top:8px;right:8px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--warn);background:var(--surface);border-radius:999px;padding:2px 8px}
+.num{position:absolute;top:8px;left:10px;font:800 20px/1 var(--f-display);color:var(--c)}
+.play[aria-pressed="true"]{background:var(--play);color:var(--play-ink);border-color:var(--play-ink)}
+.play[aria-pressed="true"] .tag,.play[aria-pressed="true"] .num{color:var(--play-ink)}
+.play[aria-pressed="true"]{padding-bottom:30px}
+.play[aria-pressed="true"]::after{content:"läuft · antippen stoppt";white-space:nowrap;overflow:hidden;position:absolute;bottom:-1px;left:0;right:0;font-size:12px;font-weight:700;padding:3px;border-radius:0 0 15px 15px;background:var(--play-ink);color:var(--play)}
+.reveal{font:700 15px/1 var(--f-body);padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:44px}
+@media (prefers-reduced-motion: no-preference){
+  .play[aria-pressed="true"] .ico{animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{50%{transform:scale(1.12)}}
+}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.panel h2,.info h2{font-family:var(--f-display);font-size:24px;margin:0;line-height:1.2;text-wrap:balance}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.form label{display:flex;flex-direction:column;gap:4px;font-weight:700;min-width:0}
+.form input,.form select{font:16px var(--f-body);padding:10px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-width:0;max-width:100%}
+.btn{font:700 17px/1 var(--f-body);padding:13px 18px;border-radius:12px;border:0;background:var(--eigen);color:var(--surface);cursor:pointer;min-height:48px;justify-self:start}
+.btn.ghost{background:transparent;color:var(--fg);border:2px solid var(--line)}
+.msg{margin:0;font-weight:700;color:var(--eigen)}
+.ownlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ownlist li{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--line)}
+.ownlist li span{flex:1 1 200px;min-width:0;overflow-wrap:anywhere}
+.small{font-size:15px;color:var(--muted);margin:0}
+
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.info section{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}
+.info ul{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.info p{margin:8px 0 0}
+.info a{color:var(--alltag)}
+</style>
+</head><body>
+
+<div class="wrap" lang="de">
+  <header>
+    <h1>Klangkoffer</h1>
+    <p>Geräusche zum Erraten und zum Vorlesen. Einmal antippen spielt den Klang, nochmal antippen stoppt ihn. Mehrere Klänge können gleichzeitig laufen, zum Beispiel Regen und Gewitter.</p>
+  </header>
+
+  <div class="bar">
+    <div class="tabs" role="tablist" aria-label="Kategorie">
+      <button class="tab" role="tab" data-cat="alltag" id="tab-alltag" aria-selected="true">Alltag</button>
+      <button class="tab" role="tab" data-cat="natur" id="tab-natur" aria-selected="false">Natur &amp; Geschichten</button>
+      <button class="tab" role="tab" data-cat="eigen" id="tab-eigen" aria-selected="false">Eigene Aufnahmen</button>
+    </div>
+    <div class="controls">
+      <label class="switch"><input type="checkbox" id="opt-rate"> Rate-Modus</label>
+      <label class="switch"><input type="checkbox" id="opt-loop"> Dauerschleife</label>
+      <label class="vol" for="opt-vol">Lautstärke <input type="range" id="opt-vol" min="0" max="100" value="70"></label>
+    </div>
+  </div>
+
+  <button class="stop" id="stop-all" hidden>■ Alles stoppen</button>
+
+  <main>
+    <div class="grid" id="grid" role="tabpanel" aria-live="polite"></div>
+    <div id="own" class="panel" hidden>
+      <h2>Echte Aufnahme hinzufügen</h2>
+      <p class="small">Lade eine Audiodatei (MP3, WAV, M4A, OGG) von deinem Handy. Sie wird nur auf diesem Gerät gespeichert. Wenn du einen nachgebauten Klang ersetzt, spielt sein Knopf ab dann deine Aufnahme.</p>
+      <form class="form" id="own-form">
+        <label for="own-file">Datei<input type="file" id="own-file" accept="audio/*" required></label>
+        <label for="own-name">Name auf dem Knopf<input type="text" id="own-name" maxlength="30" placeholder="z.B. Rasenmäher"></label>
+        <label for="own-cat">Kategorie<select id="own-cat"><option value="alltag">Alltag</option><option value="natur">Natur &amp; Geschichten</option></select></label>
+        <label for="own-rep">Ersetzt Knopf<select id="own-rep"><option value="">Nein, neuer Knopf</option></select></label>
+        <button class="btn" type="submit" id="own-add">Hinzufügen</button>
+      </form>
+      <p class="msg" id="own-msg" role="status"></p>
+      <h2>Gespeicherte Aufnahmen</h2>
+      <ul class="ownlist" id="own-list"></ul>
+    </div>
+  </main>
+
+  <div class="info">
+    <section>
+      <h2>Woher kommen die Klänge?</h2>
+      <p>Alle eingebauten Klänge sind <strong>nachgebaut</strong>: Das Handy erzeugt sie live aus Tönen und Rauschen. Es sind keine echten Aufnahmen. Regen, Bach, Meer, Wind, Feuer, Uhr und Klingeln klingen meist recht ähnlich. Kuh, Eule, Frosch, Kaffeemaschine und Dampflok sind nur grob angenähert.</p>
+      <p>Bessere Klänge: im Reiter „Eigene Aufnahmen“ echte Dateien laden. Lizenzfreie Quellen:</p>
+      <ul>
+        <li><a href="https://freesound.org/search/?f=license:%22Creative+Commons+0%22" target="_blank" rel="noopener">Freesound.org</a> mit Filter „Creative Commons 0“ (kostenloses Konto nötig)</li>
+        <li><a href="https://pixabay.com/sound-effects/" target="_blank" rel="noopener">Pixabay Soundeffekte</a> (kostenlos, ohne Namensnennung)</li>
+        <li>Selbst aufnehmen: Kaffeemaschine, Wasserkocher, Türklingel zu Hause mit dem Handy.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Tipps für den Besuch</h2>
+      <ul>
+        <li>Leise anfangen. Plötzliche laute Klänge (markiert mit „plötzlich“) können Menschen mit Demenz erschrecken.</li>
+        <li>Rate-Modus: Namen sind versteckt und die Reihenfolge gemischt. Erst raten lassen, dann „Auflösen“ tippen.</li>
+        <li>Dauerschleife: Regen, Bach, Meer, Feuer usw. laufen weiter, bis du stoppst. Gut als Hintergrund beim Vorlesen.</li>
+        <li>iPhone: Stummschalter an der Seite ausschalten, sonst bleibt es still. Über Bluetooth-Box klingt es deutlich besser.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<script>
+"use strict";
+const R=(a,b)=>a+Math.random()*(b-a);
+let ctx=null, master=null, comp=null, buf={};
+const active=new Map();
+const store={get(k,d){try{const v=localStorage.getItem("kk-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("kk-"+k,JSON.stringify(v))}catch(e){}}};
+const settings={tab:store.get("tab","alltag"),rate:false,loop:store.get("loop",false),vol:store.get("vol",70)};
+
+function makeNoise(c){
+  const len=c.sampleRate*4, out={};
+  for(const k of ["white","pink","brown"]){
+    const b=c.createBuffer(1,len,c.sampleRate), d=b.getChannelData(0);
+    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0,last=0;
+    for(let i=0;i<len;i++){
+      const w=Math.random()*2-1;
+      if(k==="white") d[i]=w*0.5;
+      else if(k==="pink"){b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;b2=0.969*b2+w*0.153852;b3=0.8665*b3+w*0.3104856;b4=0.55*b4+w*0.5329522;b5=-0.7616*b5-w*0.016898;d[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;b6=w*0.115926;}
+      else {last=(last+0.02*w)/1.02;d[i]=last*3.5;}
+    }
+    out[k]=b;
+  }
+  return out;
+}
+function setupGraph(c){
+  ctx=c; buf=makeNoise(c);
+  comp=c.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=4;
+  master=c.createGain(); master.gain.value=volGain(); master.connect(comp); comp.connect(c.destination);
+}
+function volGain(){const v=settings.vol/100;return v*v*1.4}
+function ensure(){
+  if(!ctx){const AC=window.AudioContext||window.webkitAudioContext; setupGraph(new AC());}
+  if(ctx.state==="suspended") ctx.resume();
+}
+
+/* ---------- Stimme (ein laufender Klang) ---------- */
+class Voice{
+  constructor(def,loop){
+    this.def=def; this.nodes=new Set(); this.gens=[]; this.stopped=false;
+    this.bus=ctx.createGain(); this.bus.connect(master);
+    this.out=ctx.createGain(); this.out.gain.value=def.lvl||1; this.out.connect(this.bus);
+    this.t0=ctx.currentTime+0.05;
+    this.loop=loop;
+    this.end=(loop&&def.amb)?Infinity:this.t0+def.dur;
+    if(def.amb&&isFinite(this.end)&&def.dur>4){this.bus.gain.setValueAtTime(1,this.end-1.5);this.bus.gain.linearRampToValueAtTime(0,this.end);}
+  }
+  layer(t){return isFinite(this.end)?this.end-t+0.05:null}
+  reg(n){this.nodes.add(n);n.onended=()=>this.nodes.delete(n);return n}
+  osc(type,f,t,dur){const o=ctx.createOscillator();o.type=type;o.frequency.setValueAtTime(f,t);o.start(t);if(dur!=null)o.stop(t+dur);return this.reg(o)}
+  noise(kind,t,dur){const s=ctx.createBufferSource();s.buffer=buf[kind];s.loop=true;s.start(t,Math.random()*3);if(dur!=null)s.stop(t+dur);return this.reg(s)}
+  g(v=1){const n=ctx.createGain();n.gain.value=v;return n}
+  f(type,freq,Q=1){const n=ctx.createBiquadFilter();n.type=type;n.frequency.value=freq;n.Q.value=Q;return n}
+  every(iv,ev,start,until){this.gens.push({next:start??this.t0,iv,ev,until:until??Infinity})}
+  pump(horizon){
+    for(const g of this.gens){
+      if(g.next<ctx.currentTime) g.next=ctx.currentTime+0.02;
+      while(g.next<horizon&&g.next<Math.min(this.end,g.until)){g.ev(g.next);g.next+=g.iv(g.next);}
+    }
+  }
+  kill(){for(const n of this.nodes){try{n.stop()}catch(e){}}this.nodes.clear();try{this.bus.disconnect()}catch(e){}}
+}
+function env(p,t,peak,a,d){p.setValueAtTime(0,t);p.linearRampToValueAtTime(peak,t+a);p.exponentialRampToValueAtTime(0.0001,t+a+d)}
+function strike(v,t,f,partials,dec,amp,dest){
+  for(const [r,a,dm=1] of partials){const o=v.osc("sine",f*r,t,dec*dm+0.05),g=v.g(0);o.connect(g).connect(dest||v.out);env(g.gain,t,amp*a,0.003,dec*dm)}
+}
+function burst(v,t,o){
+  const s=v.noise(o.kind||"white",t,o.dur+(o.a||0.001)+0.05),fl=v.f(o.type||"bandpass",o.freq||1000,o.Q??1),g=v.g(0);
+  s.connect(fl).connect(g).connect(o.dest||v.out);env(g.gain,t,o.gain??0.5,o.a||0.001,o.dur);
+}
+function tone(v,t,dest,f1,f2,len,amp,type){
+  const o=v.osc(type||"sine",f1,t,len+0.03),g=v.g(0);o.frequency.exponentialRampToValueAtTime(f2,t+len);o.connect(g).connect(dest);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+Math.min(0.012,len/4));g.gain.setValueAtTime(amp,t+len*0.7);g.gain.linearRampToValueAtTime(0,t+len);
+}
+function bubble(v,t,f,ratio,len,amp){
+  const o=v.osc("sine",f,t,len+0.02),g=v.g(0);o.frequency.exponentialRampToValueAtTime(f*ratio,t+len);o.connect(g).connect(v.out);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+0.005);g.gain.exponentialRampToValueAtTime(0.0001,t+len);
+}
+function panned(v,pan){const g=v.g(1);if(ctx.createStereoPanner){const p=ctx.createStereoPanner();p.pan.value=pan;g.connect(p).connect(v.out)}else g.connect(v.out);return g}
+function hoot(v,t,f,len,amp,f2){
+  const g=v.g(0);g.connect(v.out);
+  for(const [type,a] of [["sine",1],["triangle",0.25]]){const o=v.osc(type,f,t,len+0.1),og=v.g(a);if(f2)o.frequency.linearRampToValueAtTime(f2,t+len);o.connect(og).connect(g)}
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+Math.min(0.06,len/3));g.gain.setValueAtTime(amp,t+len*0.75);g.gain.linearRampToValueAtTime(0,t+len);
+}
+const BAR=[[1,1],[2.76,0.3,0.5],[5.4,0.12,0.3]];
+const RING=[[1,1],[2.32,0.5,0.6],[3.9,0.3,0.4]];
+const CHURCH=[[0.5,0.5,1.6],[1,1],[1.19,0.45,0.7],[1.5,0.3,0.5],[2,0.5,0.45],[2.51,0.2,0.3],[3,0.15,0.25],[4.1,0.08,0.2]];
+
+/* ---------- Die Klänge ----------
+   lvl = Lautstärke-Ausgleich, gemessen per Offline-Rendering, damit alle Knöpfe etwa gleich laut sind. */
+const SOUNDS=[
+ {id:"klingel",cat:"alltag",name:"Türklingel",ico:"🔔",dur:3.6,lvl:0.87,
+  fn(v,t){strike(v,t,659,BAR,1.6,0.35);strike(v,t+0.6,523,BAR,2.2,0.35)}},
+ {id:"telefon",cat:"alltag",name:"Altes Telefon",ico:"☎️",dur:5.6,lvl:1.14,
+  fn(v,t){for(const s of [0,3.4])for(let i=0;i<40;i++)strike(v,t+s+i/25,i%2?1180:1000,RING,0.18,0.16)}},
+ {id:"wecker",cat:"alltag",name:"Wecker",ico:"⏰",dur:4,lvl:1.27,loud:true,
+  fn(v,t){for(let i=0;i<70;i++)strike(v,t+i/20,i%2?1650:1500,RING,0.12,0.14)}},
+ {id:"kaffee",cat:"alltag",name:"Kaffeemaschine",ico:"☕",dur:12,amb:true,lvl:1.28,
+  fn(v,t){const L=v.layer(t);
+   const n=v.noise("white",t,L),f=v.f("bandpass",3500,0.8),g=v.g(0.05);n.connect(f).connect(g).connect(v.out);
+   const n2=v.noise("brown",t,L),f2=v.f("lowpass",250),g2=v.g(0.3);n2.connect(f2).connect(g2).connect(v.out);
+   v.every(()=>Math.random()<0.15?R(0.6,1.2):R(0.04,0.18),tt=>bubble(v,tt,R(140,380),R(2,3),R(0.04,0.09),R(0.12,0.3)))}},
+ {id:"kocher",cat:"alltag",name:"Wasserkocher",ico:"♨️",dur:9.5,lvl:1.28,
+  fn(v,t){const T=8;
+   const n=v.noise("brown",t,T+0.4),f=v.f("lowpass",150,0.7),g=v.g(0);
+   f.frequency.setValueAtTime(150,t);f.frequency.exponentialRampToValueAtTime(1200,t+T);
+   g.gain.setValueAtTime(0.02,t);g.gain.linearRampToValueAtTime(0.5,t+T);g.gain.linearRampToValueAtTime(0,t+T+0.3);n.connect(f).connect(g).connect(v.out);
+   const h=v.noise("white",t,T+0.4),hf=v.f("bandpass",2500,1),hg=v.g(0);
+   hg.gain.setValueAtTime(0,t);hg.gain.linearRampToValueAtTime(0.08,t+T);hg.gain.linearRampToValueAtTime(0,t+T+0.3);h.connect(hf).connect(hg).connect(v.out);
+   v.every(tt=>R(0.02,0.08)+(1-(tt-t)/T)*R(0.1,0.6),tt=>bubble(v,tt,R(200,600),2,R(0.02,0.05),0.03+0.15*((tt-t)/T)),t+1.5,t+T);
+   burst(v,t+T+0.05,{type:"highpass",freq:1500,Q:0.7,dur:0.03,gain:0.8});
+   const o=v.osc("sine",180,t+T+0.05,0.1),og=v.g(0);o.connect(og).connect(v.out);env(og.gain,t+T+0.05,0.4,0.002,0.06)}},
+ {id:"standuhr",cat:"alltag",name:"Standuhr",ico:"🕰️",dur:10,amb:true,lvl:2.48,
+  fn(v,t){let k=0;v.every(()=>0.6,tt=>{const hi=k++%2===0;
+   burst(v,tt,{freq:hi?2400:1700,Q:6,dur:0.03,gain:0.8});
+   const o=v.osc("sine",hi?520:430,tt,0.08),g=v.g(0);o.connect(g).connect(v.out);env(g.gain,tt,0.25,0.001,0.05)})}},
+ {id:"kuckuck",cat:"alltag",name:"Kuckucksuhr",ico:"🏠",dur:4.2,lvl:0.44,
+  fn(v,t){for(let i=0;i<3;i++){hoot(v,t+i*1.2,740,0.2,0.3,730);hoot(v,t+i*1.2+0.28,600,0.38,0.3,585)}}},
+ {id:"kirche",cat:"alltag",name:"Kirchenglocke",ico:"⛪",dur:11.5,lvl:1.29,
+  fn(v,t){for(let i=0;i<4;i++)strike(v,t+i*2,220,CHURCH,3.5,0.2)}},
+ {id:"schreibm",cat:"alltag",name:"Schreibmaschine",ico:"⌨️",dur:10,amb:true,lvl:2.47,
+  fn(v,t){let n=0,next=R(25,40),pause=false;
+   v.every(()=>{if(pause){pause=false;return 1.3}return R(0.08,0.24)},tt=>{
+    if(++n>=next){n=0;next=R(25,45);pause=true;
+     strike(v,tt,2100,[[1,1],[2.76,0.2,0.4]],0.9,0.25);
+     const s=v.noise("white",tt+0.35,0.55),f=v.f("bandpass",1400,3),g=v.g(0);
+     f.frequency.setValueAtTime(1400,tt+0.35);f.frequency.exponentialRampToValueAtTime(400,tt+0.8);s.connect(f).connect(g).connect(v.out);env(g.gain,tt+0.35,0.35,0.02,0.45);
+    }else{burst(v,tt,{freq:R(1500,2300),Q:2,dur:0.015,gain:R(0.5,0.8)});
+     const o=v.osc("sine",160,tt,0.04),g=v.g(0);o.connect(g).connect(v.out);env(g.gain,tt,0.3,0.001,0.025)}})}},
+ {id:"hupe",cat:"alltag",name:"Autohupe",ico:"🚗",dur:1.6,lvl:0.46,loud:true,
+  fn(v,t){for(const [s,len] of [[0,0.3],[0.45,0.55]])for(const fr of [370,440]){
+   const o=v.osc("square",fr,t+s,len+0.05),fl=v.f("lowpass",1800,1),g=v.g(0);o.connect(fl).connect(g).connect(v.out);
+   g.gain.setValueAtTime(0,t+s);g.gain.linearRampToValueAtTime(0.12,t+s+0.02);g.gain.setValueAtTime(0.12,t+s+len-0.03);g.gain.linearRampToValueAtTime(0,t+s+len)}}},
+
+ {id:"voegel",cat:"natur",name:"Vogelgezwitscher",ico:"🐦",dur:14,amb:true,lvl:2.83,
+  fn(v,t){const L=v.layer(t);const n=v.noise("brown",t,L),f=v.f("lowpass",400),g=v.g(0.04);n.connect(f).connect(g).connect(v.out);
+   v.every(()=>R(0.25,1.4),tt=>{const d=panned(v,R(-0.8,0.8)),amp=R(0.05,0.13),k=Math.random();
+    if(k<0.4){const base=R(2600,3600),c=2+(Math.random()*4|0);for(let i=0;i<c;i++)tone(v,tt+i*0.09,d,base,base*1.4,0.05,amp)}
+    else if(k<0.7){const o=v.osc("sine",R(2800,3400),tt,0.5),lfo=v.osc("sine",R(25,35),tt,0.5),lg=v.g(R(300,500)),g2=v.g(0);
+     lfo.connect(lg).connect(o.frequency);o.connect(g2).connect(d);g2.gain.setValueAtTime(0,tt);g2.gain.linearRampToValueAtTime(amp,tt+0.03);g2.gain.setValueAtTime(amp,tt+0.35);g2.gain.linearRampToValueAtTime(0,tt+0.45)}
+    else{let s=tt;const c=3+(Math.random()*3|0);for(let i=0;i<c;i++){const fr=R(1500,2600),len=R(0.08,0.18);tone(v,s,d,fr,fr*R(0.85,1.2),len,amp);s+=len+0.03}}})}},
+ {id:"frosch",cat:"natur",name:"Frosch",ico:"🐸",dur:12,amb:true,lvl:1.69,
+  fn(v,t){
+   const croak=(tt,fr,amp,pan)=>{const len=R(0.25,0.4),o=v.osc("sawtooth",fr,tt,len+0.05),b1=v.f("bandpass",fr*4,4),b2=v.f("bandpass",fr*8,5),am=v.g(0.5),lfo=v.osc("square",R(18,26),tt,len+0.05),lg=v.g(0.5),g=v.g(0);
+    o.frequency.linearRampToValueAtTime(fr*1.15,tt+len);lfo.connect(lg).connect(am.gain);o.connect(b1);o.connect(b2);b1.connect(am);b2.connect(am);am.connect(g).connect(panned(v,pan));
+    g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(amp,tt+0.03);g.gain.setValueAtTime(amp,tt+len-0.05);g.gain.linearRampToValueAtTime(0,tt+len)};
+   v.every(()=>R(1.2,2.8),tt=>{const fr=R(170,210),c=2+(Math.random()*2|0),p=R(-0.5,0.5);for(let i=0;i<c;i++)croak(tt+i*0.45,fr,0.9,p)});
+   v.every(()=>R(2,4),tt=>croak(tt,R(120,140),0.45,R(-0.9,0.9)),t+0.8)}},
+ {id:"bach",cat:"natur",name:"Bach",ico:"🏞️",dur:14,amb:true,lvl:3.15,
+  fn(v,t){const L=v.layer(t),src=v.noise("white",t,L);
+   for(const [fc,q,a] of [[450,2,0.25],[1000,2.5,0.18],[2200,3,0.12],[3800,2,0.05]]){
+    const f=v.f("bandpass",fc,q),g=v.g(a);src.connect(f).connect(g).connect(v.out);
+    const l1=v.osc("sine",R(0.4,1.6),t,L),g1=v.g(fc*0.35);l1.connect(g1).connect(f.frequency);
+    const l2=v.osc("sine",R(3,7),t,L),g2=v.g(a*0.6);l2.connect(g2).connect(g.gain)}
+   v.every(()=>R(0.04,0.2),tt=>bubble(v,tt,R(500,1100),R(1.4,2),R(0.015,0.04),R(0.03,0.09)))}},
+ {id:"regen",cat:"natur",name:"Regen",ico:"🌧️",dur:14,amb:true,lvl:1.98,
+  fn(v,t){const L=v.layer(t),n=v.noise("pink",t,L),hp=v.f("highpass",500,0.7),lp=v.f("lowpass",6000,0.7),g=v.g(0.35);n.connect(hp).connect(lp).connect(g).connect(v.out);
+   v.every(()=>R(0.01,0.06),tt=>burst(v,tt,{freq:R(1500,7000),Q:R(2,6),dur:R(0.003,0.012),gain:R(0.05,0.35)}));
+   v.every(()=>R(0.3,1.2),tt=>tone(v,tt,v.out,R(900,1500),R(500,700),0.04,R(0.03,0.08)))}},
+ {id:"wind",cat:"natur",name:"Wind",ico:"🌬️",dur:14,amb:true,lvl:3.49,
+  fn(v,t){const L=v.layer(t);
+   const n=v.noise("pink",t,L),f=v.f("bandpass",500,2.5),g=v.g(0.3);n.connect(f).connect(g).connect(v.out);
+   const n2=v.noise("white",t,L),f2=v.f("bandpass",900,30),g2=v.g(0);n2.connect(f2).connect(g2).connect(v.out);
+   v.every(()=>R(0.6,1.5),tt=>{f.frequency.setTargetAtTime(R(250,900),tt,0.6);g.gain.setTargetAtTime(R(0.15,0.8),tt,0.7);f2.frequency.setTargetAtTime(R(600,1300),tt,0.8);g2.gain.setTargetAtTime(R(0,0.6),tt,0.8)})}},
+ {id:"gewitter",cat:"natur",name:"Gewitter",ico:"⛈️",dur:9,lvl:0.7,loud:true,
+  fn(v,t){for(let i=0,s=0;i<4;i++,s+=R(0.03,0.07))burst(v,t+s,{type:"highpass",freq:800,Q:0.5,dur:R(0.05,0.15),gain:R(0.4,0.8)});
+   const n=v.noise("brown",t,8.8),f=v.f("lowpass",600,0.7),g=v.g(0);
+   f.frequency.setValueAtTime(600,t);f.frequency.exponentialRampToValueAtTime(90,t+7);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+0.15);
+   for(let tt=t+0.3;tt<t+7.5;tt+=R(0.15,0.5))g.gain.setTargetAtTime(R(0.3,1)*(1-(tt-t)/8),tt,0.15);
+   g.gain.setTargetAtTime(0,t+7.6,0.3);n.connect(f).connect(g).connect(v.out)}},
+ {id:"meer",cat:"natur",name:"Meeresrauschen",ico:"🌊",dur:16,amb:true,lvl:0.97,
+  fn(v,t){const L=v.layer(t),n=v.noise("pink",t,L),f=v.f("lowpass",500,0.5),g=v.g(0.06);n.connect(f).connect(g).connect(v.out);
+   const b=v.noise("brown",t,L),bf=v.f("lowpass",200),bg=v.g(0.1);b.connect(bf).connect(bg).connect(v.out);
+   v.every(()=>R(6,9),tt=>{const up=R(2.5,3.5),down=R(3,4.5);g.gain.setTargetAtTime(R(0.5,0.8),tt,up/3);f.frequency.setTargetAtTime(R(1800,3000),tt,up/3);g.gain.setTargetAtTime(0.06,tt+up,down/3);f.frequency.setTargetAtTime(450,tt+up,down/3)},t)}},
+ {id:"kuh",cat:"natur",name:"Kuh",ico:"🐄",dur:2.6,lvl:0.28,
+  fn(v,t){const o=v.osc("sawtooth",100,t,2.3);o.frequency.linearRampToValueAtTime(128,t+0.4);o.frequency.linearRampToValueAtTime(118,t+1.4);o.frequency.linearRampToValueAtTime(92,t+2.2);
+   const vib=v.osc("sine",5,t,2.3),vg=v.g(2.5);vib.connect(vg).connect(o.frequency);
+   const lp=v.f("lowpass",250,1);lp.frequency.setValueAtTime(250,t);lp.frequency.linearRampToValueAtTime(950,t+0.5);lp.frequency.linearRampToValueAtTime(700,t+1.8);lp.frequency.linearRampToValueAtTime(300,t+2.2);
+   const f1=v.f("peaking",320,2),f2=v.f("peaking",850,3);f1.gain.value=8;f2.gain.value=6;
+   const g=v.g(0);o.connect(lp).connect(f1).connect(f2).connect(g).connect(v.out);
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.5,t+0.25);g.gain.setValueAtTime(0.5,t+1.7);g.gain.linearRampToValueAtTime(0,t+2.25)}},
+ {id:"eule",cat:"natur",name:"Eule",ico:"🦉",dur:3.2,lvl:0.33,
+  fn(v,t){for(const [s,len] of [[0,0.55],[1,0.22],[1.32,0.22],[1.7,0.75]])hoot(v,t+s,340,len,0.35,320)}},
+ {id:"pferd",cat:"natur",name:"Pferd (Hufe)",ico:"🐴",dur:8,amb:true,lvl:0.69,
+  fn(v,t){const pat=[0.13,0.37,0.12,0.38];let i=0;
+   v.every(()=>pat[i++%4]+R(-0.02,0.02),tt=>{burst(v,tt,{freq:R(900,1300),Q:5,dur:0.035,gain:0.8});tone(v,tt,v.out,350,120,0.05,0.35)})}},
+ {id:"tuer",cat:"natur",name:"Knarrende Tür",ico:"🚪",dur:3.3,lvl:0.69,
+  fn(v,t){const b1=v.f("bandpass",700,12),b2=v.f("bandpass",1500,10),mix=v.g(1);b1.connect(mix);b2.connect(mix);mix.connect(v.out);
+   const T=2.3;for(let tt=t;tt<t+T;){const p=(tt-t)/T,s=v.noise("white",tt,0.01),g=v.g(0);s.connect(g);g.connect(b1);g.connect(b2);env(g.gain,tt,1,0.0005,0.004);tt+=1/(35+50*Math.sin(p*Math.PI)+R(-6,6))}
+   tone(v,t+2.6,v.out,90,50,0.25,0.6);burst(v,t+2.6,{type:"lowpass",freq:300,Q:0.7,dur:0.2,gain:0.6})}},
+ {id:"feuer",cat:"natur",name:"Kaminfeuer",ico:"🔥",dur:14,amb:true,lvl:1.84,
+  fn(v,t){const L=v.layer(t),n=v.noise("brown",t,L),f=v.f("lowpass",400),g=v.g(0.2);n.connect(f).connect(g).connect(v.out);
+   v.every(()=>R(0.03,0.35),tt=>{const c=Math.random()<0.1?3+(Math.random()*4|0):1;for(let i=0;i<c;i++)burst(v,tt+i*R(0.01,0.04),{type:"highpass",freq:2000,Q:0.7,dur:R(0.002,0.008),gain:R(0.1,0.7)})});
+   v.every(()=>R(1,4),tt=>{tone(v,tt,v.out,600,200,0.03,0.25);burst(v,tt,{freq:1200,Q:1,dur:0.02,gain:0.5})},t+0.5)}},
+ {id:"lok",cat:"natur",name:"Dampflok",ico:"🚂",dur:9,lvl:1.46,
+  fn(v,t){let tt=t,iv=0.7;
+   while(tt<t+7){burst(v,tt,{freq:R(700,1000),Q:0.8,dur:Math.min(iv*0.8,0.25),gain:0.5,a:0.01});burst(v,tt,{kind:"brown",type:"lowpass",freq:200,dur:0.2,gain:0.4,a:0.01});tt+=iv;iv=Math.max(0.22,iv*0.93)}
+   const w=t+1.2,wg=v.g(0);wg.connect(v.out);wg.gain.setValueAtTime(0,w);wg.gain.linearRampToValueAtTime(1,w+0.08);wg.gain.setValueAtTime(1,w+1.4);wg.gain.linearRampToValueAtTime(0,w+1.6);
+   for(const fr of [554,659,831]){const o=v.osc("sine",fr,w,1.7),og=v.g(0.07),vib=v.osc("sine",6,w,1.7),vg=v.g(fr*0.004);vib.connect(vg).connect(o.frequency);o.connect(og).connect(wg)}
+   burst(v,w,{freq:1500,Q:5,dur:1.5,gain:0.08,a:0.08})}},
+];
+
+/* ---------- eigene Aufnahmen (IndexedDB, nur auf diesem Gerät) ---------- */
+const DB={db:null,
+  open(){return new Promise(res=>{try{const r=indexedDB.open("klangkoffer",1);r.onupgradeneeded=()=>r.result.createObjectStore("sounds",{keyPath:"id"});r.onsuccess=()=>{this.db=r.result;res(true)};r.onerror=()=>res(false)}catch(e){res(false)}})},
+  tx(mode){return this.db.transaction("sounds",mode).objectStore("sounds")},
+  all(){return new Promise(res=>{if(!this.db)return res([]);const q=this.tx("readonly").getAll();q.onsuccess=()=>res(q.result||[]);q.onerror=()=>res([])})},
+  put(o){return new Promise((res,rej)=>{if(!this.db)return rej(new Error("Speicher nicht verfügbar"));const q=this.tx("readwrite").put(o);q.onsuccess=()=>res();q.onerror=()=>rej(q.error)})},
+  del(id){return new Promise(res=>{if(!this.db)return res();const q=this.tx("readwrite").delete(id);q.onsuccess=()=>res();q.onerror=()=>res()})}
+};
+let own=[];const decoded=new Map();
+async function bufferFor(rec){
+  if(decoded.has(rec.id))return decoded.get(rec.id);
+  const ab=await rec.blob.arrayBuffer();
+  const b=await new Promise((res,rej)=>{const p=ctx.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej)});
+  decoded.set(rec.id,b);return b;
+}
+function fileDef(rec,b){
+  return {id:rec.replaces||("own-"+rec.id),name:rec.name,amb:true,dur:b.duration+0.1,lvl:1,
+    fn(v,t){const s=ctx.createBufferSource();s.buffer=b;s.loop=!isFinite(v.end);s.connect(v.out);s.start(t);v.reg(s)}};
+}
+
+/* ---------- Abspielen ---------- */
+async function play(id){
+  ensure();
+  if(active.has(id)){stop(id);return}
+  let def=SOUNDS.find(s=>s.id===id);
+  const rec=own.find(r=>(r.replaces||("own-"+r.id))===id);
+  if(rec){try{def=fileDef(rec,await bufferFor(rec))}catch(e){showMsg("Diese Datei kann das Gerät nicht abspielen.");return}}
+  if(!def)return;
+  const v=new Voice(def,settings.loop);
+  def.fn(v,v.t0);v.pump(ctx.currentTime+1.2);
+  active.set(id,v);paint();
+}
+function stop(id){
+  const v=active.get(id);if(!v)return;
+  v.stopped=true;active.delete(id);
+  const now=ctx.currentTime;v.bus.gain.cancelScheduledValues(now);v.bus.gain.setValueAtTime(v.bus.gain.value,now);v.bus.gain.linearRampToValueAtTime(0,now+0.15);
+  setTimeout(()=>v.kill(),250);paint();
+}
+function stopAll(){for(const id of [...active.keys()])stop(id)}
+setInterval(()=>{
+  if(!ctx)return;const now=ctx.currentTime;
+  for(const [id,v] of active){
+    v.pump(now+1.2);
+    if(now>v.end+0.3){
+      active.delete(id);v.kill();
+      if(settings.loop&&!v.def.amb){play(id);continue}
+      paint();
+    }
+  }
+},100);
+
+/* ---------- Oberfläche ---------- */
+const $=s=>document.querySelector(s);
+const grid=$("#grid"),ownPanel=$("#own");
+let order={},revealed=new Set();
+function shuffled(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function tilesFor(cat){
+  const base=SOUNDS.filter(s=>s.cat===cat).map(s=>({id:s.id,name:s.name,ico:s.ico,loud:s.loud,cat,real:own.some(r=>r.replaces===s.id)}));
+  const extra=own.filter(r=>!r.replaces&&r.cat===cat).map(r=>({id:"own-"+r.id,name:r.name,ico:"🎙️",cat,real:true,custom:true}));
+  let list=base.concat(extra);
+  if(settings.rate){const ids=order[cat];if(ids&&ids.length===list.length)list=ids.map(i=>list.find(x=>x.id===i)).filter(Boolean);else{list=shuffled(list);order[cat]=list.map(x=>x.id)}}
+  return list;
+}
+function render(){
+  const cat=settings.tab;
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.cat===cat)));
+  grid.hidden=cat==="eigen";ownPanel.hidden=cat!=="eigen";
+  if(cat==="eigen"){renderOwn();return}
+  grid.innerHTML="";
+  tilesFor(cat).forEach((s,i)=>{
+    const hide=settings.rate&&!revealed.has(s.id);
+    const tile=document.createElement("div");tile.className="tile";
+    const b=document.createElement("button");b.className="play";b.dataset.cat=cat;b.dataset.id=s.id;if(s.custom)b.dataset.custom="";
+    b.setAttribute("aria-label",hide?"Geräusch "+(i+1):s.name);
+    b.innerHTML=(settings.rate?'<span class="num">'+(i+1)+'</span>':"")+(s.loud&&!hide?'<span class="warnchip">plötzlich</span>':"")+
+      '<span class="ico" aria-hidden="true">'+(hide?"❓":s.ico)+'</span><span class="nm"></span><span class="tag'+(s.real?" real":"")+'">'+(s.real?"echte Aufnahme":"nachgebaut")+'</span>';
+    b.querySelector(".nm").textContent=hide?"Geräusch "+(i+1):s.name;
+    b.addEventListener("click",()=>play(s.id));
+    tile.appendChild(b);
+    if(settings.rate){const r=document.createElement("button");r.className="reveal";r.textContent=hide?"Auflösen":"Verstecken";
+      r.addEventListener("click",()=>{hide?revealed.add(s.id):revealed.delete(s.id);render()});tile.appendChild(r)}
+    grid.appendChild(tile);
+  });
+  paint();
+}
+function paint(){
+  document.querySelectorAll(".play").forEach(b=>b.setAttribute("aria-pressed",String(active.has(b.dataset.id))));
+  $("#stop-all").hidden=active.size===0;
+}
+function showMsg(t){$("#own-msg").textContent=t}
+function renderOwn(){
+  const sel=$("#own-rep"),cur=sel.value;
+  sel.innerHTML='<option value="">Nein, neuer Knopf</option>'+SOUNDS.map(s=>'<option value="'+s.id+'">'+s.name+'</option>').join("");sel.value=cur;
+  const ul=$("#own-list");ul.innerHTML="";
+  if(!own.length){const li=document.createElement("li");li.innerHTML='<span class="small">Noch keine eigenen Aufnahmen. Die erste Datei oben auswählen und „Hinzufügen“ tippen.</span>';ul.appendChild(li);return}
+  own.forEach(r=>{
+    const li=document.createElement("li"),sp=document.createElement("span");
+    const rep=r.replaces?SOUNDS.find(s=>s.id===r.replaces):null;
+    sp.textContent=r.name+(rep?" (ersetzt „"+rep.name+"“)":" ("+(r.cat==="natur"?"Natur & Geschichten":"Alltag")+")");
+    const pb=document.createElement("button");pb.className="btn ghost";pb.textContent="Anhören";pb.addEventListener("click",()=>play(r.replaces||("own-"+r.id)));
+    const db=document.createElement("button");db.className="btn ghost";db.textContent="Löschen";
+    db.addEventListener("click",async()=>{if(db.dataset.sure){stop(r.replaces||("own-"+r.id));await DB.del(r.id);decoded.delete(r.id);own=await DB.all();renderOwn();showMsg("Gelöscht.")}else{db.dataset.sure="1";db.textContent="Wirklich löschen?"}});
+    li.append(sp,pb,db);ul.appendChild(li);
+  });
+}
+$("#own-form").addEventListener("submit",async e=>{
+  e.preventDefault();const file=$("#own-file").files[0];if(!file){showMsg("Bitte zuerst eine Datei auswählen.");return}
+  const rep=$("#own-rep").value,repDef=SOUNDS.find(s=>s.id===rep);
+  const name=($("#own-name").value.trim()||(repDef&&repDef.name)||file.name.replace(/\.[^.]+$/,"")).slice(0,30);
+  const rec={id:Date.now().toString(36),name,cat:repDef?repDef.cat:$("#own-cat").value,replaces:rep||null,blob:file};
+  try{
+    if(rep){for(const o of own.filter(o=>o.replaces===rep)){await DB.del(o.id);decoded.delete(o.id)}}
+    await DB.put(rec);own=await DB.all();$("#own-form").reset();renderOwn();
+    showMsg("„"+name+"“ gespeichert. Du findest den Knopf unter "+(rec.cat==="natur"?"Natur & Geschichten":"Alltag")+".");
+  }catch(err){showMsg("Speichern hat nicht geklappt. Im privaten Modus oder ohne Speicherplatz geht das nicht.")}
+});
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{settings.tab=b.dataset.cat;store.set("tab",settings.tab);render()}));
+$("#opt-rate").addEventListener("change",e=>{settings.rate=e.target.checked;order={};revealed.clear();render()});
+$("#opt-loop").checked=settings.loop;
+$("#opt-loop").addEventListener("change",e=>{settings.loop=e.target.checked;store.set("loop",settings.loop)});
+$("#opt-vol").value=settings.vol;
+$("#opt-vol").addEventListener("input",e=>{settings.vol=+e.target.value;store.set("vol",settings.vol);if(master)master.gain.setTargetAtTime(volGain(),ctx.currentTime,0.05)});
+$("#stop-all").addEventListener("click",stopAll);
+render();
+DB.open().then(async()=>{own=await DB.all();render()});
+</script>
+</body></html>
