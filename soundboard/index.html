@@ -67,7 +67,14 @@ main{padding-bottom:70px}
 .ico{font-size:52px;line-height:1}
 .nm{font-weight:700;font-size:20px;line-height:1.15;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word;max-width:100%}
 .tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
-.tag.real{color:var(--c)}
+.tag:empty{display:none}
+.play[aria-busy="true"]{opacity:.6}
+.msg:empty,#load:empty{display:none}
+details{margin-top:10px}
+summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+#credits{font-size:14px;color:var(--muted)}
+#credits a{overflow-wrap:anywhere}
+.vbtn[aria-pressed="true"]{background:var(--alltag);color:var(--surface);border-color:var(--alltag)}
 .warnchip{position:absolute;top:8px;right:8px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--warn);background:var(--surface);border-radius:999px;padding:2px 8px}
 .num{position:absolute;top:8px;left:10px;font:800 20px/1 var(--f-display);color:var(--c)}
 .play[aria-pressed="true"]{background:var(--play);color:var(--play-ink);border-color:var(--play-ink)}
@@ -130,7 +137,7 @@ main{padding-bottom:70px}
 <div class="wrap" lang="de">
   <header>
     <h1>Klangkoffer</h1>
-    <p>Geräusche zum Erraten und zum Vorlesen. Einmal antippen spielt den Klang, nochmal antippen stoppt ihn. Mehrere Klänge können gleichzeitig laufen, zum Beispiel Regen und Gewitter.</p>
+    <p>Echte Geräusche zum Erraten und zum Vorlesen. Einmal antippen spielt den Klang, nochmal antippen stoppt ihn. Mehrere Klänge können gleichzeitig laufen, zum Beispiel Regen und Gewitter.</p>
   </header>
 
   <div class="bar">
@@ -139,12 +146,14 @@ main{padding-bottom:70px}
       <button class="tab" role="tab" data-cat="natur" id="tab-natur" aria-selected="false">Natur &amp; Geschichten</button>
       <button class="tab" role="tab" data-cat="quiz" id="tab-quiz" aria-selected="false">Ratespiel</button>
       <button class="tab" role="tab" data-cat="story" id="tab-story" aria-selected="false">Geschichte</button>
-      <button class="tab" role="tab" data-cat="eigen" id="tab-eigen" aria-selected="false">Eigene Aufnahmen</button>
+      <button class="tab" role="tab" data-cat="eigen" id="tab-eigen" aria-selected="false">Aufnahmen</button>
     </div>
     <div class="controls">
       <label class="switch"><input type="checkbox" id="opt-loop"> Dauerschleife</label>
       <label class="vol" for="opt-vol">Lautstärke <input type="range" id="opt-vol" min="0" max="100" value="70"></label>
     </div>
+    <p class="small" id="load" role="status"></p>
+    <p class="msg" id="status" role="alert"></p>
   </div>
 
   <button class="stop" id="stop-all" hidden>■ Alles stoppen</button>
@@ -177,8 +186,11 @@ main{padding-bottom:70px}
       </div>
     </div>
     <div id="own" class="panel" hidden>
-      <h2>Echte Aufnahme hinzufügen</h2>
-      <p class="small">Lade eine Audiodatei (MP3, WAV, M4A, OGG) von deinem Handy. Sie wird nur auf diesem Gerät gespeichert. Wenn du einen nachgebauten Klang ersetzt, spielt sein Knopf ab dann deine Aufnahme.</p>
+      <h2>Andere Aufnahme wählen</h2>
+      <p class="small">Zu jedem Klang gibt es zwei echte Aufnahmen. Gefällt dir eine nicht, nimm die andere. Die Wahl merkt sich dieses Gerät.</p>
+      <ul class="ownlist" id="var-list"></ul>
+      <h2>Eigene Aufnahme hinzufügen</h2>
+      <p class="small">Lade eine Audiodatei (MP3, WAV, M4A, OGG) von deinem Handy, zum Beispiel eure Kaffeemaschine. Sie wird nur auf diesem Gerät gespeichert. Wenn du einen Knopf ersetzt, spielt er ab dann deine Aufnahme.</p>
       <form class="form" id="own-form">
         <label for="own-file">Datei<input type="file" id="own-file" accept="audio/*" required></label>
         <label for="own-name">Name auf dem Knopf<input type="text" id="own-name" maxlength="30" placeholder="z.B. Rasenmäher"></label>
@@ -195,13 +207,9 @@ main{padding-bottom:70px}
   <div class="info">
     <section>
       <h2>Woher kommen die Klänge?</h2>
-      <p>Alle eingebauten Klänge sind <strong>nachgebaut</strong>: Das Handy erzeugt sie live aus Tönen und Rauschen. Es sind keine echten Aufnahmen. Regen, Bach, Meer, Wind, Feuer, Uhr und Klingeln klingen meist recht ähnlich. Tierstimmen (Kuh, Hund, Katze, Hahn, Schaf, Eule, Frosch) sowie Kaffeemaschine und Dampflok sind nur grob angenähert.</p>
-      <p>Bessere Klänge: im Reiter „Eigene Aufnahmen“ echte Dateien laden. Lizenzfreie Quellen:</p>
-      <ul>
-        <li><a href="https://freesound.org/search/?f=license:%22Creative+Commons+0%22" target="_blank" rel="noopener">Freesound.org</a> mit Filter „Creative Commons 0“ (kostenloses Konto nötig)</li>
-        <li><a href="https://pixabay.com/sound-effects/" target="_blank" rel="noopener">Pixabay Soundeffekte</a> (kostenlos, ohne Namensnennung)</li>
-        <li>Selbst aufnehmen: Kaffeemaschine, Wasserkocher, Türklingel zu Hause mit dem Handy.</li>
-      </ul>
+      <p>Alle Klänge sind <strong>echte Aufnahmen</strong> von Freesound.org, als kurze Ausschnitte aus dem Datensatz <a href="https://github.com/karolpiczak/ESC-50" target="_blank" rel="noopener">ESC-50</a> von Karol J. Piczak. Ausgewählt wurden nur Aufnahmen mit der Lizenz CC0. Das heißt gemeinfrei: Man darf sie frei nutzen, auch ohne Namen zu nennen. Wir nennen die Urheber trotzdem.</p>
+      <p>Mehr lizenzfreie Klänge: <a href="https://freesound.org/search/?f=license:%22Creative+Commons+0%22" target="_blank" rel="noopener">Freesound.org</a> (Filter „Creative Commons 0“) oder <a href="https://pixabay.com/sound-effects/" target="_blank" rel="noopener">Pixabay Soundeffekte</a>. Oder selbst aufnehmen und unter „Aufnahmen“ laden.</p>
+      <details><summary>Alle Urheber anzeigen</summary><ul id="credits"></ul></details>
     </section>
     <section>
       <h2>Tipps für den Besuch</h2>
@@ -209,7 +217,8 @@ main{padding-bottom:70px}
         <li>Leise anfangen. Plötzliche laute Klänge (markiert mit „plötzlich“) können Menschen mit Demenz erschrecken.</li>
         <li>Ratespiel: Ihr spielt ab, die Gruppe rät. Den Namen und einen Tipp seht nur ihr auf dem Handy.</li>
         <li>Geschichte: Klänge vorher in der Reihenfolge des Buchs eintragen, mit Stichwort. Beim Vorlesen tippt einer einfach den nächsten an.</li>
-        <li>Dauerschleife: Regen, Bach, Meer, Feuer usw. laufen weiter, bis du stoppst. Gut als Hintergrund beim Vorlesen.</li>
+        <li>Hintergrundklänge wie Regen, Meer oder Feuer laufen 15 Sekunden. Mit Dauerschleife laufen sie weiter, bis du stoppst. Gut als Hintergrund beim Vorlesen.</li>
+        <li>Vor dem Besuch die Seite mit Internet öffnen und warten, bis oben „Alle 40 Klänge sind geladen“ steht. Dann die Seite offen lassen, so klappt es auch bei schlechtem WLAN im Heim.</li>
         <li>iPhone: Stummschalter an der Seite ausschalten, sonst bleibt es still. Über Bluetooth-Box klingt es deutlich besser.</li>
       </ul>
     </section>
@@ -218,282 +227,89 @@ main{padding-bottom:70px}
 
 <script>
 "use strict";
-const R=(a,b)=>a+Math.random()*(b-a);
-let ctx=null, master=null, comp=null, buf={};
-const active=new Map();
+const $=s=>document.querySelector(s);
+let ctx=null, master=null, comp=null;
+const active=new Map(), loading=new Set();
 const store={get(k,d){try{const v=localStorage.getItem("kk-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("kk-"+k,JSON.stringify(v))}catch(e){}}};
-const settings={tab:store.get("tab","alltag"),loop:store.get("loop",false),vol:store.get("vol",70)};
+const settings={tab:store.get("tab","alltag"),loop:store.get("loop",false),vol:store.get("vol",70),variant:store.get("variant",{})};
 
-function makeNoise(c){
-  const len=c.sampleRate*4, out={};
-  for(const k of ["white","pink","brown"]){
-    const b=c.createBuffer(1,len,c.sampleRate), d=b.getChannelData(0);
-    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0,last=0;
-    for(let i=0;i<len;i++){
-      const w=Math.random()*2-1;
-      if(k==="white") d[i]=w*0.5;
-      else if(k==="pink"){b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;b2=0.969*b2+w*0.153852;b3=0.8665*b3+w*0.3104856;b4=0.55*b4+w*0.5329522;b5=-0.7616*b5-w*0.016898;d[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;b6=w*0.115926;}
-      else {last=(last+0.02*w)/1.02;d[i]=last*3.5;}
-    }
-    out[k]=b;
-  }
-  return out;
-}
-function setupGraph(c){
-  ctx=c; buf=makeNoise(c);
-  comp=c.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=4;
-  master=c.createGain(); master.gain.value=volGain(); master.connect(comp); comp.connect(c.destination);
-}
+/* ---------- Die Klänge: echte Aufnahmen (ESC-50, alle Clips CC0), je 2 Varianten ----------
+   amb = Hintergrundklang, wird nahtlos verlängert; loud = kann erschrecken */
+const SOUNDS=[
+ {id:"wecker",cat:"alltag",name:"Wecker",ico:"⏰",src:"clock_alarm",loud:true},
+ {id:"uhr",cat:"alltag",name:"Uhr tickt",ico:"🕰️",src:"clock_tick",amb:true},
+ {id:"kirche",cat:"alltag",name:"Kirchenglocken",ico:"⛪",src:"church_bells",amb:true},
+ {id:"hupe",cat:"alltag",name:"Autohupe",ico:"🚗",src:"car_horn",loud:true},
+ {id:"klopfen",cat:"alltag",name:"Klopfen an der Tür",ico:"✊",src:"door_wood_knock"},
+ {id:"sauger",cat:"alltag",name:"Staubsauger",ico:"🧹",src:"vacuum_cleaner",amb:true},
+ {id:"eingiessen",cat:"alltag",name:"Wasser eingießen",ico:"🚰",src:"pouring_water"},
+ {id:"sirene",cat:"alltag",name:"Sirene",ico:"🚑",src:"siren",amb:true,loud:true},
+ {id:"waschm",cat:"alltag",name:"Waschmaschine",ico:"🧺",src:"washing_machine",amb:true},
+ {id:"zaehne",cat:"alltag",name:"Zähneputzen",ico:"😁",src:"brushing_teeth",amb:true},
+ {id:"klo",cat:"alltag",name:"Klospülung",ico:"🚽",src:"toilet_flush"},
+ {id:"dose",cat:"alltag",name:"Dose öffnen",ico:"🥫",src:"can_opening"},
+ {id:"klatschen",cat:"alltag",name:"Klatschen",ico:"👏",src:"clapping",amb:true},
+ {id:"lachen",cat:"alltag",name:"Lachen",ico:"😄",src:"laughing"},
+ {id:"schnarchen",cat:"alltag",name:"Schnarchen",ico:"😴",src:"snoring",amb:true},
+ {id:"niesen",cat:"alltag",name:"Niesen",ico:"🤧",src:"sneezing"},
+ {id:"baby",cat:"alltag",name:"Baby weint",ico:"👶",src:"crying_baby"},
+ {id:"trinken",cat:"alltag",name:"Trinken (schlürfen)",ico:"☕",src:"drinking_sipping"},
+ {id:"saege",cat:"alltag",name:"Säge",ico:"🔨",src:"hand_saw",amb:true},
+ {id:"flugzeug",cat:"alltag",name:"Flugzeug",ico:"✈️",src:"airplane",amb:true},
+
+ {id:"voegel",cat:"natur",name:"Vogelgezwitscher",ico:"🐦",src:"chirping_birds",amb:true},
+ {id:"frosch",cat:"natur",name:"Frösche",ico:"🐸",src:"frog",amb:true},
+ {id:"regen",cat:"natur",name:"Regen",ico:"🌧️",src:"rain",amb:true},
+ {id:"wind",cat:"natur",name:"Wind",ico:"🌬️",src:"wind",amb:true},
+ {id:"gewitter",cat:"natur",name:"Gewitter",ico:"⛈️",src:"thunderstorm",amb:true,loud:true},
+ {id:"meer",cat:"natur",name:"Meeresrauschen",ico:"🌊",src:"sea_waves",amb:true},
+ {id:"kuh",cat:"natur",name:"Kuh",ico:"🐄",src:"cow"},
+ {id:"tuer",cat:"natur",name:"Knarrende Tür",ico:"🚪",src:"door_wood_creaks"},
+ {id:"feuer",cat:"natur",name:"Kaminfeuer",ico:"🔥",src:"crackling_fire",amb:true},
+ {id:"zug",cat:"natur",name:"Zug",ico:"🚂",src:"train",amb:true},
+ {id:"hund",cat:"natur",name:"Hund",ico:"🐕",src:"dog"},
+ {id:"katze",cat:"natur",name:"Katze",ico:"🐈",src:"cat"},
+ {id:"schaf",cat:"natur",name:"Schaf",ico:"🐑",src:"sheep"},
+ {id:"hahn",cat:"natur",name:"Hahn",ico:"🐓",src:"rooster"},
+ {id:"insekten",cat:"natur",name:"Summende Insekten",ico:"🐝",src:"insects",amb:true},
+ {id:"schritte",cat:"natur",name:"Schritte",ico:"👣",src:"footsteps",amb:true},
+ {id:"schwein",cat:"natur",name:"Schwein",ico:"🐖",src:"pig"},
+ {id:"huhn",cat:"natur",name:"Huhn",ico:"🐔",src:"hen"},
+ {id:"kraehe",cat:"natur",name:"Krähe",ico:"🌲",src:"crow"},
+ {id:"tropfen",cat:"natur",name:"Wassertropfen",ico:"💧",src:"water_drops",amb:true},
+];
+const CREDITS={"clock_alarm":[{"a":"galeku","u":"http://www.freesound.org/people/galeku/sounds/74517/","t":"outro-dia-mais.wav"},{"a":"xyzr_kx","u":"http://www.freesound.org/people/xyzr_kx/sounds/14262/","t":"alarm_clock.wav"}],"clock_tick":[{"a":"AngryAdam","u":"http://www.freesound.org/people/AngryAdam/sounds/131943/","t":"Wind up clock with twin bell alarm"},{"a":"fauxpress","u":"http://www.freesound.org/people/fauxpress/sounds/42139/","t":"Old Scots Clock - Ticking.wav"}],"church_bells":[{"a":"thaighaudio","u":"http://www.freesound.org/people/thaighaudio/sounds/125825/","t":"Bells of St Alkelda's Church, Giggleswick, England.flac"},{"a":"Ohrwurm","u":"http://www.freesound.org/people/Ohrwurm/sounds/87936/","t":"Church bells.wav"}],"car_horn":[{"a":"toiletrolltube","u":"http://www.freesound.org/people/toiletrolltube/sounds/175845/","t":"110703_17 car horn.WAV"},{"a":"krissyeliot","u":"http://www.freesound.org/people/krissyeliot/sounds/125520/","t":"car-horn.wav"}],"door_wood_knock":[{"a":"XxBirdoxX","u":"http://www.freesound.org/people/XxBirdoxX/sounds/52290/","t":"door knock.wav"},{"a":"RutgerMuller","u":"http://www.freesound.org/people/RutgerMuller/sounds/103995/","t":"Bassdrum_Shell_Ticks.aif"}],"vacuum_cleaner":[{"a":"Huminaatio","u":"http://www.freesound.org/people/Huminaatio/sounds/159346/","t":"Vacuum Cleaner 02  - short "},{"a":"DJ Burnham","u":"http://www.freesound.org/people/DJ%20Burnham/sounds/141682/","t":"Vacuum Cleaner switch on, run, switch off 2.aif"}],"pouring_water":[{"a":"vibe_crc","u":"http://www.freesound.org/people/vibe_crc/sounds/51436/","t":"pouring_water_6.wav"},{"a":"Swoboman87","u":"http://www.freesound.org/people/Swoboman87/sounds/108451/","t":"Pouring Into Glass.wav"}],"siren":[{"a":"UncleSigmund","u":"http://www.freesound.org/people/UncleSigmund/sounds/117118/","t":"siren_low.wav"},{"a":"thaighaudio","u":"http://www.freesound.org/people/thaighaudio/sounds/121532/","t":"01052010 Tornado siren test.flac"}],"washing_machine":[{"a":"FEAMEIS","u":"http://www.freesound.org/people/FEAMEIS/sounds/182710/","t":"washing machine000.aif"},{"a":"timgormly","u":"http://www.freesound.org/people/timgormly/sounds/151273/","t":"Washing Machine Full Cycle.aif"}],"brushing_teeth":[{"a":"FunnyMan374","u":"http://www.freesound.org/people/FunnyMan374/sounds/139331/","t":"Brushing teeth.wav"},{"a":"ipears1","u":"http://www.freesound.org/people/ipears1/sounds/118069/","t":"brushteeth.wav"}],"toilet_flush":[{"a":"CBeeching","u":"http://www.freesound.org/people/CBeeching/sounds/74977/","t":"Toilet Flush.wav"},{"a":"j1987","u":"http://www.freesound.org/people/j1987/sounds/72677/","t":"toilet_flush_twice.wav"}],"can_opening":[{"a":"Nic3_one","u":"http://www.freesound.org/people/Nic3_one/sounds/166546/","t":"openning can.wav"},{"a":"Josh Herman","u":"http://www.freesound.org/people/Josh%20Herman/sounds/81112/","t":"12 soda can TLM_05 -AIFF 48:24.aiff"}],"clapping":[{"a":"issalcake","u":"http://www.freesound.org/people/issalcake/sounds/115921/","t":"Clapping, Small audience, far away.wav"},{"a":"issalcake","u":"http://www.freesound.org/people/issalcake/sounds/115920/","t":"Clapping, Medium Audience, slow to fast.wav"}],"laughing":[{"a":"caculo","u":"http://www.freesound.org/people/caculo/sounds/164243/","t":"Young girl laughing uncontrollably.mp3"},{"a":"sagetyrtle","u":"http://www.freesound.org/people/sagetyrtle/sounds/36164/","t":"laughs2.wav"}],"snoring":[{"a":"trentbh","u":"http://www.freesound.org/people/trentbh/sounds/233312/","t":"Man Snoring - Freesound.wav"},{"a":"toiletrolltube","u":"http://www.freesound.org/people/toiletrolltube/sounds/183882/","t":"snoring 04.01.11.wav"}],"sneezing":[{"a":"higginsdj","u":"http://www.freesound.org/people/higginsdj/sounds/93030/","t":"Sneeze and Sniffle 44hzStereo.wav"},{"a":"oldedgar","u":"http://www.freesound.org/people/oldedgar/sounds/130979/","t":"Sneeze AC 1.wav"}],"crying_baby":[{"a":"PickleJones","u":"http://www.freesound.org/people/PickleJones/sounds/151080/","t":"01 baby crying hard and long.wav"},{"a":"bonehead","u":"http://www.freesound.org/people/bonehead/sounds/66637/","t":"crying baby merged.wav"}],"drinking_sipping":[{"a":"qubodup","u":"http://www.freesound.org/people/qubodup/sounds/169907/","t":"Eating Oatmeal"},{"a":"alienistcog","u":"http://www.freesound.org/people/alienistcog/sounds/122763/","t":"gurgles.aif"}],"hand_saw":[{"a":"Ohrwurm","u":"http://www.freesound.org/people/Ohrwurm/sounds/96606/","t":"Wood saw.wav"},{"a":"Ohrwurm","u":"http://www.freesound.org/people/Ohrwurm/sounds/96606/","t":"Wood saw.wav"}],"airplane":[{"a":"mffm","u":"http://www.freesound.org/people/mffm/sounds/235956/","t":"Airliner Flyby.wav"},{"a":"laribum","u":"http://www.freesound.org/people/laribum/sounds/215449/","t":"ps_flighby_highgain_01.wav"}],"chirping_birds":[{"a":"keweldog","u":"http://www.freesound.org/people/keweldog/sounds/223127/","t":"general birdsong.wav"},{"a":"keweldog","u":"http://www.freesound.org/people/keweldog/sounds/223125/","t":"starlings2.wav"}],"frog":[{"a":"maphill","u":"http://www.freesound.org/people/maphill/sounds/187201/","t":"file0306_pond_frog_bird_3.wav"},{"a":"maphill","u":"http://www.freesound.org/people/maphill/sounds/187201/","t":"file0306_pond_frog_bird_3.wav"}],"rain":[{"a":"liliangorini","u":"http://www.freesound.org/people/liliangorini/sounds/63871/","t":"rain.mp3"},{"a":"Q.K.","u":"http://www.freesound.org/people/Q.K./sounds/56311/","t":"Rain_06.wav"}],"wind":[{"a":"toiletrolltube","u":"http://www.freesound.org/people/toiletrolltube/sounds/179496/","t":"111224_04 wind.WAV"},{"a":"klangfabrik","u":"http://www.freesound.org/people/klangfabrik/sounds/117773/","t":"roaring wind.aiff"}],"thunderstorm":[{"a":"raoul_slayer","u":"http://www.freesound.org/people/raoul_slayer/sounds/101296/","t":"thunderstorm.wav"},{"a":"daveincamas","u":"http://www.freesound.org/people/daveincamas/sounds/161519/","t":"20120720Thunder.wav"}],"sea_waves":[{"a":"monotraum","u":"http://www.freesound.org/people/monotraum/sounds/208810/","t":"sea waves atmo.wav"},{"a":"jareilly","u":"http://www.freesound.org/people/jareilly/sounds/204618/","t":"8am.wav"}],"cow":[{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/174860/","t":"Cows herd walking in the bush in Africa (Mali)"},{"a":"ecfike","u":"http://www.freesound.org/people/ecfike/sounds/160993/","t":"Stockyard 1.wav"}],"door_wood_creaks":[{"a":"kyles","u":"http://www.freesound.org/people/kyles/sounds/51805/","t":"door hinge squeak creak o,c.aiff"},{"a":"kyles","u":"http://www.freesound.org/people/kyles/sounds/51805/","t":"door hinge squeak creak o,c.aiff"}],"crackling_fire":[{"a":"kingsrow","u":"http://www.freesound.org/people/kingsrow/sounds/182368/","t":"Fire Crackling 02.mp3"},{"a":"kingsrow","u":"http://www.freesound.org/people/kingsrow/sounds/181563/","t":"Fire Crackling 01.wav"}],"train":[{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/165791/","t":"Between two wagons on a train in Argentina"},{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/165791/","t":"Between two wagons on a train in Argentina"}],"dog":[{"a":"polipa","u":"http://www.freesound.org/people/polipa/sounds/117271/","t":"angry_dogs.wav"},{"a":"Heigh-hoo","u":"http://www.freesound.org/people/Heigh-hoo/sounds/30226/","t":"dogs.aiff"}],"cat":[{"a":"temawas","u":"http://www.freesound.org/people/temawas/sounds/133047/","t":"MAD CAT !.wav"},{"a":"temawas","u":"http://www.freesound.org/people/temawas/sounds/133047/","t":"MAD CAT !.wav"}],"sheep":[{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/140199/","t":"A herd of sheep are bleating, some dogs are barking and the horses are neighing... in a field in patagonia (Tierra del Fuego, Argentina)."},{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/140199/","t":"A herd of sheep are bleating, some dogs are barking and the horses are neighing... in a field in patagonia (Tierra del Fuego, Argentina)."}],"rooster":[{"a":"ra_gun","u":"http://www.freesound.org/people/ra_gun/sounds/81270/","t":"animals-hen-rooster-Blaafarveverket-090721.wav"},{"a":"Barbamiz","u":"http://www.freesound.org/people/Barbamiz/sounds/116135/","t":"Rooster and chicks.mp3"}],"insects":[{"a":"toiletrolltube","u":"http://www.freesound.org/people/toiletrolltube/sounds/191246/","t":"110703_05 blue bottle fly.WAV"},{"a":"1pjladd2","u":"http://www.freesound.org/people/1pjladd2/sounds/143118/","t":"Fly_versus_Lamp.wav"}],"footsteps":[{"a":"RutgerMuller","u":"http://www.freesound.org/people/RutgerMuller/sounds/155858/","t":"Footsteps in Factory Hall on Wood and Concrete.wav"},{"a":"RutgerMuller","u":"http://www.freesound.org/people/RutgerMuller/sounds/155858/","t":"Footsteps in Factory Hall on Wood and Concrete.wav"}],"pig":[{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/208757/","t":"Pigs in an intensive pigs farming, in Texas, USA."},{"a":"TheAcidRomance","u":"http://www.freesound.org/people/TheAcidRomance/sounds/260640/","t":"Pig Squealing.mp3"}],"hen":[{"a":"leosalom","u":"http://www.freesound.org/people/leosalom/sounds/234879/","t":"chickensMS.wav"},{"a":"eksaa","u":"http://www.freesound.org/people/eksaa/sounds/232495/","t":"Polish hen cackling.wav"}],"crow":[{"a":"conleec","u":"http://www.freesound.org/people/conleec/sounds/173865/","t":"ANML_M_Ext_Crows_Flock_Angry2.wav"},{"a":"UncleSigmund","u":"http://www.freesound.org/people/UncleSigmund/sounds/138344/","t":"crow.wav"}],"water_drops":[{"a":"hybu","u":"http://www.freesound.org/people/hybu/sounds/139748/","t":"water dripping 1"},{"a":"alienistcog","u":"http://www.freesound.org/people/alienistcog/sounds/124564/","t":"water-drip-rhythm.aif"}]};
+
 function volGain(){const v=settings.vol/100;return v*v*1.4}
 function ensure(){
-  if(!ctx){const AC=window.AudioContext||window.webkitAudioContext; setupGraph(new AC());}
-  if(ctx.state==="suspended") ctx.resume();
+  if(!ctx){const AC=window.AudioContext||window.webkitAudioContext;ctx=new AC();
+    comp=ctx.createDynamicsCompressor();comp.threshold.value=-10;comp.ratio.value=4;
+    master=ctx.createGain();master.gain.value=volGain();master.connect(comp);comp.connect(ctx.destination)}
+  if(ctx.state==="suspended")ctx.resume();
 }
+const decoded=new Map();
+function decode(ab){return new Promise((res,rej)=>{const p=ctx.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej)})}
+function fileOf(s){return s.src+"-"+((settings.variant[s.id]||0)+1)+".mp3"}
 
-/* ---------- Stimme (ein laufender Klang) ---------- */
+/* ---------- Stimme: ein laufender Klang. Hintergrundklänge werden mit Überblendung verlängert ---------- */
 class Voice{
-  constructor(def,loop){
-    this.def=def; this.nodes=new Set(); this.gens=[]; this.stopped=false;
-    this.bus=ctx.createGain(); this.bus.connect(master);
-    this.out=ctx.createGain(); this.out.gain.value=def.lvl||1; this.out.connect(this.bus);
-    this.t0=ctx.currentTime+0.05;
-    this.loop=loop;
-    this.end=(loop&&def.amb)?Infinity:this.t0+def.dur;
-    if(def.amb&&isFinite(this.end)&&def.dur>4){this.bus.gain.setValueAtTime(1,this.end-1.5);this.bus.gain.linearRampToValueAtTime(0,this.end);}
+  constructor(b,amb,loop){
+    this.b=b;this.amb=amb;this.srcs=new Set();
+    this.bus=ctx.createGain();this.bus.connect(master);
+    const d=b.duration,x=Math.min(0.6,d/4);this.x=x;
+    this.t0=ctx.currentTime+0.03;this.next=this.t0;
+    this.step=amb?d-x:d+(loop?1.2:0);
+    this.end=loop?Infinity:(amb?this.t0+Math.max(15,d):this.t0+d);
+    if(amb&&!loop){this.bus.gain.setValueAtTime(1,this.end-1.5);this.bus.gain.linearRampToValueAtTime(0,this.end)}
   }
-  layer(t){return isFinite(this.end)?this.end-t+0.05:null}
-  reg(n){this.nodes.add(n);n.onended=()=>this.nodes.delete(n);return n}
-  osc(type,f,t,dur){const o=ctx.createOscillator();o.type=type;o.frequency.setValueAtTime(f,t);o.start(t);if(dur!=null)o.stop(t+dur);return this.reg(o)}
-  noise(kind,t,dur){const s=ctx.createBufferSource();s.buffer=buf[kind];s.loop=true;s.start(t,Math.random()*3);if(dur!=null)s.stop(t+dur);return this.reg(s)}
-  g(v=1){const n=ctx.createGain();n.gain.value=v;return n}
-  f(type,freq,Q=1){const n=ctx.createBiquadFilter();n.type=type;n.frequency.value=freq;n.Q.value=Q;return n}
-  every(iv,ev,start,until){this.gens.push({next:start??this.t0,iv,ev,until:until??Infinity})}
-  pump(horizon){
-    for(const g of this.gens){
-      if(g.next<ctx.currentTime) g.next=ctx.currentTime+0.02;
-      while(g.next<horizon&&g.next<Math.min(this.end,g.until)){g.ev(g.next);g.next+=g.iv(g.next);}
-    }
+  pump(h){while(this.next<h&&this.next<this.end){this.copy(this.next);this.next+=this.step}}
+  copy(t){
+    const s=ctx.createBufferSource(),g=ctx.createGain(),d=this.b.duration,x=this.x;s.buffer=this.b;s.connect(g).connect(this.bus);
+    if(this.amb){g.gain.setValueAtTime(t===this.t0?1:0,t);g.gain.linearRampToValueAtTime(1,t+x);g.gain.setValueAtTime(1,t+d-x);g.gain.linearRampToValueAtTime(0,t+d)}
+    s.start(t);this.srcs.add(s);s.onended=()=>this.srcs.delete(s);
   }
-  kill(){for(const n of this.nodes){try{n.stop()}catch(e){}}this.nodes.clear();try{this.bus.disconnect()}catch(e){}}
+  kill(){for(const s of this.srcs){try{s.stop()}catch(e){}}this.srcs.clear();try{this.bus.disconnect()}catch(e){}}
 }
-function env(p,t,peak,a,d){p.setValueAtTime(0,t);p.linearRampToValueAtTime(peak,t+a);p.exponentialRampToValueAtTime(0.0001,t+a+d)}
-function strike(v,t,f,partials,dec,amp,dest){
-  for(const [r,a,dm=1] of partials){const o=v.osc("sine",f*r,t,dec*dm+0.05),g=v.g(0);o.connect(g).connect(dest||v.out);env(g.gain,t,amp*a,0.003,dec*dm)}
-}
-function burst(v,t,o){
-  const s=v.noise(o.kind||"white",t,o.dur+(o.a||0.001)+0.05),fl=v.f(o.type||"bandpass",o.freq||1000,o.Q??1),g=v.g(0);
-  s.connect(fl).connect(g).connect(o.dest||v.out);env(g.gain,t,o.gain??0.5,o.a||0.001,o.dur);
-}
-function tone(v,t,dest,f1,f2,len,amp,type){
-  const o=v.osc(type||"sine",f1,t,len+0.03),g=v.g(0);o.frequency.exponentialRampToValueAtTime(f2,t+len);o.connect(g).connect(dest);
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+Math.min(0.012,len/4));g.gain.setValueAtTime(amp,t+len*0.7);g.gain.linearRampToValueAtTime(0,t+len);
-}
-function bubble(v,t,f,ratio,len,amp){
-  const o=v.osc("sine",f,t,len+0.02),g=v.g(0);o.frequency.exponentialRampToValueAtTime(f*ratio,t+len);o.connect(g).connect(v.out);
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+0.005);g.gain.exponentialRampToValueAtTime(0.0001,t+len);
-}
-function panned(v,pan){const g=v.g(1);if(ctx.createStereoPanner){const p=ctx.createStereoPanner();p.pan.value=pan;g.connect(p).connect(v.out)}else g.connect(v.out);return g}
-function hoot(v,t,f,len,amp,f2){
-  const g=v.g(0);g.connect(v.out);
-  for(const [type,a] of [["sine",1],["triangle",0.25]]){const o=v.osc(type,f,t,len+0.1),og=v.g(a);if(f2)o.frequency.linearRampToValueAtTime(f2,t+len);o.connect(og).connect(g)}
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+Math.min(0.06,len/3));g.gain.setValueAtTime(amp,t+len*0.75);g.gain.linearRampToValueAtTime(0,t+len);
-}
-const BAR=[[1,1],[2.76,0.3,0.5],[5.4,0.12,0.3]];
-const RING=[[1,1],[2.32,0.5,0.6],[3.9,0.3,0.4]];
-const CHURCH=[[0.5,0.5,1.6],[1,1],[1.19,0.45,0.7],[1.5,0.3,0.5],[2,0.5,0.45],[2.51,0.2,0.3],[3,0.15,0.25],[4.1,0.08,0.2]];
-
-/* ---------- Die Klänge ----------
-   lvl = Lautstärke-Ausgleich, gemessen per Offline-Rendering, damit alle Knöpfe etwa gleich laut sind. */
-const SOUNDS=[
- {id:"klingel",cat:"alltag",name:"Türklingel",ico:"🔔",dur:3.6,lvl:0.87,
-  fn(v,t){strike(v,t,659,BAR,1.6,0.35);strike(v,t+0.6,523,BAR,2.2,0.35)}},
- {id:"telefon",cat:"alltag",name:"Altes Telefon",ico:"☎️",dur:5.6,lvl:1.14,
-  fn(v,t){for(const s of [0,3.4])for(let i=0;i<40;i++)strike(v,t+s+i/25,i%2?1180:1000,RING,0.18,0.16)}},
- {id:"wecker",cat:"alltag",name:"Wecker",ico:"⏰",dur:4,lvl:1.27,loud:true,
-  fn(v,t){for(let i=0;i<70;i++)strike(v,t+i/20,i%2?1650:1500,RING,0.12,0.14)}},
- {id:"kaffee",cat:"alltag",name:"Kaffeemaschine",ico:"☕",dur:12,amb:true,lvl:1.28,
-  fn(v,t){const L=v.layer(t);
-   const n=v.noise("white",t,L),f=v.f("bandpass",3500,0.8),g=v.g(0.05);n.connect(f).connect(g).connect(v.out);
-   const n2=v.noise("brown",t,L),f2=v.f("lowpass",250),g2=v.g(0.3);n2.connect(f2).connect(g2).connect(v.out);
-   v.every(()=>Math.random()<0.15?R(0.6,1.2):R(0.04,0.18),tt=>bubble(v,tt,R(140,380),R(2,3),R(0.04,0.09),R(0.12,0.3)))}},
- {id:"kocher",cat:"alltag",name:"Wasserkocher",ico:"♨️",dur:9.5,lvl:1.28,
-  fn(v,t){const T=8;
-   const n=v.noise("brown",t,T+0.4),f=v.f("lowpass",150,0.7),g=v.g(0);
-   f.frequency.setValueAtTime(150,t);f.frequency.exponentialRampToValueAtTime(1200,t+T);
-   g.gain.setValueAtTime(0.02,t);g.gain.linearRampToValueAtTime(0.5,t+T);g.gain.linearRampToValueAtTime(0,t+T+0.3);n.connect(f).connect(g).connect(v.out);
-   const h=v.noise("white",t,T+0.4),hf=v.f("bandpass",2500,1),hg=v.g(0);
-   hg.gain.setValueAtTime(0,t);hg.gain.linearRampToValueAtTime(0.08,t+T);hg.gain.linearRampToValueAtTime(0,t+T+0.3);h.connect(hf).connect(hg).connect(v.out);
-   v.every(tt=>R(0.02,0.08)+(1-(tt-t)/T)*R(0.1,0.6),tt=>bubble(v,tt,R(200,600),2,R(0.02,0.05),0.03+0.15*((tt-t)/T)),t+1.5,t+T);
-   burst(v,t+T+0.05,{type:"highpass",freq:1500,Q:0.7,dur:0.03,gain:0.8});
-   const o=v.osc("sine",180,t+T+0.05,0.1),og=v.g(0);o.connect(og).connect(v.out);env(og.gain,t+T+0.05,0.4,0.002,0.06)}},
- {id:"standuhr",cat:"alltag",name:"Standuhr",ico:"🕰️",dur:10,amb:true,lvl:2.48,
-  fn(v,t){let k=0;v.every(()=>0.6,tt=>{const hi=k++%2===0;
-   burst(v,tt,{freq:hi?2400:1700,Q:6,dur:0.03,gain:0.8});
-   const o=v.osc("sine",hi?520:430,tt,0.08),g=v.g(0);o.connect(g).connect(v.out);env(g.gain,tt,0.25,0.001,0.05)})}},
- {id:"kuckuck",cat:"alltag",name:"Kuckucksuhr",ico:"🏠",dur:4.2,lvl:0.44,
-  fn(v,t){for(let i=0;i<3;i++){hoot(v,t+i*1.2,740,0.2,0.3,730);hoot(v,t+i*1.2+0.28,600,0.38,0.3,585)}}},
- {id:"kirche",cat:"alltag",name:"Kirchenglocke",ico:"⛪",dur:11.5,lvl:1.29,
-  fn(v,t){for(let i=0;i<4;i++)strike(v,t+i*2,220,CHURCH,3.5,0.2)}},
- {id:"schreibm",cat:"alltag",name:"Schreibmaschine",ico:"⌨️",dur:10,amb:true,lvl:2.47,
-  fn(v,t){let n=0,next=R(25,40),pause=false;
-   v.every(()=>{if(pause){pause=false;return 1.3}return R(0.08,0.24)},tt=>{
-    if(++n>=next){n=0;next=R(25,45);pause=true;
-     strike(v,tt,2100,[[1,1],[2.76,0.2,0.4]],0.9,0.25);
-     const s=v.noise("white",tt+0.35,0.55),f=v.f("bandpass",1400,3),g=v.g(0);
-     f.frequency.setValueAtTime(1400,tt+0.35);f.frequency.exponentialRampToValueAtTime(400,tt+0.8);s.connect(f).connect(g).connect(v.out);env(g.gain,tt+0.35,0.35,0.02,0.45);
-    }else{burst(v,tt,{freq:R(1500,2300),Q:2,dur:0.015,gain:R(0.5,0.8)});
-     const o=v.osc("sine",160,tt,0.04),g=v.g(0);o.connect(g).connect(v.out);env(g.gain,tt,0.3,0.001,0.025)}})}},
- {id:"hupe",cat:"alltag",name:"Autohupe",ico:"🚗",dur:1.6,lvl:0.46,loud:true,
-  fn(v,t){for(const [s,len] of [[0,0.3],[0.45,0.55]])for(const fr of [370,440]){
-   const o=v.osc("square",fr,t+s,len+0.05),fl=v.f("lowpass",1800,1),g=v.g(0);o.connect(fl).connect(g).connect(v.out);
-   g.gain.setValueAtTime(0,t+s);g.gain.linearRampToValueAtTime(0.12,t+s+0.02);g.gain.setValueAtTime(0.12,t+s+len-0.03);g.gain.linearRampToValueAtTime(0,t+s+len)}}},
-
- {id:"klopfen",cat:"alltag",name:"Klopfen an der Tür",ico:"✊",dur:2.8,lvl:0.4,
-  fn(v,t){for(const s of [0,0.22,0.44,1.5,1.72,1.94]){const tt=t+s;burst(v,tt,{type:"lowpass",freq:350,Q:1,dur:0.08,gain:0.9,kind:"pink"});burst(v,tt,{freq:650,Q:3,dur:0.05,gain:0.4});tone(v,tt,v.out,140,70,0.09,0.5)}}},
- {id:"fahrrad",cat:"alltag",name:"Fahrradklingel",ico:"🚲",dur:2.4,lvl:0.99,
-  fn(v,t){for(const s of [0,0.7])for(let i=0;i<6;i++)strike(v,t+s+i/15,i%2?2350:2200,RING,0.5,0.18)}},
- {id:"sauger",cat:"alltag",name:"Staubsauger",ico:"🧹",dur:9,amb:true,lvl:1.02,
-  fn(v,t){const L=v.layer(t);
-   const o=v.osc("sawtooth",60,t,L);o.frequency.exponentialRampToValueAtTime(190,t+1.5);const of=v.f("lowpass",900,1),og=v.g(0.12);o.connect(of).connect(og).connect(v.out);
-   const n=v.noise("white",t,L),nf=v.f("bandpass",1500,0.5),ng=v.g(0);ng.gain.setValueAtTime(0,t);ng.gain.linearRampToValueAtTime(0.45,t+1.5);n.connect(nf).connect(ng).connect(v.out);
-   v.every(()=>R(0.5,1.5),tt=>{nf.frequency.setTargetAtTime(R(1100,2200),tt,0.3);ng.gain.setTargetAtTime(R(0.3,0.55),tt,0.3)},t+1.6)}},
- {id:"foehn",cat:"alltag",name:"Föhn",ico:"💨",dur:8,amb:true,lvl:1.24,
-  fn(v,t){const L=v.layer(t);
-   const n=v.noise("white",t,L),nf=v.f("bandpass",1800,0.6),ng=v.g(0);ng.gain.setValueAtTime(0,t);ng.gain.linearRampToValueAtTime(0.5,t+0.6);n.connect(nf).connect(ng).connect(v.out);
-   const o=v.osc("sawtooth",120,t,L);o.frequency.exponentialRampToValueAtTime(330,t+0.6);const of=v.f("bandpass",660,4),og=v.g(0.06);o.connect(of).connect(og).connect(v.out)}},
- {id:"mikro",cat:"alltag",name:"Mikrowelle",ico:"📦",dur:7.5,lvl:0.68,
-  fn(v,t){const T=5.2;
-   const o=v.osc("sawtooth",100,t,T),of=v.f("lowpass",400,1),og=v.g(0);o.connect(of).connect(og).connect(v.out);
-   og.gain.setValueAtTime(0,t);og.gain.linearRampToValueAtTime(0.25,t+0.1);og.gain.setValueAtTime(0.25,t+T-0.1);og.gain.linearRampToValueAtTime(0,t+T);
-   const lfo=v.osc("sine",0.4,t,T),lg=v.g(0.06);lfo.connect(lg).connect(og.gain);
-   const n=v.noise("pink",t,T),ng=v.g(0.04);n.connect(ng).connect(v.out);ng.gain.setValueAtTime(0.04,t+T-0.05);ng.gain.linearRampToValueAtTime(0,t+T);
-   for(let i=0;i<3;i++)tone(v,t+T+0.3+i*0.6,v.out,1050,1050,0.35,0.18,"triangle")}},
- {id:"hahnwasser",cat:"alltag",name:"Wasserhahn",ico:"🚰",dur:10,amb:true,lvl:1.77,
-  fn(v,t){const L=v.layer(t),n=v.noise("white",t,L);
-   const f=v.f("bandpass",1400,0.6),g=v.g(0.35);n.connect(f).connect(g).connect(v.out);
-   const lp=v.f("lowpass",500,0.7),lg=v.g(0.3);n.connect(lp).connect(lg).connect(v.out);
-   const res=v.f("bandpass",400,8),rg=v.g(0.25);n.connect(res).connect(rg).connect(v.out);
-   if(L)res.frequency.exponentialRampToValueAtTime(1500,t+L);
-   v.every(()=>R(0.03,0.12),tt=>bubble(v,tt,R(600,1300),1.6,R(0.015,0.03),R(0.03,0.07)))}},
- {id:"pfanne",cat:"alltag",name:"Bratpfanne (brutzeln)",ico:"🍳",dur:12,amb:true,lvl:3.33,
-  fn(v,t){const L=v.layer(t),n=v.noise("white",t,L),f=v.f("highpass",3000,0.7),g=v.g(0.12);n.connect(f).connect(g).connect(v.out);
-   v.every(()=>R(0.3,1),tt=>g.gain.setTargetAtTime(R(0.06,0.2),tt,0.2));
-   v.every(()=>R(0.005,0.04),tt=>burst(v,tt,{type:"highpass",freq:R(2500,5000),Q:0.7,dur:R(0.002,0.006),gain:R(0.05,0.5)}))}},
- {id:"martinshorn",cat:"alltag",name:"Martinshorn",ico:"🚑",dur:4.4,lvl:0.55,loud:true,
-  fn(v,t){const g=v.g(0),lp=v.f("lowpass",2500,0.7);lp.connect(g).connect(v.out);
-   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.18,t+0.05);g.gain.setValueAtTime(0.18,t+4.1);g.gain.linearRampToValueAtTime(0,t+4.2);
-   for(const [type,a] of [["sawtooth",0.6],["square",0.4]]){const o=v.osc(type,440,t,4.25),og=v.g(a);o.connect(og).connect(lp);
-    for(let i=0;i<7;i++)o.frequency.setValueAtTime(i%2?585:440,t+i*0.6)}}},
- {id:"waehl",cat:"alltag",name:"Wählscheibe",ico:"📞",dur:6.5,lvl:6.42,
-  fn(v,t){let s=t;for(const d of [4,7,2,9]){
-    const sc=v.noise("white",s,0.45),sf=v.f("bandpass",900,2),sg=v.g(0);sc.connect(sf).connect(sg).connect(v.out);sg.gain.setValueAtTime(0,s);sg.gain.linearRampToValueAtTime(0.08,s+0.05);sg.gain.setValueAtTime(0.08,s+0.35);sg.gain.linearRampToValueAtTime(0,s+0.4);
-    s+=0.5;for(let i=0;i<d;i++){burst(v,s,{freq:2500,Q:4,dur:0.012,gain:0.7});burst(v,s,{freq:900,Q:3,dur:0.02,gain:0.4});s+=0.1}
-    s+=0.35}}},
- {id:"spieluhr",cat:"alltag",name:"Spieluhr (Wiegenlied)",ico:"🎵",dur:15,lvl:0.78,
-  fn(v,t){const N={C:523.25,D:587.33,E:659.25,F:698.46,G:783.99,A:880,H:987.77,c:1046.5};
-   const mel="E1 E1 G4 E1 E1 G4 E1 G1 c2 H2 A2 A2 G2 D1 E1 F2 D2 D1 E1 F4 D1 F1 H1 A1 G2 H2 c4";let s=t;
-   for(const tk of mel.split(" ")){const n=N[tk[0]],d=+tk.slice(1)*0.22;strike(v,s,n,[[1,1],[3.9,0.12,0.25],[2,0.08,0.5]],1.4,0.3);s+=d}}},
-
- {id:"voegel",cat:"natur",name:"Vogelgezwitscher",ico:"🐦",dur:14,amb:true,lvl:2.83,
-  fn(v,t){const L=v.layer(t);const n=v.noise("brown",t,L),f=v.f("lowpass",400),g=v.g(0.04);n.connect(f).connect(g).connect(v.out);
-   v.every(()=>R(0.25,1.4),tt=>{const d=panned(v,R(-0.8,0.8)),amp=R(0.05,0.13),k=Math.random();
-    if(k<0.4){const base=R(2600,3600),c=2+(Math.random()*4|0);for(let i=0;i<c;i++)tone(v,tt+i*0.09,d,base,base*1.4,0.05,amp)}
-    else if(k<0.7){const o=v.osc("sine",R(2800,3400),tt,0.5),lfo=v.osc("sine",R(25,35),tt,0.5),lg=v.g(R(300,500)),g2=v.g(0);
-     lfo.connect(lg).connect(o.frequency);o.connect(g2).connect(d);g2.gain.setValueAtTime(0,tt);g2.gain.linearRampToValueAtTime(amp,tt+0.03);g2.gain.setValueAtTime(amp,tt+0.35);g2.gain.linearRampToValueAtTime(0,tt+0.45)}
-    else{let s=tt;const c=3+(Math.random()*3|0);for(let i=0;i<c;i++){const fr=R(1500,2600),len=R(0.08,0.18);tone(v,s,d,fr,fr*R(0.85,1.2),len,amp);s+=len+0.03}}})}},
- {id:"frosch",cat:"natur",name:"Frosch",ico:"🐸",dur:12,amb:true,lvl:1.69,
-  fn(v,t){
-   const croak=(tt,fr,amp,pan)=>{const len=R(0.25,0.4),o=v.osc("sawtooth",fr,tt,len+0.05),b1=v.f("bandpass",fr*4,4),b2=v.f("bandpass",fr*8,5),am=v.g(0.5),lfo=v.osc("square",R(18,26),tt,len+0.05),lg=v.g(0.5),g=v.g(0);
-    o.frequency.linearRampToValueAtTime(fr*1.15,tt+len);lfo.connect(lg).connect(am.gain);o.connect(b1);o.connect(b2);b1.connect(am);b2.connect(am);am.connect(g).connect(panned(v,pan));
-    g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(amp,tt+0.03);g.gain.setValueAtTime(amp,tt+len-0.05);g.gain.linearRampToValueAtTime(0,tt+len)};
-   v.every(()=>R(1.2,2.8),tt=>{const fr=R(170,210),c=2+(Math.random()*2|0),p=R(-0.5,0.5);for(let i=0;i<c;i++)croak(tt+i*0.45,fr,0.9,p)});
-   v.every(()=>R(2,4),tt=>croak(tt,R(120,140),0.45,R(-0.9,0.9)),t+0.8)}},
- {id:"bach",cat:"natur",name:"Bach",ico:"🏞️",dur:14,amb:true,lvl:3.15,
-  fn(v,t){const L=v.layer(t),src=v.noise("white",t,L);
-   for(const [fc,q,a] of [[450,2,0.25],[1000,2.5,0.18],[2200,3,0.12],[3800,2,0.05]]){
-    const f=v.f("bandpass",fc,q),g=v.g(a);src.connect(f).connect(g).connect(v.out);
-    const l1=v.osc("sine",R(0.4,1.6),t,L),g1=v.g(fc*0.35);l1.connect(g1).connect(f.frequency);
-    const l2=v.osc("sine",R(3,7),t,L),g2=v.g(a*0.6);l2.connect(g2).connect(g.gain)}
-   v.every(()=>R(0.04,0.2),tt=>bubble(v,tt,R(500,1100),R(1.4,2),R(0.015,0.04),R(0.03,0.09)))}},
- {id:"regen",cat:"natur",name:"Regen",ico:"🌧️",dur:14,amb:true,lvl:1.98,
-  fn(v,t){const L=v.layer(t),n=v.noise("pink",t,L),hp=v.f("highpass",500,0.7),lp=v.f("lowpass",6000,0.7),g=v.g(0.35);n.connect(hp).connect(lp).connect(g).connect(v.out);
-   v.every(()=>R(0.01,0.06),tt=>burst(v,tt,{freq:R(1500,7000),Q:R(2,6),dur:R(0.003,0.012),gain:R(0.05,0.35)}));
-   v.every(()=>R(0.3,1.2),tt=>tone(v,tt,v.out,R(900,1500),R(500,700),0.04,R(0.03,0.08)))}},
- {id:"wind",cat:"natur",name:"Wind",ico:"🌬️",dur:14,amb:true,lvl:3.49,
-  fn(v,t){const L=v.layer(t);
-   const n=v.noise("pink",t,L),f=v.f("bandpass",500,2.5),g=v.g(0.3);n.connect(f).connect(g).connect(v.out);
-   const n2=v.noise("white",t,L),f2=v.f("bandpass",900,30),g2=v.g(0);n2.connect(f2).connect(g2).connect(v.out);
-   v.every(()=>R(0.6,1.5),tt=>{f.frequency.setTargetAtTime(R(250,900),tt,0.6);g.gain.setTargetAtTime(R(0.15,0.8),tt,0.7);f2.frequency.setTargetAtTime(R(600,1300),tt,0.8);g2.gain.setTargetAtTime(R(0,0.6),tt,0.8)})}},
- {id:"gewitter",cat:"natur",name:"Gewitter",ico:"⛈️",dur:9,lvl:0.7,loud:true,
-  fn(v,t){for(let i=0,s=0;i<4;i++,s+=R(0.03,0.07))burst(v,t+s,{type:"highpass",freq:800,Q:0.5,dur:R(0.05,0.15),gain:R(0.4,0.8)});
-   const n=v.noise("brown",t,8.8),f=v.f("lowpass",600,0.7),g=v.g(0);
-   f.frequency.setValueAtTime(600,t);f.frequency.exponentialRampToValueAtTime(90,t+7);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+0.15);
-   for(let tt=t+0.3;tt<t+7.5;tt+=R(0.15,0.5))g.gain.setTargetAtTime(R(0.3,1)*(1-(tt-t)/8),tt,0.15);
-   g.gain.setTargetAtTime(0,t+7.6,0.3);n.connect(f).connect(g).connect(v.out)}},
- {id:"meer",cat:"natur",name:"Meeresrauschen",ico:"🌊",dur:16,amb:true,lvl:0.97,
-  fn(v,t){const L=v.layer(t),n=v.noise("pink",t,L),f=v.f("lowpass",500,0.5),g=v.g(0.06);n.connect(f).connect(g).connect(v.out);
-   const b=v.noise("brown",t,L),bf=v.f("lowpass",200),bg=v.g(0.1);b.connect(bf).connect(bg).connect(v.out);
-   v.every(()=>R(6,9),tt=>{const up=R(2.5,3.5),down=R(3,4.5);g.gain.setTargetAtTime(R(0.5,0.8),tt,up/3);f.frequency.setTargetAtTime(R(1800,3000),tt,up/3);g.gain.setTargetAtTime(0.06,tt+up,down/3);f.frequency.setTargetAtTime(450,tt+up,down/3)},t)}},
- {id:"kuh",cat:"natur",name:"Kuh",ico:"🐄",dur:2.6,lvl:0.28,
-  fn(v,t){const o=v.osc("sawtooth",100,t,2.3);o.frequency.linearRampToValueAtTime(128,t+0.4);o.frequency.linearRampToValueAtTime(118,t+1.4);o.frequency.linearRampToValueAtTime(92,t+2.2);
-   const vib=v.osc("sine",5,t,2.3),vg=v.g(2.5);vib.connect(vg).connect(o.frequency);
-   const lp=v.f("lowpass",250,1);lp.frequency.setValueAtTime(250,t);lp.frequency.linearRampToValueAtTime(950,t+0.5);lp.frequency.linearRampToValueAtTime(700,t+1.8);lp.frequency.linearRampToValueAtTime(300,t+2.2);
-   const f1=v.f("peaking",320,2),f2=v.f("peaking",850,3);f1.gain.value=8;f2.gain.value=6;
-   const g=v.g(0);o.connect(lp).connect(f1).connect(f2).connect(g).connect(v.out);
-   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.5,t+0.25);g.gain.setValueAtTime(0.5,t+1.7);g.gain.linearRampToValueAtTime(0,t+2.25)}},
- {id:"eule",cat:"natur",name:"Eule",ico:"🦉",dur:3.2,lvl:0.33,
-  fn(v,t){for(const [s,len] of [[0,0.55],[1,0.22],[1.32,0.22],[1.7,0.75]])hoot(v,t+s,340,len,0.35,320)}},
- {id:"pferd",cat:"natur",name:"Pferd (Hufe)",ico:"🐴",dur:8,amb:true,lvl:0.69,
-  fn(v,t){const pat=[0.13,0.37,0.12,0.38];let i=0;
-   v.every(()=>pat[i++%4]+R(-0.02,0.02),tt=>{burst(v,tt,{freq:R(900,1300),Q:5,dur:0.035,gain:0.8});tone(v,tt,v.out,350,120,0.05,0.35)})}},
- {id:"tuer",cat:"natur",name:"Knarrende Tür",ico:"🚪",dur:3.3,lvl:0.69,
-  fn(v,t){const b1=v.f("bandpass",700,12),b2=v.f("bandpass",1500,10),mix=v.g(1);b1.connect(mix);b2.connect(mix);mix.connect(v.out);
-   const T=2.3;for(let tt=t;tt<t+T;){const p=(tt-t)/T,s=v.noise("white",tt,0.01),g=v.g(0);s.connect(g);g.connect(b1);g.connect(b2);env(g.gain,tt,1,0.0005,0.004);tt+=1/(35+50*Math.sin(p*Math.PI)+R(-6,6))}
-   tone(v,t+2.6,v.out,90,50,0.25,0.6);burst(v,t+2.6,{type:"lowpass",freq:300,Q:0.7,dur:0.2,gain:0.6})}},
- {id:"feuer",cat:"natur",name:"Kaminfeuer",ico:"🔥",dur:14,amb:true,lvl:1.84,
-  fn(v,t){const L=v.layer(t),n=v.noise("brown",t,L),f=v.f("lowpass",400),g=v.g(0.2);n.connect(f).connect(g).connect(v.out);
-   v.every(()=>R(0.03,0.35),tt=>{const c=Math.random()<0.1?3+(Math.random()*4|0):1;for(let i=0;i<c;i++)burst(v,tt+i*R(0.01,0.04),{type:"highpass",freq:2000,Q:0.7,dur:R(0.002,0.008),gain:R(0.1,0.7)})});
-   v.every(()=>R(1,4),tt=>{tone(v,tt,v.out,600,200,0.03,0.25);burst(v,tt,{freq:1200,Q:1,dur:0.02,gain:0.5})},t+0.5)}},
- {id:"lok",cat:"natur",name:"Dampflok",ico:"🚂",dur:9,lvl:1.46,
-  fn(v,t){let tt=t,iv=0.7;
-   while(tt<t+7){burst(v,tt,{freq:R(700,1000),Q:0.8,dur:Math.min(iv*0.8,0.25),gain:0.5,a:0.01});burst(v,tt,{kind:"brown",type:"lowpass",freq:200,dur:0.2,gain:0.4,a:0.01});tt+=iv;iv=Math.max(0.22,iv*0.93)}
-   const w=t+1.2,wg=v.g(0);wg.connect(v.out);wg.gain.setValueAtTime(0,w);wg.gain.linearRampToValueAtTime(1,w+0.08);wg.gain.setValueAtTime(1,w+1.4);wg.gain.linearRampToValueAtTime(0,w+1.6);
-   for(const fr of [554,659,831]){const o=v.osc("sine",fr,w,1.7),og=v.g(0.07),vib=v.osc("sine",6,w,1.7),vg=v.g(fr*0.004);vib.connect(vg).connect(o.frequency);o.connect(og).connect(wg)}
-   burst(v,w,{freq:1500,Q:5,dur:1.5,gain:0.08,a:0.08})}},
- {id:"hund",cat:"natur",name:"Hund",ico:"🐕",dur:3,lvl:1.29,
-  fn(v,t){for(const s of [0,0.35,1.3,1.62,1.94]){const tt=t+s,o=v.osc("sawtooth",R(320,360),tt,0.2),bp=v.f("bandpass",900,1.5),g=v.g(0);
-    o.frequency.exponentialRampToValueAtTime(210,tt+0.17);o.connect(bp).connect(g).connect(v.out);g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(0.9,tt+0.015);g.gain.exponentialRampToValueAtTime(0.001,tt+0.18);
-    burst(v,tt,{freq:1200,Q:1,dur:0.08,gain:0.25})}}},
- {id:"katze",cat:"natur",name:"Katze",ico:"🐈",dur:2.4,lvl:0.43,
-  fn(v,t){for(const s of [0,1.2]){const tt=t+s,o=v.osc("sawtooth",480,tt,0.95),lp=v.f("lowpass",900,6),g=v.g(0);
-    o.frequency.linearRampToValueAtTime(700,tt+0.3);o.frequency.linearRampToValueAtTime(430,tt+0.85);
-    lp.frequency.setValueAtTime(900,tt);lp.frequency.linearRampToValueAtTime(2600,tt+0.3);lp.frequency.linearRampToValueAtTime(800,tt+0.85);
-    o.connect(lp).connect(g).connect(v.out);g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(0.4,tt+0.08);g.gain.setValueAtTime(0.4,tt+0.6);g.gain.linearRampToValueAtTime(0,tt+0.9)}}},
- {id:"schaf",cat:"natur",name:"Schaf",ico:"🐑",dur:2.6,lvl:0.77,
-  fn(v,t){for(const s of [0,1.3]){const tt=t+s,o=v.osc("sawtooth",360,tt,1),am=v.g(0.6),lfo=v.osc("sine",7,tt,1),lg=v.g(0.4),
-    f1=v.f("peaking",750,3),f2=v.f("peaking",1800,4),lp=v.f("lowpass",3000),g=v.g(0);f1.gain.value=10;f2.gain.value=8;
-    o.frequency.linearRampToValueAtTime(320,tt+0.9);lfo.connect(lg).connect(am.gain);o.connect(f1).connect(f2).connect(lp).connect(am).connect(g).connect(v.out);
-    g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(0.25,tt+0.06);g.gain.setValueAtTime(0.25,tt+0.75);g.gain.linearRampToValueAtTime(0,tt+0.95)}}},
- {id:"hahn",cat:"natur",name:"Hahn",ico:"🐓",dur:2.4,lvl:0.47,
-  fn(v,t){const syl=[[0,0.11,620,700],[0.15,0.11,650,660],[0.3,0.14,720,760],[0.5,0.85,820,600]];
-   for(const [s,len,f1,f2] of syl){const tt=t+s,o=v.osc("sawtooth",f1,tt,len+0.05),b1=v.f("bandpass",1500,2),b2=v.f("bandpass",2800,3),g=v.g(0),rough=v.osc("sine",33,tt,len+0.05),rg=v.g(25);
-    o.frequency.linearRampToValueAtTime(f2,tt+len);rough.connect(rg).connect(o.frequency);o.connect(b1);o.connect(b2);b1.connect(g);b2.connect(g);g.connect(v.out);
-    g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(0.7,tt+0.02);g.gain.setValueAtTime(0.7,tt+len-0.04);g.gain.linearRampToValueAtTime(0,tt+len)}}},
- {id:"bienen",cat:"natur",name:"Bienen",ico:"🐝",dur:12,amb:true,lvl:2.31,
-  fn(v,t){const L=v.layer(t);
-   for(let i=0;i<5;i++){const o=v.osc("sawtooth",R(200,250),t,L),bp=v.f("bandpass",R(400,700),1.2),g=v.g(R(0.05,0.12)),d=panned(v,R(-0.8,0.8));
-    const l=v.osc("sine",R(0.3,1.2),t,L),lg=v.g(R(5,15));l.connect(lg).connect(o.frequency);
-    const l2=v.osc("sine",R(0.1,0.5),t,L),lg2=v.g(0.05);l2.connect(lg2).connect(g.gain);o.connect(bp).connect(g).connect(d)}}},
- {id:"schritte",cat:"natur",name:"Schritte im Laub",ico:"🍂",dur:9,amb:true,lvl:3.23,
-  fn(v,t){v.every(()=>R(0.5,0.62),tt=>{for(let i=0;i<14;i++)burst(v,tt+R(0,0.14),{type:"highpass",freq:R(1500,4000),Q:0.7,dur:R(0.003,0.01),gain:R(0.1,0.5)});
-   burst(v,tt,{type:"lowpass",freq:200,Q:0.7,dur:0.08,gain:0.5,kind:"pink"})})}},
- {id:"wolf",cat:"natur",name:"Wolf heult",ico:"🐺",dur:5,lvl:0.33,
-  fn(v,t){const dl=ctx.createDelay(1),fb=v.g(0.35),mix=v.g(1);dl.delayTime.value=0.18;mix.connect(v.out);mix.connect(dl);dl.connect(fb).connect(dl);fb.connect(v.out);
-   const g=v.g(0);g.connect(mix);
-   for(const [type,a] of [["sine",1],["triangle",0.3]]){const o=v.osc(type,330,t,3.6),og=v.g(a);o.frequency.linearRampToValueAtTime(560,t+1);o.frequency.setValueAtTime(560,t+2);o.frequency.linearRampToValueAtTime(380,t+3.4);
-    const vb=v.osc("sine",5,t,3.6),vg=v.g(6);vb.connect(vg).connect(o.frequency);o.connect(og).connect(g)}
-   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.3,t+0.4);g.gain.setValueAtTime(0.3,t+2.8);g.gain.linearRampToValueAtTime(0,t+3.5)}},
-];
 
 /* ---------- eigene Aufnahmen (IndexedDB, nur auf diesem Gerät) ---------- */
 const DB={db:null,
@@ -503,55 +319,59 @@ const DB={db:null,
   put(o){return new Promise((res,rej)=>{if(!this.db)return rej(new Error("Speicher nicht verfügbar"));const q=this.tx("readwrite").put(o);q.onsuccess=()=>res();q.onerror=()=>rej(q.error)})},
   del(id){return new Promise(res=>{if(!this.db)return res();const q=this.tx("readwrite").delete(id);q.onsuccess=()=>res();q.onerror=()=>res()})}
 };
-let own=[];const decoded=new Map();
+let own=[];
+/* ---------- Vorladen, damit es im Heim auch mit schlechtem WLAN klappt ---------- */
+const raw=new Map();
+async function preload(){
+  const files=SOUNDS.map(fileOf);let done=0;
+  const show=()=>{$("#load").textContent=done<files.length?"Klänge werden geladen: "+done+" von "+files.length:"Alle "+files.length+" Klänge sind geladen."};show();
+  await Promise.all(files.map(async f=>{try{const r=await fetch("sounds/"+f);if(r.ok){raw.set(f,await r.arrayBuffer());done++;show()}}catch(e){}}));
+  if(done<files.length)$("#load").textContent=(files.length-done)+" Klänge konnten nicht geladen werden. Internet prüfen und Seite neu laden.";
+}
 async function bufferFor(rec){
   if(decoded.has(rec.id))return decoded.get(rec.id);
-  const ab=await rec.blob.arrayBuffer();
-  const b=await new Promise((res,rej)=>{const p=ctx.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej)});
-  decoded.set(rec.id,b);return b;
+  const b=await decode(await rec.blob.arrayBuffer());decoded.set(rec.id,b);return b;
 }
-function fileDef(rec,b){
-  return {id:rec.replaces||("own-"+rec.id),name:rec.name,amb:true,dur:b.duration+0.1,lvl:1,
-    fn(v,t){const s=ctx.createBufferSource();s.buffer=b;s.loop=!isFinite(v.end);s.connect(v.out);s.start(t);v.reg(s)}};
+async function bufferForFile(f){
+  if(decoded.has(f))return decoded.get(f);
+  let ab=raw.get(f);
+  if(ab)ab=ab.slice(0);else{const r=await fetch("sounds/"+f);if(!r.ok)throw new Error("Datei fehlt");ab=await r.arrayBuffer()}
+  const b=await decode(ab);decoded.set(f,b);return b;
 }
 
 /* ---------- Abspielen ---------- */
 async function play(id){
   ensure();
   if(active.has(id)){stop(id);return}
-  let def=SOUNDS.find(s=>s.id===id);
-  const rec=own.find(r=>(r.replaces||("own-"+r.id))===id);
-  if(rec){try{def=fileDef(rec,await bufferFor(rec))}catch(e){showMsg("Diese Datei kann das Gerät nicht abspielen.");return}}
-  if(!def)return;
-  const v=new Voice(def,settings.loop);
-  def.fn(v,v.t0);v.pump(ctx.currentTime+1.2);
-  active.set(id,v);paint();
+  if(loading.has(id))return;
+  const rec=own.find(r=>(r.replaces||("own-"+r.id))===id),s=SOUNDS.find(x=>x.id===id);
+  if(!rec&&!s)return;
+  let b;loading.add(id);paint();
+  try{b=rec?await bufferFor(rec):await bufferForFile(fileOf(s))}
+  catch(e){loading.delete(id);paint();status("„"+(rec?rec.name:s.name)+"“ konnte nicht geladen werden. Internet prüfen.");return}
+  loading.delete(id);
+  if(active.has(id))return;
+  const v=new Voice(b,!!(s&&s.amb),settings.loop);v.pump(ctx.currentTime+1.5);active.set(id,v);paint();
 }
 function stop(id){
   const v=active.get(id);if(!v)return;
-  v.stopped=true;active.delete(id);
+  active.delete(id);
   const now=ctx.currentTime;v.bus.gain.cancelScheduledValues(now);v.bus.gain.setValueAtTime(v.bus.gain.value,now);v.bus.gain.linearRampToValueAtTime(0,now+0.15);
   setTimeout(()=>v.kill(),250);paint();
 }
 function stopAll(){for(const id of [...active.keys()])stop(id)}
 setInterval(()=>{
   if(!ctx)return;const now=ctx.currentTime;
-  for(const [id,v] of active){
-    v.pump(now+1.2);
-    if(now>v.end+0.3){
-      active.delete(id);v.kill();
-      if(settings.loop&&!v.def.amb){play(id);continue}
-      paint();
-    }
-  }
+  for(const [id,v] of active){v.pump(now+1.5);if(now>v.end+0.2){active.delete(id);v.kill();paint()}}
 },100);
+let statusTimer=0;
+function status(t){const el=$("#status");el.textContent=t;clearTimeout(statusTimer);statusTimer=setTimeout(()=>el.textContent="",6000)}
 
 /* ---------- Oberfläche ---------- */
-const $=s=>document.querySelector(s);
 const grid=$("#grid");
-const TIPS={klingel:"Jemand steht vor der Haustür.",telefon:"Stand früher im Flur, mit Hörer und Schnur.",wecker:"Klingelt morgens neben dem Bett.",kaffee:"Läuft morgens in der Küche, und es duftet.",kocher:"Wasser für den Tee wird heiß.",standuhr:"Große Uhr aus Holz im Wohnzimmer.",kuckuck:"Ein kleiner Vogel kommt aus einem Holzhäuschen an der Wand.",kirche:"Läutet am Sonntagmorgen.",schreibm:"Damit hat man früher Briefe geschrieben.",hupe:"Auf der Straße: Vorsicht!",klopfen:"Jemand möchte hereinkommen.",fahrrad:"Achtung, hier kommt jemand auf zwei Rädern!",sauger:"Beim Putzen in der Wohnung.",foehn:"Nach dem Haarewaschen.",mikro:"Essen wird warm gemacht, dann macht es pling.",hahnwasser:"In der Küche oder im Bad, ein Glas wird voll.",pfanne:"Bratkartoffeln oder Spiegeleier in der Pfanne.",martinshorn:"Krankenwagen oder Feuerwehr, tatü-tata.",waehl:"So hat man früher eine Telefonnummer gewählt.",spieluhr:"Ein Schlaflied: „Guten Abend, gut' Nacht“.",
-voegel:"Morgens im Garten oder im Wald.",frosch:"Sitzt am Teich.",bach:"Wasser fließt über Steine.",regen:"Tropfen auf dem Dach und am Fenster.",wind:"Draußen stürmt es.",gewitter:"Blitz und Donner.",meer:"Wellen am Strand, Urlaub an der See.",kuh:"Steht auf der Weide und gibt Milch.",eule:"Ein Vogel, der nachts wach ist.",pferd:"Ein Tier zieht eine Kutsche über die Straße.",tuer:"Eine alte Tür geht langsam auf.",feuer:"Im Ofen oder Kamin, schön warm.",lok:"Ein alter Zug mit Dampf fährt los.",hund:"Bellt, wenn jemand ans Tor kommt.",katze:"Liegt gern auf dem Sofa und schnurrt.",schaf:"Hat dicke Wolle.",hahn:"Weckt morgens alle auf dem Bauernhof.",bienen:"Fliegen von Blume zu Blume und machen Honig.",schritte:"Ein Spaziergang im Herbstwald.",wolf:"Kommt im Märchen vom Rotkäppchen vor."};
-const EXAMPLE=[{id:"hahn",cue:"Morgens auf dem Bauernhof"},{id:"kuh",cue:"Die Kühe gehen auf die Weide"},{id:"pferd",cue:"Der Bauer fährt mit der Kutsche"},{id:"wind",cue:"Ein Sturm zieht auf"},{id:"gewitter",cue:"Es blitzt und donnert"},{id:"regen",cue:"Es regnet"},{id:"feuer",cue:"Abends am warmen Ofen"},{id:"spieluhr",cue:"Gute Nacht"}];
+const TIPS={wecker:"Klingelt morgens neben dem Bett.",uhr:"Hängt an der Wand oder steht im Wohnzimmer.",kirche:"Läuten am Sonntagmorgen.",hupe:"Auf der Straße: Vorsicht!",klopfen:"Jemand möchte hereinkommen.",sauger:"Beim Putzen in der Wohnung.",eingiessen:"Ein Glas oder eine Tasse wird voll.",sirene:"Krankenwagen, Polizei oder Feuerwehr.",waschm:"Wäsche wird sauber.",zaehne:"Morgens und abends im Bad.",klo:"Im Badezimmer, nach dem Geschäft.",dose:"In der Küche, zum Beispiel Erbsen oder Würstchen.",klatschen:"Nach einem schönen Lied oder Theaterstück.",lachen:"Wenn etwas lustig ist.",schnarchen:"Nachts im Bett.",niesen:"Hatschi! Gesundheit!",baby:"Ein kleines Kind hat Hunger.",trinken:"Heißer Kaffee oder Tee aus der Tasse.",saege:"Holz wird zerteilt, in der Werkstatt.",flugzeug:"Fliegt hoch am Himmel, in den Urlaub.",
+voegel:"Morgens im Garten oder im Wald.",frosch:"Sitzen am Teich.",regen:"Tropfen auf dem Dach und am Fenster.",wind:"Draußen stürmt es.",gewitter:"Blitz und Donner.",meer:"Wellen am Strand, Urlaub an der See.",kuh:"Steht auf der Weide und gibt Milch.",tuer:"Eine alte Tür geht langsam auf.",feuer:"Im Ofen oder Kamin, schön warm.",zug:"Fährt auf Schienen zum Bahnhof.",hund:"Bellt, wenn jemand ans Tor kommt.",katze:"Liegt gern auf dem Sofa und schnurrt.",schaf:"Hat dicke Wolle.",hahn:"Weckt morgens alle auf dem Bauernhof.",insekten:"Fliegen im Sommer um Blumen herum.",schritte:"Jemand geht spazieren.",schwein:"Lebt im Stall und wälzt sich im Matsch.",huhn:"Legt Eier.",kraehe:"Großer schwarzer Vogel auf dem Feld.",tropfen:"Ein Wasserhahn tropft."};
+const EXAMPLE=[{id:"hahn",cue:"Morgens auf dem Bauernhof"},{id:"kuh",cue:"Die Kühe gehen auf die Weide"},{id:"schwein",cue:"Im Schweinestall"},{id:"wind",cue:"Ein Sturm zieht auf"},{id:"gewitter",cue:"Es blitzt und donnert"},{id:"regen",cue:"Es regnet"},{id:"tuer",cue:"Jemand kommt ins Haus"},{id:"feuer",cue:"Abends am warmen Ofen"}];
 let story=store.get("story",null),storyExample=!story;if(!story)story=EXAMPLE.slice();
 let storyNext=0,storyEdit=false;
 const quiz={cat:"alltag",order:[],i:0};
@@ -575,7 +395,7 @@ function render(){
     grid.innerHTML="";
     tilesFor(tab).forEach(s=>{
       const b=document.createElement("button");b.className="play";b.dataset.cat=tab;b.dataset.id=s.id;if(s.custom)b.dataset.custom="";
-      b.innerHTML=(s.loud?'<span class="warnchip">plötzlich</span>':"")+'<span class="ico" aria-hidden="true">'+s.ico+'</span><span class="nm"></span><span class="tag'+(s.real?" real":"")+'">'+(s.real?"echte Aufnahme":"nachgebaut")+'</span>';
+      b.innerHTML=(s.loud?'<span class="warnchip">plötzlich</span>':"")+'<span class="ico" aria-hidden="true">'+s.ico+'</span><span class="nm"></span><span class="tag">'+(s.custom||s.real?"eigene Aufnahme":"")+'</span>';
       b.querySelector(".nm").textContent=s.name;
       b.addEventListener("click",()=>play(s.id));
       grid.appendChild(b);
@@ -584,7 +404,7 @@ function render(){
   paint();
 }
 function paint(){
-  document.querySelectorAll("[data-id]").forEach(b=>b.setAttribute("aria-pressed",String(active.has(b.dataset.id))));
+  document.querySelectorAll("[data-id]").forEach(b=>{b.setAttribute("aria-pressed",String(active.has(b.dataset.id)));b.setAttribute("aria-busy",String(loading.has(b.dataset.id)))});
   const q=$("#q-play");if(q.dataset.id)q.textContent=active.has(q.dataset.id)?"■ Stoppen":"▶ Abspielen";
   $("#stop-all").hidden=active.size===0;
 }
@@ -645,7 +465,22 @@ $("#s-restart").addEventListener("click",()=>{storyNext=0;stopAll();renderStory(
 
 /* Eigene Aufnahmen */
 function showMsg(t){$("#own-msg").textContent=t}
+function renderVariants(){
+  const ul=$("#var-list");ul.innerHTML="";
+  SOUNDS.forEach(s=>{
+    const li=document.createElement("li"),sp=document.createElement("span");sp.textContent=s.ico+" "+s.name;li.appendChild(sp);
+    [0,1].forEach(k=>{const b=document.createElement("button");b.className="btn ghost vbtn";b.textContent="Aufnahme "+(k+1);b.setAttribute("aria-pressed",String((settings.variant[s.id]||0)===k));
+      b.addEventListener("click",()=>{stop(s.id);if(k)settings.variant[s.id]=k;else delete settings.variant[s.id];store.set("variant",settings.variant);renderVariants();play(s.id)});li.appendChild(b)});
+    ul.appendChild(li);
+  });
+}
+function renderCredits(){
+  const ul=$("#credits");ul.innerHTML="";
+  SOUNDS.forEach(s=>CREDITS[s.src].forEach((c,k)=>{const li=document.createElement("li"),a=document.createElement("a");a.href=c.u;a.target="_blank";a.rel="noopener";a.textContent=c.u;
+    li.append(s.name+" ("+(k+1)+"): „"+c.t+"“ von "+c.a+", CC0, ");li.appendChild(a);ul.appendChild(li)}));
+}
 function renderOwn(){
+  renderVariants();
   const sel=$("#own-rep"),cur=sel.value;
   sel.innerHTML='<option value="">Nein, neuer Knopf</option>'+SOUNDS.map(s=>'<option value="'+s.id+'">'+s.name+'</option>').join("");sel.value=cur;
   const ul=$("#own-list");ul.innerHTML="";
@@ -677,7 +512,9 @@ $("#opt-loop").addEventListener("change",e=>{settings.loop=e.target.checked;stor
 $("#opt-vol").value=settings.vol;
 $("#opt-vol").addEventListener("input",e=>{settings.vol=+e.target.value;store.set("vol",settings.vol);if(master)master.gain.setTargetAtTime(volGain(),ctx.currentTime,0.05)});
 $("#stop-all").addEventListener("click",stopAll);
+renderCredits();
 render();
+preload();
 DB.open().then(async()=>{own=await DB.all();render()});
 </script>
 </body></html>

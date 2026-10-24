@@ -1,0 +1,722 @@
+{
+"clock_alarm": [
+{
+"file": "clock_alarm-1.mp3",
+"src": "1-74517-A-37.wav",
+"title": "outro-dia-mais.wav",
+"url": "http://www.freesound.org/people/galeku/sounds/74517/",
+"author": "galeku",
+"lic": "CC0"
+},
+{
+"file": "clock_alarm-2.mp3",
+"src": "1-14262-A-37.wav",
+"title": "alarm_clock.wav",
+"url": "http://www.freesound.org/people/xyzr_kx/sounds/14262/",
+"author": "xyzr_kx",
+"lic": "CC0"
+}
+],
+"clock_tick": [
+{
+"file": "clock_tick-1.mp3",
+"src": "2-131943-A-38.wav",
+"title": "Wind up clock with twin bell alarm",
+"url": "http://www.freesound.org/people/AngryAdam/sounds/131943/",
+"author": "AngryAdam",
+"lic": "CC0"
+},
+{
+"file": "clock_tick-2.mp3",
+"src": "1-42139-A-38.wav",
+"title": "Old Scots Clock - Ticking.wav",
+"url": "http://www.freesound.org/people/fauxpress/sounds/42139/",
+"author": "fauxpress",
+"lic": "CC0"
+}
+],
+"church_bells": [
+{
+"file": "church_bells-1.mp3",
+"src": "4-125825-A-46.wav",
+"title": "Bells of St Alkelda's Church, Giggleswick, England.flac",
+"url": "http://www.freesound.org/people/thaighaudio/sounds/125825/",
+"author": "thaighaudio",
+"lic": "CC0"
+},
+{
+"file": "church_bells-2.mp3",
+"src": "3-87936-B-46.wav",
+"title": "Church bells.wav",
+"url": "http://www.freesound.org/people/Ohrwurm/sounds/87936/",
+"author": "Ohrwurm",
+"lic": "CC0"
+}
+],
+"car_horn": [
+{
+"file": "car_horn-1.mp3",
+"src": "4-175845-A-43.wav",
+"title": "110703_17 car horn.WAV",
+"url": "http://www.freesound.org/people/toiletrolltube/sounds/175845/",
+"author": "toiletrolltube",
+"lic": "CC0"
+},
+{
+"file": "car_horn-2.mp3",
+"src": "2-125520-A-43.wav",
+"title": "car-horn.wav",
+"url": "http://www.freesound.org/people/krissyeliot/sounds/125520/",
+"author": "krissyeliot",
+"lic": "CC0"
+}
+],
+"door_wood_knock": [
+{
+"file": "door_wood_knock-1.mp3",
+"src": "1-52290-A-30.wav",
+"title": "door knock.wav",
+"url": "http://www.freesound.org/people/XxBirdoxX/sounds/52290/",
+"author": "XxBirdoxX",
+"lic": "CC0"
+},
+{
+"file": "door_wood_knock-2.mp3",
+"src": "1-103995-A-30.wav",
+"title": "Bassdrum_Shell_Ticks.aif",
+"url": "http://www.freesound.org/people/RutgerMuller/sounds/103995/",
+"author": "RutgerMuller",
+"lic": "CC0"
+}
+],
+"vacuum_cleaner": [
+{
+"file": "vacuum_cleaner-1.mp3",
+"src": "3-159346-A-36.wav",
+"title": "Vacuum Cleaner 02  - short ",
+"url": "http://www.freesound.org/people/Huminaatio/sounds/159346/",
+"author": "Huminaatio",
+"lic": "CC0"
+},
+{
+"file": "vacuum_cleaner-2.mp3",
+"src": "2-141682-B-36.wav",
+"title": "Vacuum Cleaner switch on, run, switch off 2.aif",
+"url": "http://www.freesound.org/people/DJ%20Burnham/sounds/141682/",
+"author": "DJ Burnham",
+"lic": "CC0"
+}
+],
+"pouring_water": [
+{
+"file": "pouring_water-1.mp3",
+"src": "1-51436-A-17.wav",
+"title": "pouring_water_6.wav",
+"url": "http://www.freesound.org/people/vibe_crc/sounds/51436/",
+"author": "vibe_crc",
+"lic": "CC0"
+},
+{
+"file": "pouring_water-2.mp3",
+"src": "3-108451-A-17.wav",
+"title": "Pouring Into Glass.wav",
+"url": "http://www.freesound.org/people/Swoboman87/sounds/108451/",
+"author": "Swoboman87",
+"lic": "CC0"
+}
+],
+"siren": [
+{
+"file": "siren-1.mp3",
+"src": "5-117118-A-42.wav",
+"title": "siren_low.wav",
+"url": "http://www.freesound.org/people/UncleSigmund/sounds/117118/",
+"author": "UncleSigmund",
+"lic": "CC0"
+},
+{
+"file": "siren-2.mp3",
+"src": "4-121532-A-42.wav",
+"title": "01052010 Tornado siren test.flac",
+"url": "http://www.freesound.org/people/thaighaudio/sounds/121532/",
+"author": "thaighaudio",
+"lic": "CC0"
+}
+],
+"washing_machine": [
+{
+"file": "washing_machine-1.mp3",
+"src": "3-182710-A-35.wav",
+"title": "washing machine000.aif",
+"url": "http://www.freesound.org/people/FEAMEIS/sounds/182710/",
+"author": "FEAMEIS",
+"lic": "CC0"
+},
+{
+"file": "washing_machine-2.mp3",
+"src": "3-151273-A-35.wav",
+"title": "Washing Machine Full Cycle.aif",
+"url": "http://www.freesound.org/people/timgormly/sounds/151273/",
+"author": "timgormly",
+"lic": "CC0"
+}
+],
+"brushing_teeth": [
+{
+"file": "brushing_teeth-1.mp3",
+"src": "3-139331-A-27.wav",
+"title": "Brushing teeth.wav",
+"url": "http://www.freesound.org/people/FunnyMan374/sounds/139331/",
+"author": "FunnyMan374",
+"lic": "CC0"
+},
+{
+"file": "brushing_teeth-2.mp3",
+"src": "3-118069-A-27.wav",
+"title": "brushteeth.wav",
+"url": "http://www.freesound.org/people/ipears1/sounds/118069/",
+"author": "ipears1",
+"lic": "CC0"
+}
+],
+"toilet_flush": [
+{
+"file": "toilet_flush-1.mp3",
+"src": "2-74977-A-18.wav",
+"title": "Toilet Flush.wav",
+"url": "http://www.freesound.org/people/CBeeching/sounds/74977/",
+"author": "CBeeching",
+"lic": "CC0"
+},
+{
+"file": "toilet_flush-2.mp3",
+"src": "2-72677-A-18.wav",
+"title": "toilet_flush_twice.wav",
+"url": "http://www.freesound.org/people/j1987/sounds/72677/",
+"author": "j1987",
+"lic": "CC0"
+}
+],
+"can_opening": [
+{
+"file": "can_opening-1.mp3",
+"src": "3-166546-A-34.wav",
+"title": "openning can.wav",
+"url": "http://www.freesound.org/people/Nic3_one/sounds/166546/",
+"author": "Nic3_one",
+"lic": "CC0"
+},
+{
+"file": "can_opening-2.mp3",
+"src": "2-81112-A-34.wav",
+"title": "12 soda can TLM_05 -AIFF 48:24.aiff",
+"url": "http://www.freesound.org/people/Josh%20Herman/sounds/81112/",
+"author": "Josh Herman",
+"lic": "CC0"
+}
+],
+"clapping": [
+{
+"file": "clapping-1.mp3",
+"src": "1-115921-A-22.wav",
+"title": "Clapping, Small audience, far away.wav",
+"url": "http://www.freesound.org/people/issalcake/sounds/115921/",
+"author": "issalcake",
+"lic": "CC0"
+},
+{
+"file": "clapping-2.mp3",
+"src": "1-115920-B-22.wav",
+"title": "Clapping, Medium Audience, slow to fast.wav",
+"url": "http://www.freesound.org/people/issalcake/sounds/115920/",
+"author": "issalcake",
+"lic": "CC0"
+}
+],
+"laughing": [
+{
+"file": "laughing-1.mp3",
+"src": "4-164243-A-26.wav",
+"title": "Young girl laughing uncontrollably.mp3",
+"url": "http://www.freesound.org/people/caculo/sounds/164243/",
+"author": "caculo",
+"lic": "CC0"
+},
+{
+"file": "laughing-2.mp3",
+"src": "1-36164-A-26.wav",
+"title": "laughs2.wav",
+"url": "http://www.freesound.org/people/sagetyrtle/sounds/36164/",
+"author": "sagetyrtle",
+"lic": "CC0"
+}
+],
+"snoring": [
+{
+"file": "snoring-1.mp3",
+"src": "5-233312-A-28.wav",
+"title": "Man Snoring - Freesound.wav",
+"url": "http://www.freesound.org/people/trentbh/sounds/233312/",
+"author": "trentbh",
+"lic": "CC0"
+},
+{
+"file": "snoring-2.mp3",
+"src": "4-183882-B-28.wav",
+"title": "snoring 04.01.11.wav",
+"url": "http://www.freesound.org/people/toiletrolltube/sounds/183882/",
+"author": "toiletrolltube",
+"lic": "CC0"
+}
+],
+"sneezing": [
+{
+"file": "sneezing-1.mp3",
+"src": "2-93030-A-21.wav",
+"title": "Sneeze and Sniffle 44hzStereo.wav",
+"url": "http://www.freesound.org/people/higginsdj/sounds/93030/",
+"author": "higginsdj",
+"lic": "CC0"
+},
+{
+"file": "sneezing-2.mp3",
+"src": "2-130979-A-21.wav",
+"title": "Sneeze AC 1.wav",
+"url": "http://www.freesound.org/people/oldedgar/sounds/130979/",
+"author": "oldedgar",
+"lic": "CC0"
+}
+],
+"crying_baby": [
+{
+"file": "crying_baby-1.mp3",
+"src": "3-151080-A-20.wav",
+"title": "01 baby crying hard and long.wav",
+"url": "http://www.freesound.org/people/PickleJones/sounds/151080/",
+"author": "PickleJones",
+"lic": "CC0"
+},
+{
+"file": "crying_baby-2.mp3",
+"src": "2-66637-A-20.wav",
+"title": "crying baby merged.wav",
+"url": "http://www.freesound.org/people/bonehead/sounds/66637/",
+"author": "bonehead",
+"lic": "CC0"
+}
+],
+"drinking_sipping": [
+{
+"file": "drinking_sipping-1.mp3",
+"src": "3-169907-A-29.wav",
+"title": "Eating Oatmeal",
+"url": "http://www.freesound.org/people/qubodup/sounds/169907/",
+"author": "qubodup",
+"lic": "CC0"
+},
+{
+"file": "drinking_sipping-2.mp3",
+"src": "2-122763-B-29.wav",
+"title": "gurgles.aif",
+"url": "http://www.freesound.org/people/alienistcog/sounds/122763/",
+"author": "alienistcog",
+"lic": "CC0"
+}
+],
+"hand_saw": [
+{
+"file": "hand_saw-1.mp3",
+"src": "3-96606-B-49.wav",
+"title": "Wood saw.wav",
+"url": "http://www.freesound.org/people/Ohrwurm/sounds/96606/",
+"author": "Ohrwurm",
+"lic": "CC0"
+},
+{
+"file": "hand_saw-2.mp3",
+"src": "3-96606-A-49.wav",
+"title": "Wood saw.wav",
+"url": "http://www.freesound.org/people/Ohrwurm/sounds/96606/",
+"author": "Ohrwurm",
+"lic": "CC0"
+}
+],
+"airplane": [
+{
+"file": "airplane-1.mp3",
+"src": "5-235956-A-47.wav",
+"title": "Airliner Flyby.wav",
+"url": "http://www.freesound.org/people/mffm/sounds/235956/",
+"author": "mffm",
+"lic": "CC0"
+},
+{
+"file": "airplane-2.mp3",
+"src": "5-215449-A-47.wav",
+"title": "ps_flighby_highgain_01.wav",
+"url": "http://www.freesound.org/people/laribum/sounds/215449/",
+"author": "laribum",
+"lic": "CC0"
+}
+],
+"chirping_birds": [
+{
+"file": "chirping_birds-1.mp3",
+"src": "4-223127-A-14.wav",
+"title": "general birdsong.wav",
+"url": "http://www.freesound.org/people/keweldog/sounds/223127/",
+"author": "keweldog",
+"lic": "CC0"
+},
+{
+"file": "chirping_birds-2.mp3",
+"src": "4-223125-A-14.wav",
+"title": "starlings2.wav",
+"url": "http://www.freesound.org/people/keweldog/sounds/223125/",
+"author": "keweldog",
+"lic": "CC0"
+}
+],
+"frog": [
+{
+"file": "frog-1.mp3",
+"src": "5-187201-B-4.wav",
+"title": "file0306_pond_frog_bird_3.wav",
+"url": "http://www.freesound.org/people/maphill/sounds/187201/",
+"author": "maphill",
+"lic": "CC0"
+},
+{
+"file": "frog-2.mp3",
+"src": "5-187201-A-4.wav",
+"title": "file0306_pond_frog_bird_3.wav",
+"url": "http://www.freesound.org/people/maphill/sounds/187201/",
+"author": "maphill",
+"lic": "CC0"
+}
+],
+"rain": [
+{
+"file": "rain-1.mp3",
+"src": "1-63871-A-10.wav",
+"title": "rain.mp3",
+"url": "http://www.freesound.org/people/liliangorini/sounds/63871/",
+"author": "liliangorini",
+"lic": "CC0"
+},
+{
+"file": "rain-2.mp3",
+"src": "1-56311-A-10.wav",
+"title": "Rain_06.wav",
+"url": "http://www.freesound.org/people/Q.K./sounds/56311/",
+"author": "Q.K.",
+"lic": "CC0"
+}
+],
+"wind": [
+{
+"file": "wind-1.mp3",
+"src": "5-179496-A-16.wav",
+"title": "111224_04 wind.WAV",
+"url": "http://www.freesound.org/people/toiletrolltube/sounds/179496/",
+"author": "toiletrolltube",
+"lic": "CC0"
+},
+{
+"file": "wind-2.mp3",
+"src": "5-117773-A-16.wav",
+"title": "roaring wind.aiff",
+"url": "http://www.freesound.org/people/klangfabrik/sounds/117773/",
+"author": "klangfabrik",
+"lic": "CC0"
+}
+],
+"thunderstorm": [
+{
+"file": "thunderstorm-1.mp3",
+"src": "1-101296-A-19.wav",
+"title": "thunderstorm.wav",
+"url": "http://www.freesound.org/people/raoul_slayer/sounds/101296/",
+"author": "raoul_slayer",
+"lic": "CC0"
+},
+{
+"file": "thunderstorm-2.mp3",
+"src": "4-161519-A-19.wav",
+"title": "20120720Thunder.wav",
+"url": "http://www.freesound.org/people/daveincamas/sounds/161519/",
+"author": "daveincamas",
+"lic": "CC0"
+}
+],
+"sea_waves": [
+{
+"file": "sea_waves-1.mp3",
+"src": "5-208810-B-11.wav",
+"title": "sea waves atmo.wav",
+"url": "http://www.freesound.org/people/monotraum/sounds/208810/",
+"author": "monotraum",
+"lic": "CC0"
+},
+{
+"file": "sea_waves-2.mp3",
+"src": "4-204618-A-11.wav",
+"title": "8am.wav",
+"url": "http://www.freesound.org/people/jareilly/sounds/204618/",
+"author": "jareilly",
+"lic": "CC0"
+}
+],
+"cow": [
+{
+"file": "cow-1.mp3",
+"src": "4-174860-A-3.wav",
+"title": "Cows herd walking in the bush in Africa (Mali)",
+"url": "http://www.freesound.org/people/felix.blume/sounds/174860/",
+"author": "felix.blume",
+"lic": "CC0"
+},
+{
+"file": "cow-2.mp3",
+"src": "3-160993-A-3.wav",
+"title": "Stockyard 1.wav",
+"url": "http://www.freesound.org/people/ecfike/sounds/160993/",
+"author": "ecfike",
+"lic": "CC0"
+}
+],
+"door_wood_creaks": [
+{
+"file": "door_wood_creaks-1.mp3",
+"src": "1-51805-A-33.wav",
+"title": "door hinge squeak creak o,c.aiff",
+"url": "http://www.freesound.org/people/kyles/sounds/51805/",
+"author": "kyles",
+"lic": "CC0"
+},
+{
+"file": "door_wood_creaks-2.mp3",
+"src": "1-51805-E-33.wav",
+"title": "door hinge squeak creak o,c.aiff",
+"url": "http://www.freesound.org/people/kyles/sounds/51805/",
+"author": "kyles",
+"lic": "CC0"
+}
+],
+"crackling_fire": [
+{
+"file": "crackling_fire-1.mp3",
+"src": "4-182368-A-12.wav",
+"title": "Fire Crackling 02.mp3",
+"url": "http://www.freesound.org/people/kingsrow/sounds/182368/",
+"author": "kingsrow",
+"lic": "CC0"
+},
+{
+"file": "crackling_fire-2.mp3",
+"src": "4-181563-A-12.wav",
+"title": "Fire Crackling 01.wav",
+"url": "http://www.freesound.org/people/kingsrow/sounds/181563/",
+"author": "kingsrow",
+"lic": "CC0"
+}
+],
+"train": [
+{
+"file": "train-1.mp3",
+"src": "4-165791-B-45.wav",
+"title": "Between two wagons on a train in Argentina",
+"url": "http://www.freesound.org/people/felix.blume/sounds/165791/",
+"author": "felix.blume",
+"lic": "CC0"
+},
+{
+"file": "train-2.mp3",
+"src": "4-165791-A-45.wav",
+"title": "Between two wagons on a train in Argentina",
+"url": "http://www.freesound.org/people/felix.blume/sounds/165791/",
+"author": "felix.blume",
+"lic": "CC0"
+}
+],
+"dog": [
+{
+"file": "dog-1.mp3",
+"src": "2-117271-A-0.wav",
+"title": "angry_dogs.wav",
+"url": "http://www.freesound.org/people/polipa/sounds/117271/",
+"author": "polipa",
+"lic": "CC0"
+},
+{
+"file": "dog-2.mp3",
+"src": "1-30226-A-0.wav",
+"title": "dogs.aiff",
+"url": "http://www.freesound.org/people/Heigh-hoo/sounds/30226/",
+"author": "Heigh-hoo",
+"lic": "CC0"
+}
+],
+"cat": [
+{
+"file": "cat-1.mp3",
+"src": "4-133047-B-5.wav",
+"title": "MAD CAT !.wav",
+"url": "http://www.freesound.org/people/temawas/sounds/133047/",
+"author": "temawas",
+"lic": "CC0"
+},
+{
+"file": "cat-2.mp3",
+"src": "4-133047-A-5.wav",
+"title": "MAD CAT !.wav",
+"url": "http://www.freesound.org/people/temawas/sounds/133047/",
+"author": "temawas",
+"lic": "CC0"
+}
+],
+"sheep": [
+{
+"file": "sheep-1.mp3",
+"src": "3-140199-D-8.wav",
+"title": "A herd of sheep are bleating, some dogs are barking and the horses are neighing... in a field in patagonia (Tierra del Fuego, Argentina).",
+"url": "http://www.freesound.org/people/felix.blume/sounds/140199/",
+"author": "felix.blume",
+"lic": "CC0"
+},
+{
+"file": "sheep-2.mp3",
+"src": "3-140199-C-8.wav",
+"title": "A herd of sheep are bleating, some dogs are barking and the horses are neighing... in a field in patagonia (Tierra del Fuego, Argentina).",
+"url": "http://www.freesound.org/people/felix.blume/sounds/140199/",
+"author": "felix.blume",
+"lic": "CC0"
+}
+],
+"rooster": [
+{
+"file": "rooster-1.mp3",
+"src": "2-81270-A-1.wav",
+"title": "animals-hen-rooster-Blaafarveverket-090721.wav",
+"url": "http://www.freesound.org/people/ra_gun/sounds/81270/",
+"author": "ra_gun",
+"lic": "CC0"
+},
+{
+"file": "rooster-2.mp3",
+"src": "3-116135-A-1.wav",
+"title": "Rooster and chicks.mp3",
+"url": "http://www.freesound.org/people/Barbamiz/sounds/116135/",
+"author": "Barbamiz",
+"lic": "CC0"
+}
+],
+"insects": [
+{
+"file": "insects-1.mp3",
+"src": "4-191246-A-7.wav",
+"title": "110703_05 blue bottle fly.WAV",
+"url": "http://www.freesound.org/people/toiletrolltube/sounds/191246/",
+"author": "toiletrolltube",
+"lic": "CC0"
+},
+{
+"file": "insects-2.mp3",
+"src": "4-143118-B-7.wav",
+"title": "Fly_versus_Lamp.wav",
+"url": "http://www.freesound.org/people/1pjladd2/sounds/143118/",
+"author": "1pjladd2",
+"lic": "CC0"
+}
+],
+"footsteps": [
+{
+"file": "footsteps-1.mp3",
+"src": "1-155858-B-25.wav",
+"title": "Footsteps in Factory Hall on Wood and Concrete.wav",
+"url": "http://www.freesound.org/people/RutgerMuller/sounds/155858/",
+"author": "RutgerMuller",
+"lic": "CC0"
+},
+{
+"file": "footsteps-2.mp3",
+"src": "1-155858-D-25.wav",
+"title": "Footsteps in Factory Hall on Wood and Concrete.wav",
+"url": "http://www.freesound.org/people/RutgerMuller/sounds/155858/",
+"author": "RutgerMuller",
+"lic": "CC0"
+}
+],
+"pig": [
+{
+"file": "pig-1.mp3",
+"src": "1-208757-E-2.wav",
+"title": "Pigs in an intensive pigs farming, in Texas, USA.",
+"url": "http://www.freesound.org/people/felix.blume/sounds/208757/",
+"author": "felix.blume",
+"lic": "CC0"
+},
+{
+"file": "pig-2.mp3",
+"src": "1-260640-A-2.wav",
+"title": "Pig Squealing.mp3",
+"url": "http://www.freesound.org/people/TheAcidRomance/sounds/260640/",
+"author": "TheAcidRomance",
+"lic": "CC0"
+}
+],
+"hen": [
+{
+"file": "hen-1.mp3",
+"src": "4-234879-A-6.wav",
+"title": "chickensMS.wav",
+"url": "http://www.freesound.org/people/leosalom/sounds/234879/",
+"author": "leosalom",
+"lic": "CC0"
+},
+{
+"file": "hen-2.mp3",
+"src": "4-232495-A-6.wav",
+"title": "Polish hen cackling.wav",
+"url": "http://www.freesound.org/people/eksaa/sounds/232495/",
+"author": "eksaa",
+"lic": "CC0"
+}
+],
+"crow": [
+{
+"file": "crow-1.mp3",
+"src": "4-173865-A-9.wav",
+"title": "ANML_M_Ext_Crows_Flock_Angry2.wav",
+"url": "http://www.freesound.org/people/conleec/sounds/173865/",
+"author": "conleec",
+"lic": "CC0"
+},
+{
+"file": "crow-2.mp3",
+"src": "4-138344-A-9.wav",
+"title": "crow.wav",
+"url": "http://www.freesound.org/people/UncleSigmund/sounds/138344/",
+"author": "UncleSigmund",
+"lic": "CC0"
+}
+],
+"water_drops": [
+{
+"file": "water_drops-1.mp3",
+"src": "2-139748-B-15.wav",
+"title": "water dripping 1",
+"url": "http://www.freesound.org/people/hybu/sounds/139748/",
+"author": "hybu",
+"lic": "CC0"
+},
+{
+"file": "water_drops-2.mp3",
+"src": "2-124564-A-15.wav",
+"title": "water-drip-rhythm.aif",
+"url": "http://www.freesound.org/people/alienistcog/sounds/124564/",
+"author": "alienistcog",
+"lic": "CC0"
+}
+]
+}
