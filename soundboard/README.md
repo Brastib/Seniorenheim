@@ -6,7 +6,7 @@ Die Schüler spielen die Klänge ab, die Gruppe rät. Beim Vorlesen spielt einer
 `index.html` braucht den Ordner `sounds/` daneben. Wegen `fetch()` muss die Seite über einen Webserver laufen
 (z.B. GitHub Pages oder `python3 -m http.server`), nicht per Doppelklick als Datei.
 
-- **Alltag (24):** Wecker, Uhr, Kirchenglocken, Autohupe, Klopfen, Staubsauger, Wasser eingießen, Wasser kocht, Waschmaschine, Zähneputzen, Klospülung, Dose öffnen, Schreibmaschine, Radio-Sender suchen, Jahrmarkt-Karussell, Windspiel, Klatschen, Lachen, Schnarchen, Niesen, Baby weint, Trinken, Säge, Flugzeug
+- **Alltag (23):** Wecker, Uhr, Kirchenglocken, Autohupe, Klopfen, Staubsauger, Wasser eingießen, Wasser kocht, Waschmaschine, Zähneputzen, Klospülung, Dose öffnen, Schreibmaschine, Radio-Sender suchen, Jahrmarkt-Karussell, Windspiel, Klatschen, Lachen, Schnarchen, Niesen, Baby weint, Säge, Flugzeug
 - **Natur & Geschichten (25):** Vögel, Bach, Regen, Gewitter, Sturm, Meer, Möwen, Kaminfeuer, Zug, knarrende Tür, Schritte auf Kies, Schritte im Schnee, Frösche, Kuh, Pferd, Schaf, Schwein, Hühner, Hahn, Hund, Katze, Specht, Eule, Krähe, Wolf
 - **Ratespiel:** Name und Tipp sieht nur, wer das Handy hält. Zufällige Reihenfolge.
 - **Geschichte:** Klänge in Buch-Reihenfolge mit Stichwort, einer tippt beim Vorlesen den nächsten an.
