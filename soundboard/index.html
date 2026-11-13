@@ -11,6 +11,8 @@
   --bg:#EEF2EF; --surface:#FFFFFF; --fg:#17262A; --muted:#55676A; --line:#CBD6D2;
   --alltag:#25577F; --alltag-soft:#DCE8F2;
   --natur:#2F6D45; --natur-soft:#DCEDE1;
+  --tiere:#85531A; --tiere-soft:#F4E7D4;
+  --orte:#2B6A70; --orte-soft:#D7EBEC;
   --eigen:#7A4E8C; --eigen-soft:#EDE2F2;
   --play:#E3A92B; --play-ink:#2A1F05; --warn:#A2401F;
   --f-display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
@@ -21,6 +23,8 @@
     --bg:#101716; --surface:#1A2422; --fg:#E7EFEC; --muted:#9DB0AB; --line:#2E3D3A;
     --alltag:#8AB8E0; --alltag-soft:#1C2E3D;
     --natur:#8ECB9F; --natur-soft:#1A3124;
+    --tiere:#E4B57C; --tiere-soft:#3A2A16;
+    --orte:#86C8CD; --orte-soft:#173133;
     --eigen:#CDA6DD; --eigen-soft:#2E2235;
     --play:#F0BE52; --play-ink:#241A03; --warn:#F09A78;
     color-scheme:dark;
@@ -30,6 +34,8 @@
   --bg:#101716; --surface:#1A2422; --fg:#E7EFEC; --muted:#9DB0AB; --line:#2E3D3A;
   --alltag:#8AB8E0; --alltag-soft:#1C2E3D;
   --natur:#8ECB9F; --natur-soft:#1A3124;
+  --tiere:#E4B57C; --tiere-soft:#3A2A16;
+  --orte:#86C8CD; --orte-soft:#173133;
   --eigen:#CDA6DD; --eigen-soft:#2E2235;
   --play:#F0BE52; --play-ink:#241A03; --warn:#F09A78;
   color-scheme:dark;
@@ -43,9 +49,18 @@ header p{margin:8px 0 0;color:var(--muted);max-width:60ch}
 
 .bar{padding-block:4px 14px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--line)}
 .tabs{display:flex;gap:8px;flex-wrap:wrap}
-.tab{font:700 18px/1.2 var(--f-body);padding:12px 18px;border-radius:999px;border:2px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:52px}
+.tab{font:700 16px/1.2 var(--f-body);padding:10px 14px;border-radius:999px;border:2px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:46px}
 .tab[aria-selected="true"][data-cat="alltag"]{background:var(--alltag);border-color:var(--alltag);color:var(--surface)}
 .tab[aria-selected="true"][data-cat="natur"]{background:var(--natur);border-color:var(--natur);color:var(--surface)}
+.tab[aria-selected="true"][data-cat="tiere"]{background:var(--tiere);border-color:var(--tiere);color:var(--surface)}
+.tab[aria-selected="true"][data-cat="orte"]{background:var(--orte);border-color:var(--orte);color:var(--surface)}
+.tabs.tools{border-top:1px dashed var(--line);padding-top:10px}
+.tabs.tools .tab{font-size:15px;min-height:42px;padding:8px 12px}
+.search{display:flex;gap:8px;align-items:center}
+.search input{flex:1;min-width:0;font:18px var(--f-body);padding:12px 14px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg)}
+.search .btn{padding:12px 14px}
+.grouphead{grid-column:1/-1;margin:8px 0 0;font:800 20px/1.2 var(--f-display);color:var(--muted)}
+#q-cat{font:700 18px var(--f-body);padding:10px 12px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);max-width:100%}
 .tab[aria-selected="true"][data-cat="eigen"]{background:var(--eigen);border-color:var(--eigen);color:var(--surface)}
 .tab[aria-selected="true"][data-cat="quiz"],.tab[aria-selected="true"][data-cat="story"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
 #quiz .btn:not(.ghost),#story .btn:not(.ghost){background:var(--alltag)}
@@ -61,6 +76,8 @@ main{padding-bottom:70px}
 .tile{display:flex;flex-direction:column;gap:6px;min-width:0}
 .play{--c:var(--alltag);--soft:var(--alltag-soft);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:150px;padding:14px 10px 12px;border-radius:18px;border:3px solid transparent;background:var(--soft);color:var(--fg);cursor:pointer;font-family:var(--f-body);text-align:center;transition:transform .08s ease}
 .play[data-cat="natur"]{--c:var(--natur);--soft:var(--natur-soft)}
+.play[data-cat="tiere"]{--c:var(--tiere);--soft:var(--tiere-soft)}
+.play[data-cat="orte"]{--c:var(--orte);--soft:var(--orte-soft)}
 .play[data-custom]{--c:var(--eigen);--soft:var(--eigen-soft)}
 .play:active{transform:scale(.97)}
 .play:focus-visible,.tab:focus-visible,.stop:focus-visible,.qplay:focus-visible,.sbtn:focus-visible,.seg label:focus-within,.btn:focus-visible{outline:3px solid var(--play);outline-offset:3px}
@@ -137,21 +154,27 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
 <div class="wrap" lang="de">
   <header>
     <h1>Klangkoffer</h1>
-    <p>Echte Geräusche zum Erraten und zum Vorlesen. Einmal antippen spielt den Klang, nochmal antippen stoppt ihn. Mehrere Klänge können gleichzeitig laufen, zum Beispiel Regen und Gewitter.</p>
+    <p>Echte Geräusche zum Erraten und Vorlesen. Antippen spielt, nochmal antippen stoppt. Mehrere Klänge dürfen gleichzeitig laufen.</p>
   </header>
 
   <div class="bar">
     <div class="tabs" role="tablist" aria-label="Kategorie">
-      <button class="tab" role="tab" data-cat="alltag" id="tab-alltag" aria-selected="true">Alltag</button>
-      <button class="tab" role="tab" data-cat="natur" id="tab-natur" aria-selected="false">Natur &amp; Geschichten</button>
+      <button class="tab" role="tab" data-cat="alltag" id="tab-alltag" aria-selected="true">Zuhause</button>
+      <button class="tab" role="tab" data-cat="tiere" id="tab-tiere" aria-selected="false">Tiere</button>
+      <button class="tab" role="tab" data-cat="natur" id="tab-natur" aria-selected="false">Natur &amp; Wetter</button>
+      <button class="tab" role="tab" data-cat="orte" id="tab-orte" aria-selected="false">Unterwegs &amp; Orte</button>
+    </div>
+    <div class="tabs tools" role="tablist" aria-label="Werkzeuge">
       <button class="tab" role="tab" data-cat="quiz" id="tab-quiz" aria-selected="false">Ratespiel</button>
       <button class="tab" role="tab" data-cat="story" id="tab-story" aria-selected="false">Geschichte</button>
       <button class="tab" role="tab" data-cat="eigen" id="tab-eigen" aria-selected="false">Aufnahmen</button>
     </div>
     <div class="controls">
       <label class="switch"><input type="checkbox" id="opt-loop"> Dauerschleife</label>
+      <label class="switch"><input type="checkbox" id="opt-soft" checked> Sanft einblenden</label>
       <label class="vol" for="opt-vol">Lautstärke <input type="range" id="opt-vol" min="0" max="100" value="70"></label>
     </div>
+    <div class="search"><input type="search" id="search" placeholder="Klang suchen, z.B. Kuh oder Regen" aria-label="Klang suchen" autocomplete="off"><button class="btn ghost" id="search-clear" hidden aria-label="Suche löschen">✕</button></div>
     <p class="small" id="load" role="status"></p>
     <p class="msg" id="status" role="alert"></p>
   </div>
@@ -161,11 +184,8 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
   <main>
     <div class="grid" id="grid" role="tabpanel" aria-live="polite"></div>
     <div id="quiz" class="panel" hidden>
-      <div class="seg" role="radiogroup" aria-label="Welche Klänge">
-        <label><input type="radio" name="qcat" value="alltag" checked> Alltag</label>
-        <label><input type="radio" name="qcat" value="natur"> Natur</label>
-        <label><input type="radio" name="qcat" value="beide"> Beides</label>
-      </div>
+      <label for="q-cat" class="small">Welche Klänge?</label>
+      <select id="q-cat"></select>
       <p class="qcount" id="q-count"></p>
       <div class="qcard"><span class="ico" id="q-ico" aria-hidden="true"></span><div class="qtext"><p class="qname" id="q-name"></p><p class="qtip" id="q-tip"></p></div></div>
       <button class="qplay" id="q-play">▶ Abspielen</button>
@@ -194,7 +214,7 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
       <form class="form" id="own-form">
         <label for="own-file">Datei<input type="file" id="own-file" accept="audio/*" required></label>
         <label for="own-name">Name auf dem Knopf<input type="text" id="own-name" maxlength="30" placeholder="z.B. Rasenmäher"></label>
-        <label for="own-cat">Kategorie<select id="own-cat"><option value="alltag">Alltag</option><option value="natur">Natur &amp; Geschichten</option></select></label>
+        <label for="own-cat">Kategorie<select id="own-cat"></select></label>
         <label for="own-rep">Ersetzt Knopf<select id="own-rep"><option value="">Nein, neuer Knopf</option></select></label>
         <button class="btn" type="submit" id="own-add">Hinzufügen</button>
       </form>
@@ -219,11 +239,13 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
     <section>
       <h2>Tipps für den Besuch</h2>
       <ul>
+        <li>„Sanft einblenden“ (an) lässt Hintergrundklänge und laute Klänge langsam lauter werden, damit niemand erschrickt. Beim Stoppen wird jeder Klang kurz ausgeblendet.</li>
+        <li>Suche: Oben einen Namen eintippen, zum Beispiel „Kuh“. Dann erscheinen passende Klänge aus allen Bereichen.</li>
         <li>Leise anfangen. Plötzliche laute Klänge (markiert mit „plötzlich“) können Menschen mit Demenz erschrecken.</li>
         <li>Ratespiel: Ihr spielt ab, die Gruppe rät. Den Namen und einen Tipp seht nur ihr auf dem Handy.</li>
         <li>Geschichte: Klänge vorher in der Reihenfolge des Buchs eintragen, mit Stichwort. Beim Vorlesen tippt einer einfach den nächsten an.</li>
         <li>Hintergrundklänge wie Regen, Meer oder Feuer laufen 15 bis 25 Sekunden. Mit Dauerschleife laufen sie weiter, bis du stoppst. Gut als Hintergrund beim Vorlesen.</li>
-        <li>Vor dem Besuch die Seite mit Internet öffnen und warten, bis oben „Alle 48 Klänge sind geladen“ steht. Dann die Seite offen lassen, so klappt es auch bei schlechtem WLAN im Heim.</li>
+        <li>Vor dem Besuch die Seite mit Internet öffnen und warten, bis oben „Alle 60 Klänge sind geladen“ steht. Dann die Seite offen lassen, so klappt es auch bei schlechtem WLAN im Heim.</li>
         <li>Die Seite hält den Bildschirm an, solange sie offen ist (klappt nicht in jedem Browser). Geht das Handy doch aus: wieder anmachen und den Klang einfach nochmal antippen, der Ton startet dann neu.</li>
         <li>iPhone: Stummschalter an der Seite ausschalten, sonst bleibt es still. Über Bluetooth-Box klingt es deutlich besser.</li>
       </ul>
@@ -237,16 +259,15 @@ const $=s=>document.querySelector(s);
 let ctx=null, master=null, comp=null;
 const active=new Map(), loading=new Set();
 const store={get(k,d){try{const v=localStorage.getItem("kk-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("kk-"+k,JSON.stringify(v))}catch(e){}}};
-const settings={tab:store.get("tab","alltag"),loop:store.get("loop",false),vol:store.get("vol",70),variant:store.get("variant2",{})};
+const settings={tab:store.get("tab","alltag"),loop:store.get("loop",false),vol:store.get("vol",70),variant:store.get("variant2",{}),soft:store.get("soft",true)};
 
 /* ---------- Die Klänge: echte Aufnahmen (ESC-50, Blanket, Moodist), teils mit 2 Varianten ----------
    amb = Hintergrundklang, wird nahtlos verlängert; loud = kann erschrecken */
 const SOUNDS=[
  {id:"wecker",cat:"alltag",name:"Wecker",ico:"⏰",files:["clock_alarm-1.mp3", "clock_alarm-2.mp3"],loud:true},
  {id:"uhr",cat:"alltag",name:"Uhr tickt",ico:"🕰️",files:["clock_tick-1.mp3", "clock_tick-2.mp3"],amb:true},
- {id:"kirche",cat:"alltag",name:"Kirchenglocken",ico:"⛪",files:["esc-5-188716-A-46.mp3", "esc-3-87936-A-46.mp3", "esc-3-139109-A-46.mp3"],amb:true},
- {id:"hupe",cat:"alltag",name:"Autohupe",ico:"🚗",files:["esc-3-146697-A-43.mp3", "esc-1-254507-A-43.mp3", "esc-4-175846-A-43.mp3"],loud:true},
  {id:"klopfen",cat:"alltag",name:"Klopfen an der Tür",ico:"✊",files:["door_wood_knock-1.mp3", "door_wood_knock-2.mp3"]},
+ {id:"tuer",cat:"alltag",name:"Knarrende Tür",ico:"🚪",files:["door_wood_creaks-1.mp3", "door_wood_creaks-2.mp3"]},
  {id:"sauger",cat:"alltag",name:"Staubsauger",ico:"🧹",files:["esc-5-263902-A-36.mp3", "esc-5-182012-A-36.mp3", "esc-5-182010-A-36.mp3"],amb:true},
  {id:"eingiessen",cat:"alltag",name:"Wasser eingießen",ico:"🚰",files:["pouring_water-1.mp3", "pouring_water-2.mp3"]},
  {id:"kochen",cat:"alltag",name:"Wasser kocht",ico:"♨️",files:["neu-kochen-1.mp3"],amb:true},
@@ -256,7 +277,8 @@ const SOUNDS=[
  {id:"dose",cat:"alltag",name:"Dose öffnen",ico:"🥫",files:["esc-5-244327-A-34.mp3", "esc-5-236299-A-34.mp3", "esc-5-252248-A-34.mp3"]},
  {id:"schreibm",cat:"alltag",name:"Schreibmaschine",ico:"⌨️",files:["neu-schreibm-1.mp3"],amb:true},
  {id:"radio",cat:"alltag",name:"Radio: Sender suchen",ico:"📻",files:["neu-radio-1.mp3"],amb:true},
- {id:"karussell",cat:"alltag",name:"Jahrmarkt-Karussell",ico:"🎠",files:["neu-karussell-1.mp3"],amb:true},
+ {id:"dia",cat:"alltag",name:"Dia-Projektor",ico:"🎞️",files:["neu-dia-1.mp3"],amb:true},
+ {id:"zeitung",cat:"alltag",name:"Zeitung blättern",ico:"📰",files:["neu-zeitung-1.mp3"],amb:true},
  {id:"windspiel",cat:"alltag",name:"Windspiel",ico:"🎐",files:["neu-windspiel-1.mp3"],amb:true},
  {id:"klatschen",cat:"alltag",name:"Klatschen",ico:"👏",files:["clapping-1.mp3", "clapping-2.mp3"],amb:true},
  {id:"lachen",cat:"alltag",name:"Lachen",ico:"😄",files:["laughing-1.mp3", "laughing-2.mp3"]},
@@ -264,35 +286,49 @@ const SOUNDS=[
  {id:"niesen",cat:"alltag",name:"Niesen",ico:"🤧",files:["sneezing-1.mp3", "sneezing-2.mp3"]},
  {id:"baby",cat:"alltag",name:"Baby weint",ico:"👶",files:["crying_baby-1.mp3", "crying_baby-2.mp3"]},
  {id:"saege",cat:"alltag",name:"Säge",ico:"🔨",files:["hand_saw-1.mp3", "hand_saw-2.mp3"],amb:true},
- {id:"flugzeug",cat:"alltag",name:"Flugzeug",ico:"✈️",files:["esc-5-215447-A-47.mp3", "esc-5-215445-A-47.mp3", "esc-3-193767-A-47.mp3"],amb:true},
 
- {id:"voegel",cat:"natur",name:"Vogelgezwitscher",ico:"🐦",files:["neu-voegel-1.mp3", "neu-voegel-2.mp3", "esc-5-243459-B-14.mp3"],amb:true},
- {id:"bach",cat:"natur",name:"Bach",ico:"🏞️",files:["neu-bach-1.mp3", "neu-bach-2.mp3"],amb:true},
+ {id:"voegel",cat:"tiere",name:"Vogelgezwitscher",ico:"🐦",files:["neu-voegel-1.mp3", "neu-voegel-2.mp3", "esc-5-243459-B-14.mp3"],amb:true},
+ {id:"moewen",cat:"tiere",name:"Möwen am Meer",ico:"🕊️",files:["neu-moewen-1.mp3"],amb:true},
+ {id:"specht",cat:"tiere",name:"Specht",ico:"🌳",files:["neu-specht-1.mp3"]},
+ {id:"eule",cat:"tiere",name:"Eule",ico:"🦉",files:["neu-eule-1.mp3"]},
+ {id:"kraehe",cat:"tiere",name:"Krähe",ico:"🌾",files:["crow-1.mp3", "crow-2.mp3"]},
+ {id:"hahn",cat:"tiere",name:"Hahn",ico:"🐓",files:["rooster-1.mp3", "rooster-2.mp3"]},
+ {id:"huhn",cat:"tiere",name:"Hühner",ico:"🐔",files:["esc-5-248341-A-6.mp3", "esc-4-253649-A-6.mp3", "neu-huhn-1.mp3"],amb:true},
+ {id:"kuh",cat:"tiere",name:"Kuh",ico:"🐄",files:["esc-4-213915-B-3.mp3", "neu-kuh-1.mp3", "esc-4-181955-C-3.mp3"]},
+ {id:"pferd",cat:"tiere",name:"Pferd galoppiert",ico:"🐎",files:["neu-pferd-1.mp3"]},
+ {id:"schaf",cat:"tiere",name:"Schaf",ico:"🐑",files:["esc-4-250864-A-8.mp3", "esc-4-188703-D-8.mp3", "esc-5-200329-B-8.mp3"]},
+ {id:"schwein",cat:"tiere",name:"Schwein",ico:"🐖",files:["esc-2-166644-C-2.mp3", "esc-3-253084-A-2.mp3", "esc-4-132383-B-2.mp3"]},
+ {id:"hund",cat:"tiere",name:"Hund",ico:"🐕",files:["dog-1.mp3", "dog-2.mp3"]},
+ {id:"katze",cat:"tiere",name:"Katze",ico:"🐈",files:["esc-4-149940-A-5.mp3", "esc-5-169983-A-5.mp3", "esc-1-79113-A-5.mp3"]},
+ {id:"schnurren",cat:"tiere",name:"Katze schnurrt",ico:"😺",files:["neu-schnurren-1.mp3"],amb:true},
+ {id:"frosch",cat:"tiere",name:"Frösche",ico:"🐸",files:["neu-frosch-1.mp3", "esc-2-52085-A-4.mp3", "esc-4-99193-A-4.mp3"],amb:true},
+ {id:"wolf",cat:"tiere",name:"Wolf heult",ico:"🐺",files:["neu-wolf-1.mp3"]},
+
  {id:"regen",cat:"natur",name:"Regen",ico:"🌧️",files:["neu-regen-1.mp3", "neu-regen-2.mp3"],amb:true},
  {id:"gewitter",cat:"natur",name:"Gewitter",ico:"⛈️",files:["neu-gewitter-1.mp3", "neu-gewitter-2.mp3"],amb:true,loud:true},
  {id:"wind",cat:"natur",name:"Sturm",ico:"🌬️",files:["neu-wind-1.mp3", "neu-wind-2.mp3"],amb:true},
  {id:"meer",cat:"natur",name:"Meeresrauschen",ico:"🌊",files:["neu-meer-1.mp3", "neu-meer-2.mp3"],amb:true},
- {id:"moewen",cat:"natur",name:"Möwen am Meer",ico:"🕊️",files:["neu-moewen-1.mp3"],amb:true},
+ {id:"bach",cat:"natur",name:"Bach",ico:"🏞️",files:["neu-bach-1.mp3", "neu-bach-2.mp3"],amb:true},
+ {id:"wasserfall",cat:"natur",name:"Wasserfall",ico:"💦",files:["neu-wasserfall-1.mp3"],amb:true},
  {id:"feuer",cat:"natur",name:"Kaminfeuer",ico:"🔥",files:["neu-feuer-1.mp3", "neu-feuer-2.mp3"],amb:true},
- {id:"zug",cat:"natur",name:"Zug",ico:"🚂",files:["neu-zug-1.mp3", "neu-zug-2.mp3"],amb:true},
- {id:"tuer",cat:"natur",name:"Knarrende Tür",ico:"🚪",files:["door_wood_creaks-1.mp3", "door_wood_creaks-2.mp3"]},
  {id:"schritte",cat:"natur",name:"Schritte auf Kies",ico:"👣",files:["neu-schritte-1.mp3", "neu-schritte-2.mp3"],amb:true},
  {id:"schnee",cat:"natur",name:"Schritte im Schnee",ico:"❄️",files:["neu-schnee-1.mp3"],amb:true},
- {id:"frosch",cat:"natur",name:"Frösche",ico:"🐸",files:["neu-frosch-1.mp3", "esc-2-52085-A-4.mp3", "esc-4-99193-A-4.mp3"],amb:true},
- {id:"kuh",cat:"natur",name:"Kuh",ico:"🐄",files:["esc-4-213915-B-3.mp3", "neu-kuh-1.mp3", "esc-4-181955-C-3.mp3"]},
- {id:"pferd",cat:"natur",name:"Pferd galoppiert",ico:"🐎",files:["neu-pferd-1.mp3"]},
- {id:"schaf",cat:"natur",name:"Schaf",ico:"🐑",files:["esc-4-250864-A-8.mp3", "esc-4-188703-D-8.mp3", "esc-5-200329-B-8.mp3"]},
- {id:"schwein",cat:"natur",name:"Schwein",ico:"🐖",files:["esc-2-166644-C-2.mp3", "esc-3-253084-A-2.mp3", "esc-4-132383-B-2.mp3"]},
- {id:"huhn",cat:"natur",name:"Hühner",ico:"🐔",files:["esc-5-248341-A-6.mp3", "esc-4-253649-A-6.mp3", "neu-huhn-1.mp3"],amb:true},
- {id:"hahn",cat:"natur",name:"Hahn",ico:"🐓",files:["rooster-1.mp3", "rooster-2.mp3"]},
- {id:"hund",cat:"natur",name:"Hund",ico:"🐕",files:["dog-1.mp3", "dog-2.mp3"]},
- {id:"katze",cat:"natur",name:"Katze",ico:"🐈",files:["esc-4-149940-A-5.mp3", "esc-5-169983-A-5.mp3", "esc-1-79113-A-5.mp3"]},
- {id:"specht",cat:"natur",name:"Specht",ico:"🌳",files:["neu-specht-1.mp3"]},
- {id:"eule",cat:"natur",name:"Eule",ico:"🦉",files:["neu-eule-1.mp3"]},
- {id:"kraehe",cat:"natur",name:"Krähe",ico:"🌾",files:["crow-1.mp3", "crow-2.mp3"]},
- {id:"wolf",cat:"natur",name:"Wolf heult",ico:"🐺",files:["neu-wolf-1.mp3"]},
+ {id:"dorf",cat:"natur",name:"Abend im Dorf",ico:"🏡",files:["neu-dorf-1.mp3"],amb:true},
+
+ {id:"kirche",cat:"orte",name:"Kirchenglocken",ico:"⛪",files:["esc-5-188716-A-46.mp3", "esc-3-87936-A-46.mp3", "esc-3-139109-A-46.mp3"],amb:true},
+ {id:"kirchenraum",cat:"orte",name:"In der Kirche",ico:"🕯️",files:["neu-kirchenraum-1.mp3"],amb:true},
+ {id:"cafe",cat:"orte",name:"Im Café",ico:"☕",files:["neu-cafe-1.mp3","neu-cafe-2.mp3","neu-restaurant-1.mp3"],amb:true},
+ {id:"supermarkt",cat:"orte",name:"Einkaufen",ico:"🛒",files:["neu-supermarkt-1.mp3"],amb:true},
+ {id:"strasse",cat:"orte",name:"Straße in der Stadt",ico:"🏙️",files:["neu-strasse-1.mp3"],amb:true},
+ {id:"hupe",cat:"orte",name:"Autohupe",ico:"🚗",files:["esc-3-146697-A-43.mp3", "esc-1-254507-A-43.mp3", "esc-4-175846-A-43.mp3"],loud:true},
+ {id:"wischer",cat:"orte",name:"Scheibenwischer",ico:"🚘",files:["neu-wischer-1.mp3"],amb:true},
+ {id:"zug",cat:"orte",name:"Zug",ico:"🚂",files:["neu-zug-1.mp3", "neu-zug-2.mp3"],amb:true},
+ {id:"flugzeug",cat:"orte",name:"Flugzeug",ico:"✈️",files:["esc-5-215447-A-47.mp3", "esc-5-215445-A-47.mp3", "esc-3-193767-A-47.mp3"],amb:true},
+ {id:"karussell",cat:"orte",name:"Jahrmarkt-Karussell",ico:"🎠",files:["neu-karussell-1.mp3"],amb:true},
+ {id:"ruderboot",cat:"orte",name:"Ruderboot auf dem See",ico:"🚣",files:["neu-ruderboot-1.mp3"],amb:true},
+ {id:"hafen",cat:"orte",name:"Boot im Hafen",ico:"⚓",files:["neu-hafen-1.mp3"],amb:true},
 ];
-const CREDITS={"clapping-1.mp3":{"a":"issalcake","u":"http://www.freesound.org/people/issalcake/sounds/115921/","t":"Clapping, Small audience, far away.wav","l":"CC0"},"clapping-2.mp3":{"a":"issalcake","u":"http://www.freesound.org/people/issalcake/sounds/115920/","t":"Clapping, Medium Audience, slow to fast.wav","l":"CC0"},"clock_alarm-1.mp3":{"a":"galeku","u":"http://www.freesound.org/people/galeku/sounds/74517/","t":"outro-dia-mais.wav","l":"CC0"},"clock_alarm-2.mp3":{"a":"xyzr_kx","u":"http://www.freesound.org/people/xyzr_kx/sounds/14262/","t":"alarm_clock.wav","l":"CC0"},"clock_tick-1.mp3":{"a":"AngryAdam","u":"http://www.freesound.org/people/AngryAdam/sounds/131943/","t":"Wind up clock with twin bell alarm","l":"CC0"},"clock_tick-2.mp3":{"a":"fauxpress","u":"http://www.freesound.org/people/fauxpress/sounds/42139/","t":"Old Scots Clock - Ticking.wav","l":"CC0"},"crow-1.mp3":{"a":"conleec","u":"http://www.freesound.org/people/conleec/sounds/173865/","t":"ANML_M_Ext_Crows_Flock_Angry2.wav","l":"CC0"},"crow-2.mp3":{"a":"UncleSigmund","u":"http://www.freesound.org/people/UncleSigmund/sounds/138344/","t":"crow.wav","l":"CC0"},"crying_baby-1.mp3":{"a":"PickleJones","u":"http://www.freesound.org/people/PickleJones/sounds/151080/","t":"01 baby crying hard and long.wav","l":"CC0"},"crying_baby-2.mp3":{"a":"bonehead","u":"http://www.freesound.org/people/bonehead/sounds/66637/","t":"crying baby merged.wav","l":"CC0"},"dog-1.mp3":{"a":"polipa","u":"http://www.freesound.org/people/polipa/sounds/117271/","t":"angry_dogs.wav","l":"CC0"},"dog-2.mp3":{"a":"Heigh-hoo","u":"http://www.freesound.org/people/Heigh-hoo/sounds/30226/","t":"dogs.aiff","l":"CC0"},"door_wood_creaks-1.mp3":{"a":"kyles","u":"http://www.freesound.org/people/kyles/sounds/51805/","t":"door hinge squeak creak o,c.aiff","l":"CC0"},"door_wood_creaks-2.mp3":{"a":"kyles","u":"http://www.freesound.org/people/kyles/sounds/51805/","t":"door hinge squeak creak o,c.aiff","l":"CC0"},"door_wood_knock-1.mp3":{"a":"XxBirdoxX","u":"http://www.freesound.org/people/XxBirdoxX/sounds/52290/","t":"door knock.wav","l":"CC0"},"door_wood_knock-2.mp3":{"a":"RutgerMuller","u":"http://www.freesound.org/people/RutgerMuller/sounds/103995/","t":"Bassdrum_Shell_Ticks.aif","l":"CC0"},"esc-1-254507-A-43.mp3":{"a":"YleArkisto","u":"http://www.freesound.org/people/YleArkisto/sounds/254507/","t":"Henkil\\xf6auto, ohi asfaltilla, \\xe4\\xe4nimerkki, auton torvi / A car passing by fast, horn honking, doppler, Moskvitsh, a 1962 model","l":"CC BY"},"esc-1-32373-B-35.mp3":{"a":"Walter_Odington","u":"http://www.freesound.org/people/Walter_Odington/sounds/32373/","t":"Washing Machine.wav","l":"CC0"},"esc-1-47923-A-28.mp3":{"a":"Erdie","u":"http://www.freesound.org/people/Erdie/sounds/47923/","t":"snore.flac","l":"CC BY"},"esc-1-79113-A-5.mp3":{"a":"Kyster","u":"http://www.freesound.org/people/Kyster/sounds/79113/","t":"cat meow 01.wav","l":"CC BY"},"esc-2-166644-C-2.mp3":{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/166644/","t":"Pigs in a farm (10 pigs inside a French farm)","l":"CC0"},"esc-2-52085-A-4.mp3":{"a":"aguasonic","u":"http://www.freesound.org/people/aguasonic/sounds/52085/","t":"sherman_frogs_spring_2007.mp3","l":"CC BY"},"esc-2-80313-A-28.mp3":{"a":"dobroide","u":"http://www.freesound.org/people/dobroide/sounds/80313/","t":"20090911.ronca.wav","l":"CC BY"},"esc-3-100024-B-27.mp3":{"a":"limwei","u":"http://www.freesound.org/people/limwei/sounds/100024/","t":"teeth brushing.aif","l":"CC BY"},"esc-3-139109-A-46.mp3":{"a":"Mxsmanic","u":"http://www.freesound.org/people/Mxsmanic/sounds/139109/","t":"All bells ringing at Notre-Dame in Paris","l":"CC0"},"esc-3-146697-A-43.mp3":{"a":"bmoreno","u":"http://www.freesound.org/people/bmoreno/sounds/146697/","t":"0050 Quite_street_and_elements","l":"CC BY"},"esc-3-151269-A-35.mp3":{"a":"timgormly","u":"http://www.freesound.org/people/timgormly/sounds/151269/","t":"Washing Machine 2.aif","l":"CC0"},"esc-3-193767-A-47.mp3":{"a":"conleec","u":"http://www.freesound.org/people/conleec/sounds/193767/","t":"VHCL_S_Airplane_Prop_001.wav","l":"CC0"},"esc-3-253084-A-2.mp3":{"a":"YleArkisto","u":"http://www.freesound.org/people/YleArkisto/sounds/253084/","t":"Porsas r\\xf6hkii ja kiljuu / A piglet oinking and squealling in the pen","l":"CC BY"},"esc-3-87936-A-46.mp3":{"a":"Ohrwurm","u":"http://www.freesound.org/people/Ohrwurm/sounds/87936/","t":"Church bells.wav","l":"CC0"},"esc-4-132383-B-2.mp3":{"a":"ideiasemvideo","u":"http://www.freesound.org/people/ideiasemvideo/sounds/132383/","t":"Black_Pigs_Fighting_Alentejo_Portugal_2011.wav","l":"CC0"},"esc-4-149940-A-5.mp3":{"a":"Jeanine2012","u":"http://www.freesound.org/people/Jeanine2012/sounds/149940/","t":"Cat wants something","l":"CC0"},"esc-4-175846-A-43.mp3":{"a":"toiletrolltube","u":"http://www.freesound.org/people/toiletrolltube/sounds/175846/","t":"120213_01 car horn (3).wav","l":"CC0"},"esc-4-181955-C-3.mp3":{"a":"qubodup","u":"http://www.freesound.org/people/qubodup/sounds/181955/","t":"Felix Blume - Cows Mooing 1 min","l":"CC0"},"esc-4-188703-D-8.mp3":{"a":"LolitaPerdurabo","u":"http://www.freesound.org/people/LolitaPerdurabo/sounds/188703/","t":"Sheep.wav","l":"CC BY"},"esc-4-213915-B-3.mp3":{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/213915/","t":"Cows mooing in a stockyard in St Joseph, Missouri, USA.","l":"CC0"},"esc-4-250864-A-8.mp3":{"a":"YleArkisto","u":"http://www.freesound.org/people/YleArkisto/sounds/250864/","t":"Lampaat m\\xe4\\xe4kiv\\xe4t, katras / A flock of sheep bleating on the pasture ","l":"CC BY"},"esc-4-253649-A-6.mp3":{"a":"SquaredGlasses","u":"http://www.freesound.org/people/SquaredGlasses/sounds/253649/","t":"Two Chickens \"Talking\"","l":"CC BY"},"esc-4-99193-A-4.mp3":{"a":"Tomlija","u":"http://www.freesound.org/people/Tomlija/sounds/99193/","t":"swamp frogs.wav","l":"CC BY"},"esc-5-169983-A-5.mp3":{"a":"missozzy","u":"http://www.freesound.org/people/missozzy/sounds/169983/","t":"Hungry cats","l":"CC0"},"esc-5-182010-A-36.mp3":{"a":"ohrpilot","u":"http://www.freesound.org/people/ohrpilot/sounds/182010/","t":"Vacuum cleaner 3, type \"Progress Stuttgart\"","l":"CC0"},"esc-5-182012-A-36.mp3":{"a":"ohrpilot","u":"http://www.freesound.org/people/ohrpilot/sounds/182012/","t":"Vacuum cleaner 1, type \"Progress Stuttgart\"","l":"CC0"},"esc-5-188716-A-46.mp3":{"a":"TrygveN","u":"http://www.freesound.org/people/TrygveN/sounds/188716/","t":"Church Bells of Saint Jacob.wav","l":"CC0"},"esc-5-200329-B-8.mp3":{"a":"zwier","u":"http://www.freesound.org/people/zwier/sounds/200329/","t":"Sheep_in_field.aiff","l":"CC0"},"esc-5-212050-A-27.mp3":{"a":"Taira Komori","u":"http://www.freesound.org/people/Taira%20Komori/sounds/212050/","t":"Brushing_teeth.mp3","l":"CC BY"},"esc-5-215445-A-47.mp3":{"a":"laribum","u":"http://www.freesound.org/people/laribum/sounds/215445/","t":"ps_flighby_02.wav","l":"CC0"},"esc-5-215447-A-47.mp3":{"a":"laribum","u":"http://www.freesound.org/people/laribum/sounds/215447/","t":"ps_fast_flighby_01.wav","l":"CC0"},"esc-5-218196-A-27.mp3":{"a":"edhutschek","u":"http://www.freesound.org/people/edhutschek/sounds/218196/","t":"brushing teeth","l":"CC0"},"esc-5-236299-A-34.mp3":{"a":"beansqueso31","u":"http://www.freesound.org/people/beansqueso31/sounds/236299/","t":"Opening beer can 1.wav","l":"CC0"},"esc-5-243459-B-14.mp3":{"a":"Julien Nicolas","u":"http://www.freesound.org/people/Julien%20Nicolas/sounds/243459/","t":"BIRDS","l":"CC BY"},"esc-5-244327-A-34.mp3":{"a":"squashy555","u":"http://www.freesound.org/people/squashy555/sounds/244327/","t":"can open.wav","l":"CC0"},"esc-5-244459-A-28.mp3":{"a":"milton.","u":"http://www.freesound.org/people/milton./sounds/244459/","t":"snoreing.mp3","l":"CC0"},"esc-5-248341-A-6.mp3":{"a":"YleArkisto","u":"http://www.freesound.org/people/YleArkisto/sounds/248341/","t":"Pieni kanala / Small henhouse, hens cackling","l":"CC BY"},"esc-5-252248-A-34.mp3":{"a":"Reitanna","u":"http://www.freesound.org/people/Reitanna/sounds/252248/","t":"can opening.wav","l":"CC0"},"esc-5-263902-A-36.mp3":{"a":"tpd","u":"http://www.freesound.org/people/tpd/sounds/263902/","t":"vacuum.wav","l":"CC0"},"hand_saw-1.mp3":{"a":"Ohrwurm","u":"http://www.freesound.org/people/Ohrwurm/sounds/96606/","t":"Wood saw.wav","l":"CC0"},"hand_saw-2.mp3":{"a":"Ohrwurm","u":"http://www.freesound.org/people/Ohrwurm/sounds/96606/","t":"Wood saw.wav","l":"CC0"},"laughing-1.mp3":{"a":"caculo","u":"http://www.freesound.org/people/caculo/sounds/164243/","t":"Young girl laughing uncontrollably.mp3","l":"CC0"},"laughing-2.mp3":{"a":"sagetyrtle","u":"http://www.freesound.org/people/sagetyrtle/sounds/36164/","t":"laughs2.wav","l":"CC0"},"neu-bach-1.mp3":{"a":"gluckose (bearbeitet für Blanket)","u":"https://freesound.org/people/gluckose/sounds/333987/","t":"stream","l":"CC0"},"neu-bach-2.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"river","l":"CC0 oder Pixabay-Lizenz"},"neu-eule-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"owl","l":"CC0 oder Pixabay-Lizenz"},"neu-feuer-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"campfire","l":"CC0 oder Pixabay-Lizenz"},"neu-feuer-2.mp3":{"a":"ezwa (bearbeitet für Blanket)","u":"https://soundbible.com/1543-Fireplace.html","t":"fireplace","l":"gemeinfrei"},"neu-frosch-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"frog","l":"CC0 oder Pixabay-Lizenz"},"neu-gewitter-1.mp3":{"a":"Moodist-Sammlung (remvze) + alex36917 (bearbeitet für Blanket)","u":"https://freesound.org/people/alex36917/sounds/524605/","t":"Donner + Regen","l":"CC0 oder Pixabay-Lizenz / CC BY"},"neu-gewitter-2.mp3":{"a":"Digifish music (bearbeitet für Blanket)","u":"https://freesound.org/people/digifishmusic/sounds/41739/","t":"storm","l":"CC BY"},"neu-huhn-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"chickens","l":"CC0 oder Pixabay-Lizenz"},"neu-karussell-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"carousel","l":"CC0 oder Pixabay-Lizenz"},"neu-kochen-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"boiling-water","l":"CC0 oder Pixabay-Lizenz"},"neu-kuh-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"cows","l":"CC0 oder Pixabay-Lizenz"},"neu-meer-1.mp3":{"a":"Luftrum (bearbeitet für Blanket)","u":"https://freesound.org/people/Luftrum/sounds/48412/","t":"waves","l":"CC BY"},"neu-meer-2.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"waves","l":"CC0 oder Pixabay-Lizenz"},"neu-moewen-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"seagulls","l":"CC0 oder Pixabay-Lizenz"},"neu-pferd-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"horse-gallop","l":"CC0 oder Pixabay-Lizenz"},"neu-radio-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"tuning-radio","l":"CC0 oder Pixabay-Lizenz"},"neu-regen-1.mp3":{"a":"alex36917 (bearbeitet für Blanket)","u":"https://freesound.org/people/alex36917/sounds/524605/","t":"rain","l":"CC BY"},"neu-regen-2.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"rain-on-window","l":"CC0 oder Pixabay-Lizenz"},"neu-schnee-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"walk-in-snow","l":"CC0 oder Pixabay-Lizenz"},"neu-schreibm-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"typewriter","l":"CC0 oder Pixabay-Lizenz"},"neu-schritte-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"walk-on-gravel","l":"CC0 oder Pixabay-Lizenz"},"neu-schritte-2.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"walk-on-leaves","l":"CC0 oder Pixabay-Lizenz"},"neu-specht-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"woodpecker","l":"CC0 oder Pixabay-Lizenz"},"neu-voegel-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"birds","l":"CC0 oder Pixabay-Lizenz"},"neu-voegel-2.mp3":{"a":"kvgarlic (bearbeitet für Blanket)","u":"https://freesound.org/people/kvgarlic/sounds/156826/","t":"birds","l":"CC0"},"neu-waschm-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"washing-machine","l":"CC0 oder Pixabay-Lizenz"},"neu-wind-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"howling-wind","l":"CC0 oder Pixabay-Lizenz"},"neu-wind-2.mp3":{"a":"felix.blume (bearbeitet für Blanket)","u":"https://freesound.org/people/felix.blume/sounds/217506/","t":"wind","l":"CC0"},"neu-windspiel-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"wind-chimes","l":"CC0 oder Pixabay-Lizenz"},"neu-wolf-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"wolf","l":"CC0 oder Pixabay-Lizenz"},"neu-zug-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"train","l":"CC0 oder Pixabay-Lizenz"},"neu-zug-2.mp3":{"a":"SDLx (bearbeitet für Blanket)","u":"https://freesound.org/people/SDLx/sounds/259988/","t":"train","l":"CC BY 3.0"},"pouring_water-1.mp3":{"a":"vibe_crc","u":"http://www.freesound.org/people/vibe_crc/sounds/51436/","t":"pouring_water_6.wav","l":"CC0"},"pouring_water-2.mp3":{"a":"Swoboman87","u":"http://www.freesound.org/people/Swoboman87/sounds/108451/","t":"Pouring Into Glass.wav","l":"CC0"},"rooster-1.mp3":{"a":"ra_gun","u":"http://www.freesound.org/people/ra_gun/sounds/81270/","t":"animals-hen-rooster-Blaafarveverket-090721.wav","l":"CC0"},"rooster-2.mp3":{"a":"Barbamiz","u":"http://www.freesound.org/people/Barbamiz/sounds/116135/","t":"Rooster and chicks.mp3","l":"CC0"},"sneezing-1.mp3":{"a":"higginsdj","u":"http://www.freesound.org/people/higginsdj/sounds/93030/","t":"Sneeze and Sniffle 44hzStereo.wav","l":"CC0"},"sneezing-2.mp3":{"a":"oldedgar","u":"http://www.freesound.org/people/oldedgar/sounds/130979/","t":"Sneeze AC 1.wav","l":"CC0"},"toilet_flush-1.mp3":{"a":"CBeeching","u":"http://www.freesound.org/people/CBeeching/sounds/74977/","t":"Toilet Flush.wav","l":"CC0"},"toilet_flush-2.mp3":{"a":"j1987","u":"http://www.freesound.org/people/j1987/sounds/72677/","t":"toilet_flush_twice.wav","l":"CC0"}};
+const CREDITS={"clapping-1.mp3":{"a":"issalcake","u":"http://www.freesound.org/people/issalcake/sounds/115921/","t":"Clapping, Small audience, far away.wav","l":"CC0"},"clapping-2.mp3":{"a":"issalcake","u":"http://www.freesound.org/people/issalcake/sounds/115920/","t":"Clapping, Medium Audience, slow to fast.wav","l":"CC0"},"clock_alarm-1.mp3":{"a":"galeku","u":"http://www.freesound.org/people/galeku/sounds/74517/","t":"outro-dia-mais.wav","l":"CC0"},"clock_alarm-2.mp3":{"a":"xyzr_kx","u":"http://www.freesound.org/people/xyzr_kx/sounds/14262/","t":"alarm_clock.wav","l":"CC0"},"clock_tick-1.mp3":{"a":"AngryAdam","u":"http://www.freesound.org/people/AngryAdam/sounds/131943/","t":"Wind up clock with twin bell alarm","l":"CC0"},"clock_tick-2.mp3":{"a":"fauxpress","u":"http://www.freesound.org/people/fauxpress/sounds/42139/","t":"Old Scots Clock - Ticking.wav","l":"CC0"},"crow-1.mp3":{"a":"conleec","u":"http://www.freesound.org/people/conleec/sounds/173865/","t":"ANML_M_Ext_Crows_Flock_Angry2.wav","l":"CC0"},"crow-2.mp3":{"a":"UncleSigmund","u":"http://www.freesound.org/people/UncleSigmund/sounds/138344/","t":"crow.wav","l":"CC0"},"crying_baby-1.mp3":{"a":"PickleJones","u":"http://www.freesound.org/people/PickleJones/sounds/151080/","t":"01 baby crying hard and long.wav","l":"CC0"},"crying_baby-2.mp3":{"a":"bonehead","u":"http://www.freesound.org/people/bonehead/sounds/66637/","t":"crying baby merged.wav","l":"CC0"},"dog-1.mp3":{"a":"polipa","u":"http://www.freesound.org/people/polipa/sounds/117271/","t":"angry_dogs.wav","l":"CC0"},"dog-2.mp3":{"a":"Heigh-hoo","u":"http://www.freesound.org/people/Heigh-hoo/sounds/30226/","t":"dogs.aiff","l":"CC0"},"door_wood_creaks-1.mp3":{"a":"kyles","u":"http://www.freesound.org/people/kyles/sounds/51805/","t":"door hinge squeak creak o,c.aiff","l":"CC0"},"door_wood_creaks-2.mp3":{"a":"kyles","u":"http://www.freesound.org/people/kyles/sounds/51805/","t":"door hinge squeak creak o,c.aiff","l":"CC0"},"door_wood_knock-1.mp3":{"a":"XxBirdoxX","u":"http://www.freesound.org/people/XxBirdoxX/sounds/52290/","t":"door knock.wav","l":"CC0"},"door_wood_knock-2.mp3":{"a":"RutgerMuller","u":"http://www.freesound.org/people/RutgerMuller/sounds/103995/","t":"Bassdrum_Shell_Ticks.aif","l":"CC0"},"esc-1-254507-A-43.mp3":{"a":"YleArkisto","u":"http://www.freesound.org/people/YleArkisto/sounds/254507/","t":"Henkil\\xf6auto, ohi asfaltilla, \\xe4\\xe4nimerkki, auton torvi / A car passing by fast, horn honking, doppler, Moskvitsh, a 1962 model","l":"CC BY"},"esc-1-32373-B-35.mp3":{"a":"Walter_Odington","u":"http://www.freesound.org/people/Walter_Odington/sounds/32373/","t":"Washing Machine.wav","l":"CC0"},"esc-1-47923-A-28.mp3":{"a":"Erdie","u":"http://www.freesound.org/people/Erdie/sounds/47923/","t":"snore.flac","l":"CC BY"},"esc-1-79113-A-5.mp3":{"a":"Kyster","u":"http://www.freesound.org/people/Kyster/sounds/79113/","t":"cat meow 01.wav","l":"CC BY"},"esc-2-166644-C-2.mp3":{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/166644/","t":"Pigs in a farm (10 pigs inside a French farm)","l":"CC0"},"esc-2-52085-A-4.mp3":{"a":"aguasonic","u":"http://www.freesound.org/people/aguasonic/sounds/52085/","t":"sherman_frogs_spring_2007.mp3","l":"CC BY"},"esc-2-80313-A-28.mp3":{"a":"dobroide","u":"http://www.freesound.org/people/dobroide/sounds/80313/","t":"20090911.ronca.wav","l":"CC BY"},"esc-3-100024-B-27.mp3":{"a":"limwei","u":"http://www.freesound.org/people/limwei/sounds/100024/","t":"teeth brushing.aif","l":"CC BY"},"esc-3-139109-A-46.mp3":{"a":"Mxsmanic","u":"http://www.freesound.org/people/Mxsmanic/sounds/139109/","t":"All bells ringing at Notre-Dame in Paris","l":"CC0"},"esc-3-146697-A-43.mp3":{"a":"bmoreno","u":"http://www.freesound.org/people/bmoreno/sounds/146697/","t":"0050 Quite_street_and_elements","l":"CC BY"},"esc-3-151269-A-35.mp3":{"a":"timgormly","u":"http://www.freesound.org/people/timgormly/sounds/151269/","t":"Washing Machine 2.aif","l":"CC0"},"esc-3-193767-A-47.mp3":{"a":"conleec","u":"http://www.freesound.org/people/conleec/sounds/193767/","t":"VHCL_S_Airplane_Prop_001.wav","l":"CC0"},"esc-3-253084-A-2.mp3":{"a":"YleArkisto","u":"http://www.freesound.org/people/YleArkisto/sounds/253084/","t":"Porsas r\\xf6hkii ja kiljuu / A piglet oinking and squealling in the pen","l":"CC BY"},"esc-3-87936-A-46.mp3":{"a":"Ohrwurm","u":"http://www.freesound.org/people/Ohrwurm/sounds/87936/","t":"Church bells.wav","l":"CC0"},"esc-4-132383-B-2.mp3":{"a":"ideiasemvideo","u":"http://www.freesound.org/people/ideiasemvideo/sounds/132383/","t":"Black_Pigs_Fighting_Alentejo_Portugal_2011.wav","l":"CC0"},"esc-4-149940-A-5.mp3":{"a":"Jeanine2012","u":"http://www.freesound.org/people/Jeanine2012/sounds/149940/","t":"Cat wants something","l":"CC0"},"esc-4-175846-A-43.mp3":{"a":"toiletrolltube","u":"http://www.freesound.org/people/toiletrolltube/sounds/175846/","t":"120213_01 car horn (3).wav","l":"CC0"},"esc-4-181955-C-3.mp3":{"a":"qubodup","u":"http://www.freesound.org/people/qubodup/sounds/181955/","t":"Felix Blume - Cows Mooing 1 min","l":"CC0"},"esc-4-188703-D-8.mp3":{"a":"LolitaPerdurabo","u":"http://www.freesound.org/people/LolitaPerdurabo/sounds/188703/","t":"Sheep.wav","l":"CC BY"},"esc-4-213915-B-3.mp3":{"a":"felix.blume","u":"http://www.freesound.org/people/felix.blume/sounds/213915/","t":"Cows mooing in a stockyard in St Joseph, Missouri, USA.","l":"CC0"},"esc-4-250864-A-8.mp3":{"a":"YleArkisto","u":"http://www.freesound.org/people/YleArkisto/sounds/250864/","t":"Lampaat m\\xe4\\xe4kiv\\xe4t, katras / A flock of sheep bleating on the pasture ","l":"CC BY"},"esc-4-253649-A-6.mp3":{"a":"SquaredGlasses","u":"http://www.freesound.org/people/SquaredGlasses/sounds/253649/","t":"Two Chickens \"Talking\"","l":"CC BY"},"esc-4-99193-A-4.mp3":{"a":"Tomlija","u":"http://www.freesound.org/people/Tomlija/sounds/99193/","t":"swamp frogs.wav","l":"CC BY"},"esc-5-169983-A-5.mp3":{"a":"missozzy","u":"http://www.freesound.org/people/missozzy/sounds/169983/","t":"Hungry cats","l":"CC0"},"esc-5-182010-A-36.mp3":{"a":"ohrpilot","u":"http://www.freesound.org/people/ohrpilot/sounds/182010/","t":"Vacuum cleaner 3, type \"Progress Stuttgart\"","l":"CC0"},"esc-5-182012-A-36.mp3":{"a":"ohrpilot","u":"http://www.freesound.org/people/ohrpilot/sounds/182012/","t":"Vacuum cleaner 1, type \"Progress Stuttgart\"","l":"CC0"},"esc-5-188716-A-46.mp3":{"a":"TrygveN","u":"http://www.freesound.org/people/TrygveN/sounds/188716/","t":"Church Bells of Saint Jacob.wav","l":"CC0"},"esc-5-200329-B-8.mp3":{"a":"zwier","u":"http://www.freesound.org/people/zwier/sounds/200329/","t":"Sheep_in_field.aiff","l":"CC0"},"esc-5-212050-A-27.mp3":{"a":"Taira Komori","u":"http://www.freesound.org/people/Taira%20Komori/sounds/212050/","t":"Brushing_teeth.mp3","l":"CC BY"},"esc-5-215445-A-47.mp3":{"a":"laribum","u":"http://www.freesound.org/people/laribum/sounds/215445/","t":"ps_flighby_02.wav","l":"CC0"},"esc-5-215447-A-47.mp3":{"a":"laribum","u":"http://www.freesound.org/people/laribum/sounds/215447/","t":"ps_fast_flighby_01.wav","l":"CC0"},"esc-5-218196-A-27.mp3":{"a":"edhutschek","u":"http://www.freesound.org/people/edhutschek/sounds/218196/","t":"brushing teeth","l":"CC0"},"esc-5-236299-A-34.mp3":{"a":"beansqueso31","u":"http://www.freesound.org/people/beansqueso31/sounds/236299/","t":"Opening beer can 1.wav","l":"CC0"},"esc-5-243459-B-14.mp3":{"a":"Julien Nicolas","u":"http://www.freesound.org/people/Julien%20Nicolas/sounds/243459/","t":"BIRDS","l":"CC BY"},"esc-5-244327-A-34.mp3":{"a":"squashy555","u":"http://www.freesound.org/people/squashy555/sounds/244327/","t":"can open.wav","l":"CC0"},"esc-5-244459-A-28.mp3":{"a":"milton.","u":"http://www.freesound.org/people/milton./sounds/244459/","t":"snoreing.mp3","l":"CC0"},"esc-5-248341-A-6.mp3":{"a":"YleArkisto","u":"http://www.freesound.org/people/YleArkisto/sounds/248341/","t":"Pieni kanala / Small henhouse, hens cackling","l":"CC BY"},"esc-5-252248-A-34.mp3":{"a":"Reitanna","u":"http://www.freesound.org/people/Reitanna/sounds/252248/","t":"can opening.wav","l":"CC0"},"esc-5-263902-A-36.mp3":{"a":"tpd","u":"http://www.freesound.org/people/tpd/sounds/263902/","t":"vacuum.wav","l":"CC0"},"hand_saw-1.mp3":{"a":"Ohrwurm","u":"http://www.freesound.org/people/Ohrwurm/sounds/96606/","t":"Wood saw.wav","l":"CC0"},"hand_saw-2.mp3":{"a":"Ohrwurm","u":"http://www.freesound.org/people/Ohrwurm/sounds/96606/","t":"Wood saw.wav","l":"CC0"},"laughing-1.mp3":{"a":"caculo","u":"http://www.freesound.org/people/caculo/sounds/164243/","t":"Young girl laughing uncontrollably.mp3","l":"CC0"},"laughing-2.mp3":{"a":"sagetyrtle","u":"http://www.freesound.org/people/sagetyrtle/sounds/36164/","t":"laughs2.wav","l":"CC0"},"neu-bach-1.mp3":{"a":"gluckose (bearbeitet für Blanket)","u":"https://freesound.org/people/gluckose/sounds/333987/","t":"stream","l":"CC0"},"neu-bach-2.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"river","l":"CC0 oder Pixabay-Lizenz"},"neu-eule-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"owl","l":"CC0 oder Pixabay-Lizenz"},"neu-feuer-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"campfire","l":"CC0 oder Pixabay-Lizenz"},"neu-feuer-2.mp3":{"a":"ezwa (bearbeitet für Blanket)","u":"https://soundbible.com/1543-Fireplace.html","t":"fireplace","l":"gemeinfrei"},"neu-frosch-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"frog","l":"CC0 oder Pixabay-Lizenz"},"neu-gewitter-1.mp3":{"a":"Moodist-Sammlung (remvze) + alex36917 (bearbeitet für Blanket)","u":"https://freesound.org/people/alex36917/sounds/524605/","t":"Donner + Regen","l":"CC0 oder Pixabay-Lizenz / CC BY"},"neu-gewitter-2.mp3":{"a":"Digifish music (bearbeitet für Blanket)","u":"https://freesound.org/people/digifishmusic/sounds/41739/","t":"storm","l":"CC BY"},"neu-huhn-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"chickens","l":"CC0 oder Pixabay-Lizenz"},"neu-karussell-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"carousel","l":"CC0 oder Pixabay-Lizenz"},"neu-kochen-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"boiling-water","l":"CC0 oder Pixabay-Lizenz"},"neu-kuh-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"cows","l":"CC0 oder Pixabay-Lizenz"},"neu-meer-1.mp3":{"a":"Luftrum (bearbeitet für Blanket)","u":"https://freesound.org/people/Luftrum/sounds/48412/","t":"waves","l":"CC BY"},"neu-meer-2.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"waves","l":"CC0 oder Pixabay-Lizenz"},"neu-moewen-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"seagulls","l":"CC0 oder Pixabay-Lizenz"},"neu-pferd-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"horse-gallop","l":"CC0 oder Pixabay-Lizenz"},"neu-radio-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"tuning-radio","l":"CC0 oder Pixabay-Lizenz"},"neu-regen-1.mp3":{"a":"alex36917 (bearbeitet für Blanket)","u":"https://freesound.org/people/alex36917/sounds/524605/","t":"rain","l":"CC BY"},"neu-regen-2.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"rain-on-window","l":"CC0 oder Pixabay-Lizenz"},"neu-schnee-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"walk-in-snow","l":"CC0 oder Pixabay-Lizenz"},"neu-schreibm-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"typewriter","l":"CC0 oder Pixabay-Lizenz"},"neu-schritte-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"walk-on-gravel","l":"CC0 oder Pixabay-Lizenz"},"neu-schritte-2.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"walk-on-leaves","l":"CC0 oder Pixabay-Lizenz"},"neu-specht-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"woodpecker","l":"CC0 oder Pixabay-Lizenz"},"neu-voegel-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"birds","l":"CC0 oder Pixabay-Lizenz"},"neu-voegel-2.mp3":{"a":"kvgarlic (bearbeitet für Blanket)","u":"https://freesound.org/people/kvgarlic/sounds/156826/","t":"birds","l":"CC0"},"neu-waschm-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"washing-machine","l":"CC0 oder Pixabay-Lizenz"},"neu-wind-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"howling-wind","l":"CC0 oder Pixabay-Lizenz"},"neu-wind-2.mp3":{"a":"felix.blume (bearbeitet für Blanket)","u":"https://freesound.org/people/felix.blume/sounds/217506/","t":"wind","l":"CC0"},"neu-windspiel-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"wind-chimes","l":"CC0 oder Pixabay-Lizenz"},"neu-wolf-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"wolf","l":"CC0 oder Pixabay-Lizenz"},"neu-zug-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"train","l":"CC0 oder Pixabay-Lizenz"},"neu-zug-2.mp3":{"a":"SDLx (bearbeitet für Blanket)","u":"https://freesound.org/people/SDLx/sounds/259988/","t":"train","l":"CC BY 3.0"},"pouring_water-1.mp3":{"a":"vibe_crc","u":"http://www.freesound.org/people/vibe_crc/sounds/51436/","t":"pouring_water_6.wav","l":"CC0"},"pouring_water-2.mp3":{"a":"Swoboman87","u":"http://www.freesound.org/people/Swoboman87/sounds/108451/","t":"Pouring Into Glass.wav","l":"CC0"},"rooster-1.mp3":{"a":"ra_gun","u":"http://www.freesound.org/people/ra_gun/sounds/81270/","t":"animals-hen-rooster-Blaafarveverket-090721.wav","l":"CC0"},"rooster-2.mp3":{"a":"Barbamiz","u":"http://www.freesound.org/people/Barbamiz/sounds/116135/","t":"Rooster and chicks.mp3","l":"CC0"},"sneezing-1.mp3":{"a":"higginsdj","u":"http://www.freesound.org/people/higginsdj/sounds/93030/","t":"Sneeze and Sniffle 44hzStereo.wav","l":"CC0"},"sneezing-2.mp3":{"a":"oldedgar","u":"http://www.freesound.org/people/oldedgar/sounds/130979/","t":"Sneeze AC 1.wav","l":"CC0"},"toilet_flush-1.mp3":{"a":"CBeeching","u":"http://www.freesound.org/people/CBeeching/sounds/74977/","t":"Toilet Flush.wav","l":"CC0"},"toilet_flush-2.mp3":{"a":"j1987","u":"http://www.freesound.org/people/j1987/sounds/72677/","t":"toilet_flush_twice.wav","l":"CC0"},"neu-cafe-1.mp3":{"a":"stephan (bearbeitet für Blanket)","u":"https://soundbible.com/1664-Restaurant-Ambiance.html","t":"Restaurant Ambiance","l":"gemeinfrei"},"neu-cafe-2.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"cafe","l":"CC0 oder Pixabay-Lizenz"},"neu-restaurant-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"restaurant","l":"CC0 oder Pixabay-Lizenz"},"neu-kirchenraum-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"church","l":"CC0 oder Pixabay-Lizenz"},"neu-dia-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"slide-projector","l":"CC0 oder Pixabay-Lizenz"},"neu-zeitung-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"paper","l":"CC0 oder Pixabay-Lizenz"},"neu-schnurren-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"cat-purring","l":"CC0 oder Pixabay-Lizenz"},"neu-wasserfall-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"waterfall","l":"CC0 oder Pixabay-Lizenz"},"neu-ruderboot-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"rowing-boat","l":"CC0 oder Pixabay-Lizenz"},"neu-hafen-1.mp3":{"a":"Falcet (bearbeitet für Blanket)","u":"https://freesound.org/people/Falcet/sounds/439365/","t":"boat","l":"CC0"},"neu-dorf-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"night-village","l":"CC0 oder Pixabay-Lizenz"},"neu-supermarkt-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"supermarket","l":"CC0 oder Pixabay-Lizenz"},"neu-strasse-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"busy-street","l":"CC0 oder Pixabay-Lizenz"},"neu-wischer-1.mp3":{"a":"Moodist-Sammlung (remvze)","u":"https://github.com/remvze/moodist","t":"windshield-wipers","l":"CC0 oder Pixabay-Lizenz"}};
 
 function volGain(){const v=settings.vol/100;return v*v*1.4}
 function makeCtx(){
@@ -330,13 +366,14 @@ function fileOf(s){return s.files[Math.min(settings.variant[s.id]||0,s.files.len
 
 /* ---------- Stimme: ein laufender Klang. Hintergrundklänge werden mit Überblendung verlängert ---------- */
 class Voice{
-  constructor(b,amb,loop){
+  constructor(b,amb,loop,soft){
     this.b=b;this.amb=amb;this.srcs=new Set();
     this.bus=ctx.createGain();this.bus.connect(master);
     const d=b.duration,x=Math.min(0.6,d/4);this.x=x;
     this.t0=ctx.currentTime+0.03;this.next=this.t0;
     this.step=amb?d-x:d+(loop?1.2:0);
     this.end=loop?Infinity:(amb?this.t0+Math.max(15,d):this.t0+d);
+    if(soft){this.bus.gain.setValueAtTime(0,this.t0);this.bus.gain.linearRampToValueAtTime(1,this.t0+1.5)}
     if(amb&&!loop){this.bus.gain.setValueAtTime(1,this.end-1.5);this.bus.gain.linearRampToValueAtTime(0,this.end)}
   }
   pump(h){while(this.next<h&&this.next<this.end){this.copy(this.next);this.next+=this.step}}
@@ -389,13 +426,13 @@ async function play(id){
   catch(e){loading.delete(id);paint();status("„"+(rec?rec.name:s.name)+"“ konnte nicht geladen werden. Internet prüfen.");return}
   loading.delete(id);
   if(active.has(id))return;
-  const v=new Voice(b,!!(s&&s.amb),settings.loop);v.pump(ctx.currentTime+1.5);active.set(id,v);paint();
+  const v=new Voice(b,!!(s&&s.amb),settings.loop,settings.soft&&!!(s&&(s.amb||s.loud)));v.pump(ctx.currentTime+1.5);active.set(id,v);paint();
 }
 function stop(id){
   const v=active.get(id);if(!v)return;
   active.delete(id);
-  const now=ctx.currentTime;v.bus.gain.cancelScheduledValues(now);v.bus.gain.setValueAtTime(v.bus.gain.value,now);v.bus.gain.linearRampToValueAtTime(0,now+0.15);
-  setTimeout(()=>v.kill(),250);paint();
+  const now=ctx.currentTime;v.bus.gain.cancelScheduledValues(now);v.bus.gain.setValueAtTime(v.bus.gain.value,now);v.bus.gain.linearRampToValueAtTime(0,now+0.7);
+  setTimeout(()=>v.kill(),800);paint();
 }
 function stopAll(){for(const id of [...active.keys()])stop(id)}
 setInterval(()=>{
@@ -408,11 +445,14 @@ function status(t){const el=$("#status");el.textContent=t;clearTimeout(statusTim
 /* ---------- Oberfläche ---------- */
 const grid=$("#grid");
 const TIPS={wecker:"Klingelt morgens neben dem Bett.",uhr:"Hängt an der Wand oder steht im Wohnzimmer.",kirche:"Läuten am Sonntagmorgen.",hupe:"Auf der Straße: Vorsicht!",klopfen:"Jemand möchte hereinkommen.",sauger:"Beim Putzen in der Wohnung.",eingiessen:"Ein Glas oder eine Tasse wird voll.",waschm:"Wäsche wird sauber.",zaehne:"Morgens und abends im Bad.",klo:"Im Badezimmer, nach dem Geschäft.",dose:"In der Küche, zum Beispiel Erbsen oder Würstchen.",klatschen:"Nach einem schönen Lied oder Theaterstück.",lachen:"Wenn etwas lustig ist.",schnarchen:"Nachts im Bett.",niesen:"Hatschi! Gesundheit!",baby:"Ein kleines Kind hat Hunger.",saege:"Holz wird zerteilt, in der Werkstatt.",flugzeug:"Fliegt hoch am Himmel, in den Urlaub.",
-voegel:"Morgens im Garten oder im Wald.",frosch:"Sitzen am Teich.",regen:"Tropfen auf dem Dach und am Fenster.",wind:"Draußen stürmt und pfeift es.",gewitter:"Blitz und Donner.",meer:"Wellen am Strand, Urlaub an der See.",kuh:"Steht auf der Weide und gibt Milch.",tuer:"Eine alte Tür geht langsam auf.",feuer:"Im Ofen oder Kamin, schön warm.",zug:"Fährt auf Schienen zum Bahnhof.",hund:"Bellt, wenn jemand ans Tor kommt.",katze:"Liegt gern auf dem Sofa und schnurrt.",schaf:"Hat dicke Wolle.",hahn:"Weckt morgens alle auf dem Bauernhof.",schritte:"Jemand geht spazieren.",schwein:"Lebt im Stall und wälzt sich im Matsch.",huhn:"Legt Eier.",kraehe:"Großer schwarzer Vogel auf dem Feld.",bach:"Wasser fließt über Steine im Wald.",schnee:"Im Winter, es knirscht unter den Schuhen.",eule:"Ein Vogel, der nachts wach ist.",pferd:"Ein Tier mit Hufen läuft schnell, früher zog es Kutschen.",wolf:"Kommt im Märchen vom Rotkäppchen vor.",specht:"Ein Vogel klopft mit dem Schnabel an den Baum.",moewen:"Am Strand, an der Nord- oder Ostsee.",schreibm:"Damit hat man früher Briefe geschrieben.",kochen:"Auf dem Herd, für Kartoffeln oder Nudeln.",radio:"Früher hat man am Knopf gedreht, bis man den Sender hatte.",karussell:"Auf dem Jahrmarkt oder der Kirmes.",windspiel:"Hängt im Garten oder am Fenster und klingt im Wind."};
+voegel:"Morgens im Garten oder im Wald.",frosch:"Sitzen am Teich.",regen:"Tropfen auf dem Dach und am Fenster.",wind:"Draußen stürmt und pfeift es.",gewitter:"Blitz und Donner.",meer:"Wellen am Strand, Urlaub an der See.",kuh:"Steht auf der Weide und gibt Milch.",tuer:"Eine alte Tür geht langsam auf.",feuer:"Im Ofen oder Kamin, schön warm.",zug:"Fährt auf Schienen zum Bahnhof.",hund:"Bellt, wenn jemand ans Tor kommt.",katze:"Liegt gern auf dem Sofa und schnurrt.",schaf:"Hat dicke Wolle.",hahn:"Weckt morgens alle auf dem Bauernhof.",schritte:"Jemand geht spazieren.",schwein:"Lebt im Stall und wälzt sich im Matsch.",huhn:"Legt Eier.",kraehe:"Großer schwarzer Vogel auf dem Feld.",bach:"Wasser fließt über Steine im Wald.",schnee:"Im Winter, es knirscht unter den Schuhen.",eule:"Ein Vogel, der nachts wach ist.",pferd:"Ein Tier mit Hufen läuft schnell, früher zog es Kutschen.",wolf:"Kommt im Märchen vom Rotkäppchen vor.",specht:"Ein Vogel klopft mit dem Schnabel an den Baum.",moewen:"Am Strand, an der Nord- oder Ostsee.",schreibm:"Damit hat man früher Briefe geschrieben.",kochen:"Auf dem Herd, für Kartoffeln oder Nudeln.",radio:"Früher hat man am Knopf gedreht, bis man den Sender hatte.",karussell:"Auf dem Jahrmarkt oder der Kirmes.",windspiel:"Hängt im Garten oder am Fenster und klingt im Wind.",cafe:"Kaffee und Kuchen, Tassen klappern, Leute unterhalten sich.",kirchenraum:"Sonntags im Gottesdienst.",dia:"Beim Dia-Abend wurden Urlaubsbilder an die Wand geworfen.",zeitung:"Morgens beim Frühstück wird geblättert.",schnurren:"Eine zufriedene Katze auf dem Schoß.",wasserfall:"Viel Wasser stürzt in den Bergen herunter.",ruderboot:"Mit den Rudern über den See, zum Beispiel im Sommer.",hafen:"Ein Schiff schaukelt am Steg, Wellen schlagen ans Boot.",dorf:"Abends draußen auf dem Land, es wird ruhig.",supermarkt:"Beim Einkaufen im Laden, Einkaufswagen und Kasse.",strasse:"Autos und Menschen in der Stadt.",wischer:"Im Auto, wenn es regnet."};
 const EXAMPLE=[{id:"hahn",cue:"Morgens auf dem Bauernhof"},{id:"kuh",cue:"Die Kühe gehen auf die Weide"},{id:"schwein",cue:"Im Schweinestall"},{id:"wind",cue:"Ein Sturm zieht auf"},{id:"gewitter",cue:"Es blitzt und donnert"},{id:"regen",cue:"Es regnet"},{id:"tuer",cue:"Jemand kommt ins Haus"},{id:"feuer",cue:"Abends am warmen Ofen"}];
 let story=store.get("story",null),storyExample=!story;if(!story)story=EXAMPLE.slice();
 let storyNext=0,storyEdit=false;
-const quiz={cat:"alltag",order:[],i:0};
+const CATS=[["alltag","Zuhause"],["tiere","Tiere"],["natur","Natur & Wetter"],["orte","Unterwegs & Orte"]];
+const catName=c=>(CATS.find(x=>x[0]===c)||[,""])[1];
+let query="";
+const quiz={cat:"alle",order:[],i:0};
 
 function shuffled(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
 function tilesFor(cat){
@@ -420,24 +460,33 @@ function tilesFor(cat){
   const extra=own.filter(r=>!r.replaces&&r.cat===cat).map(r=>({id:"own-"+r.id,name:r.name,ico:"🎙️",cat,real:true,custom:true}));
   return base.concat(extra);
 }
-function info(id){return tilesFor("alltag").concat(tilesFor("natur")).find(x=>x.id===id)}
+function allTiles(){return CATS.flatMap(([c])=>tilesFor(c))}
+function info(id){return allTiles().find(x=>x.id===id)}
+const norm=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+function tileButton(s){
+  const b=document.createElement("button");b.className="play";b.dataset.cat=s.cat;b.dataset.id=s.id;if(s.custom)b.dataset.custom="";
+  b.innerHTML=(s.loud?'<span class="warnchip">plötzlich</span>':"")+'<span class="ico" aria-hidden="true">'+s.ico+'</span><span class="nm"></span><span class="tag">'+(s.custom||s.real?"eigene Aufnahme":"")+'</span>';
+  b.querySelector(".nm").textContent=s.name;b.addEventListener("click",()=>play(s.id));return b;
+}
 function render(){
   const tab=settings.tab;
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.cat===tab)));
-  grid.hidden=!(tab==="alltag"||tab==="natur");
-  for(const [id,t] of [["#quiz","quiz"],["#story","story"],["#own","eigen"]])$(id).hidden=tab!==t;
-  if(tab==="eigen")renderOwn();
+  const searching=query.trim().length>0,isCat=CATS.some(c=>c[0]===tab);
+  $("#search-clear").hidden=!searching;
+  grid.hidden=!(isCat||searching);
+  for(const [id,t] of [["#quiz","quiz"],["#story","story"],["#own","eigen"]])$(id).hidden=searching||tab!==t;
+  if(searching){
+    const q=norm(query.trim());grid.innerHTML="";
+    const hits=allTiles().filter(s=>norm(s.name).includes(q)||norm(TIPS[s.id]||"").includes(q));
+    if(!hits.length){const p=document.createElement("p");p.className="grouphead";p.textContent="Kein Klang gefunden.";grid.appendChild(p)}
+    hits.forEach(s=>grid.appendChild(tileButton(s)));
+  }
+  else if(tab==="eigen")renderOwn();
   else if(tab==="quiz")renderQuiz();
   else if(tab==="story")renderStory();
   else{
     grid.innerHTML="";
-    tilesFor(tab).forEach(s=>{
-      const b=document.createElement("button");b.className="play";b.dataset.cat=tab;b.dataset.id=s.id;if(s.custom)b.dataset.custom="";
-      b.innerHTML=(s.loud?'<span class="warnchip">plötzlich</span>':"")+'<span class="ico" aria-hidden="true">'+s.ico+'</span><span class="nm"></span><span class="tag">'+(s.custom||s.real?"eigene Aufnahme":"")+'</span>';
-      b.querySelector(".nm").textContent=s.name;
-      b.addEventListener("click",()=>play(s.id));
-      grid.appendChild(b);
-    });
+    tilesFor(tab).forEach(s=>grid.appendChild(tileButton(s)));
   }
   paint();
 }
@@ -448,7 +497,7 @@ function paint(){
 }
 
 /* Ratespiel: ihr spielt ab, die Gruppe rät */
-function quizList(){return quiz.cat==="beide"?tilesFor("alltag").concat(tilesFor("natur")):tilesFor(quiz.cat)}
+function quizList(){return quiz.cat==="alle"?allTiles():tilesFor(quiz.cat)}
 function newQuiz(){quiz.order=shuffled(quizList().map(x=>x.id));quiz.i=0}
 function renderQuiz(){
   if(!quiz.order.length||quiz.order.some(id=>!info(id)))newQuiz();
@@ -465,7 +514,8 @@ $("#q-play").addEventListener("click",()=>play($("#q-play").dataset.id));
 $("#q-prev").addEventListener("click",()=>quizGo(-1));
 $("#q-next").addEventListener("click",()=>quizGo(1));
 $("#q-mix").addEventListener("click",()=>{stopAll();newQuiz();renderQuiz()});
-document.querySelectorAll('input[name="qcat"]').forEach(r=>r.addEventListener("change",()=>{quiz.cat=r.value;stopAll();newQuiz();renderQuiz()}));
+$("#q-cat").innerHTML='<option value="alle">Alle Klänge</option>'+CATS.map(([c,n])=>'<option value="'+c+'">'+n+'</option>').join("");
+$("#q-cat").addEventListener("change",e=>{quiz.cat=e.target.value;stopAll();newQuiz();renderQuiz()});
 
 /* Geschichte: Klänge in der Reihenfolge des Textes */
 function saveStory(){storyExample=false;store.set("story",story)}
@@ -473,7 +523,7 @@ function renderStory(){
   $("#s-note").textContent=storyExample?"Das ist ein Beispiel. Tippe „Bearbeiten“ und stellt eure eigene Liste für euer Buch zusammen.":"Der gelb umrandete Klang ist als Nächstes dran. Du kannst aber jeden jederzeit antippen.";
   $("#s-edit").textContent=storyEdit?"Fertig":"Bearbeiten";$("#s-editor").hidden=!storyEdit;
   const sel=$("#s-sound"),cur=sel.value;
-  sel.innerHTML="";for(const [cat,label] of [["alltag","Alltag"],["natur","Natur & Geschichten"]]){const og=document.createElement("optgroup");og.label=label;tilesFor(cat).forEach(s=>{const o=document.createElement("option");o.value=s.id;o.textContent=s.name;og.appendChild(o)});sel.appendChild(og)}
+  sel.innerHTML="";for(const [cat,label] of CATS){const og=document.createElement("optgroup");og.label=label;tilesFor(cat).forEach(s=>{const o=document.createElement("option");o.value=s.id;o.textContent=s.name;og.appendChild(o)});sel.appendChild(og)}
   if(cur)sel.value=cur;
   const ul=$("#s-list");ul.innerHTML="";
   if(!story.length){const li=document.createElement("li");li.className="small";li.textContent="Noch keine Klänge. Unten einen Klang und ein Stichwort wählen und „Hinzufügen“ tippen.";ul.appendChild(li)}
@@ -526,7 +576,7 @@ function renderOwn(){
   own.forEach(r=>{
     const li=document.createElement("li"),sp=document.createElement("span");
     const rep=r.replaces?SOUNDS.find(s=>s.id===r.replaces):null;
-    sp.textContent=r.name+(rep?" (ersetzt „"+rep.name+"“)":" ("+(r.cat==="natur"?"Natur & Geschichten":"Alltag")+")");
+    sp.textContent=r.name+(rep?" (ersetzt „"+rep.name+"“)":" ("+catName(r.cat)+")");
     const pb=document.createElement("button");pb.className="btn ghost";pb.textContent="Anhören";pb.addEventListener("click",()=>play(r.replaces||("own-"+r.id)));
     const db=document.createElement("button");db.className="btn ghost";db.textContent="Löschen";
     db.addEventListener("click",async()=>{if(db.dataset.sure){stop(r.replaces||("own-"+r.id));await DB.del(r.id);decoded.delete(r.id);own=await DB.all();renderOwn();showMsg("Gelöscht.")}else{db.dataset.sure="1";db.textContent="Wirklich löschen?"}});
@@ -541,10 +591,15 @@ $("#own-form").addEventListener("submit",async e=>{
   try{
     if(rep){for(const o of own.filter(o=>o.replaces===rep)){await DB.del(o.id);decoded.delete(o.id)}}
     await DB.put(rec);own=await DB.all();$("#own-form").reset();renderOwn();
-    showMsg("„"+name+"“ gespeichert. Du findest den Knopf unter "+(rec.cat==="natur"?"Natur & Geschichten":"Alltag")+".");
+    showMsg("„"+name+"“ gespeichert. Du findest den Knopf unter "+catName(rec.cat)+".");
   }catch(err){showMsg("Speichern hat nicht geklappt. Im privaten Modus oder ohne Speicherplatz geht das nicht.")}
 });
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{settings.tab=b.dataset.cat;store.set("tab",settings.tab);render()}));
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{query="";$("#search").value="";settings.tab=b.dataset.cat;store.set("tab",settings.tab);render()}));
+$("#own-cat").innerHTML=CATS.map(([c,n])=>'<option value="'+c+'">'+n+'</option>').join("");
+$("#opt-soft").checked=settings.soft;
+$("#opt-soft").addEventListener("change",e=>{settings.soft=e.target.checked;store.set("soft",settings.soft)});
+$("#search").addEventListener("input",e=>{query=e.target.value;render()});
+$("#search-clear").addEventListener("click",()=>{query="";$("#search").value="";render();$("#search").focus()});
 $("#opt-loop").checked=settings.loop;
 $("#opt-loop").addEventListener("change",e=>{settings.loop=e.target.checked;store.set("loop",settings.loop)});
 $("#opt-vol").value=settings.vol;

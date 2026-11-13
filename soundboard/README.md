@@ -6,8 +6,11 @@ Die Schüler spielen die Klänge ab, die Gruppe rät. Beim Vorlesen spielt einer
 `index.html` braucht den Ordner `sounds/` daneben. Wegen `fetch()` muss die Seite über einen Webserver laufen
 (z.B. GitHub Pages oder `python3 -m http.server`), nicht per Doppelklick als Datei.
 
-- **Alltag (23):** Wecker, Uhr, Kirchenglocken, Autohupe, Klopfen, Staubsauger, Wasser eingießen, Wasser kocht, Waschmaschine, Zähneputzen, Klospülung, Dose öffnen, Schreibmaschine, Radio-Sender suchen, Jahrmarkt-Karussell, Windspiel, Klatschen, Lachen, Schnarchen, Niesen, Baby weint, Säge, Flugzeug
-- **Natur & Geschichten (25):** Vögel, Bach, Regen, Gewitter, Sturm, Meer, Möwen, Kaminfeuer, Zug, knarrende Tür, Schritte auf Kies, Schritte im Schnee, Frösche, Kuh, Pferd, Schaf, Schwein, Hühner, Hahn, Hund, Katze, Specht, Eule, Krähe, Wolf
+- **Zuhause (22):** Wecker, Uhr, Klopfen, knarrende Tür, Staubsauger, Wasser eingießen, Wasser kocht, Waschmaschine, Zähneputzen, Klospülung, Dose öffnen, Schreibmaschine, Radio-Sender suchen, Dia-Projektor, Zeitung blättern, Windspiel, Klatschen, Lachen, Schnarchen, Niesen, Baby weint, Säge
+- **Tiere (16):** Vögel, Möwen, Specht, Eule, Krähe, Hahn, Hühner, Kuh, Pferd, Schaf, Schwein, Hund, Katze, Katze schnurrt, Frösche, Wolf
+- **Natur & Wetter (10):** Regen, Gewitter, Sturm, Meer, Bach, Wasserfall, Kaminfeuer, Schritte auf Kies, Schritte im Schnee, Abend im Dorf
+- **Unterwegs & Orte (12):** Kirchenglocken, In der Kirche, Im Café, Einkaufen, Straße in der Stadt, Autohupe, Scheibenwischer, Zug, Flugzeug, Jahrmarkt-Karussell, Ruderboot, Boot im Hafen
+- **Suche** über alle Bereiche, **Sanft einblenden** (Hintergrund- und laute Klänge werden langsam lauter, Stopp blendet aus)
 - **Ratespiel:** Name und Tipp sieht nur, wer das Handy hält. Zufällige Reihenfolge.
 - **Geschichte:** Klänge in Buch-Reihenfolge mit Stichwort, einer tippt beim Vorlesen den nächsten an.
 - **Aufnahmen:** pro Klang zwischen 2 Aufnahmen wählen oder eigene Datei laden (nur auf dem Gerät gespeichert).
