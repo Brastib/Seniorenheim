@@ -11,7 +11,7 @@ Die Schüler spielen die Klänge ab, die Gruppe rät. Beim Vorlesen spielt einer
 - **Natur & Wetter (10):** Regen, Gewitter, Sturm, Meer, Bach, Wasserfall, Kaminfeuer, Schritte auf Kies, Schritte im Schnee, Abend im Dorf
 - **Unterwegs & Orte (12):** Kirchenglocken, In der Kirche, Im Café, Einkaufen, Straße in der Stadt, Autohupe, Scheibenwischer, Zug, Flugzeug, Jahrmarkt-Karussell, Ruderboot, Boot im Hafen
 - **Suche** über alle Bereiche, **Sanft einblenden** (Hintergrund- und laute Klänge werden langsam lauter, Stopp blendet aus)
-- **Markieren:** Kreis oben rechts auf jeder Kachel: leer → ✓ → ✗ → leer. Markierte Klänge werden grau, bleiben gespeichert (pro Gerät), „Markierungen löschen“ setzt zurück.
+- **Markieren:** Kreis oben rechts auf jeder Kachel: leer → ✓ → ✗ → ✗✗ (taugt nichts) → leer. Markierte Klänge werden grau, bleiben gespeichert (pro Gerät). „✓ und ✗ löschen“ setzt für den nächsten Besuch zurück, ✗✗ bleibt. ✗✗-Klänge lassen sich ausblenden und werden oben als Liste angezeigt.
 - **Ratespiel:** Name und Tipp sieht nur, wer das Handy hält. Zufällige Reihenfolge.
 - **Geschichte:** Klänge in Buch-Reihenfolge mit Stichwort, einer tippt beim Vorlesen den nächsten an.
 - **Aufnahmen:** pro Klang zwischen mehreren Aufnahmen wählen oder eigene Datei laden (nur auf dem Gerät gespeichert).

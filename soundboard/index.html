@@ -89,6 +89,9 @@ main{padding-bottom:70px}
 .mark::before{content:"○"}
 .tile[data-mark="ok"] .mark{background:#2f8f46;border-color:#2f8f46;color:#fff;opacity:1}.tile[data-mark="ok"] .mark::before{content:"✓"}
 .tile[data-mark="no"] .mark{background:#c0392b;border-color:#c0392b;color:#fff;opacity:1}.tile[data-mark="no"] .mark::before{content:"✗"}
+.tile[data-mark="bad"] .mark{background:#5b1a12;border-color:#5b1a12;color:#fff;opacity:1;font-size:17px;letter-spacing:-2px}.tile[data-mark="bad"] .mark::before{content:"✗✗"}
+.tile[data-mark="bad"]{outline:3px dashed #c0392b;outline-offset:-3px;border-radius:18px}
+.hidebad .tile[data-mark="bad"]{display:none}
 .tile[data-mark] .play{opacity:.45;filter:grayscale(1)}
 .tile[data-mark] .play[aria-pressed="true"]{opacity:1;filter:none}
 .markbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 0}
@@ -185,7 +188,7 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
     </div>
     <div class="search"><input type="search" id="search" placeholder="Klang suchen, z.B. Kuh oder Regen" aria-label="Klang suchen" autocomplete="off"><button class="btn ghost" id="search-clear" hidden aria-label="Suche löschen">✕</button></div>
     <p class="small" id="load" role="status"></p>
-    <div class="markbar small" id="markbar" hidden><span id="mark-count"></span><button class="btn ghost" id="mark-reset">Markierungen löschen</button></div>
+    <div class="markbar small" id="markbar" hidden><span id="mark-count"></span><button class="btn ghost" id="mark-reset">✓ und ✗ löschen</button><label class="switch" id="bad-wrap"><input type="checkbox" id="opt-hidebad"> ✗✗ ausblenden</label><span id="bad-list"></span></div>
     <p class="msg" id="status" role="alert"></p>
   </div>
 
@@ -253,7 +256,7 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
         <li>„Sanft einblenden“ (an) lässt Hintergrundklänge und laute Klänge langsam lauter werden, damit niemand erschrickt. Beim Stoppen wird jeder Klang kurz ausgeblendet.</li>
         <li>Suche: Oben einen Namen eintippen, zum Beispiel „Kuh“. Dann erscheinen passende Klänge aus allen Bereichen.</li>
         <li>Leise anfangen. Plötzliche laute Klänge (markiert mit „plötzlich“) können Menschen mit Demenz erschrecken.</li>
-        <li>Markieren: Oben rechts auf jeder Kachel ist ein kleiner Kreis. Einmal tippen = ✓ (benutzt/erkannt), noch einmal = ✗ (nicht erkannt), noch einmal = wieder leer. Markierte Klänge werden grau, damit ihr seht, was schon dran war. Die Markierungen bleiben gespeichert, bis ihr oben „Markierungen löschen“ drückt.</li>
+        <li>Markieren: Oben rechts auf jeder Kachel ist ein kleiner Kreis. Einmal tippen = ✓ (benutzt/erkannt), noch einmal = ✗ (nicht erkannt), noch einmal = ✗✗ (taugt nichts), noch einmal = wieder leer. Markierte Klänge werden grau. „✓ und ✗ löschen“ setzt für den nächsten Besuch zurück, ✗✗ bleibt stehen. Mit „✗✗ ausblenden“ verschwinden die schlechten Klänge. Oben steht eine Liste der ✗✗-Klänge, die könnt ihr mir schicken, dann suche ich bessere.</li>
         <li>Ratespiel: Ihr spielt ab, die Gruppe rät. Den Namen und einen Tipp seht nur ihr auf dem Handy.</li>
         <li>Geschichte: Klänge vorher in der Reihenfolge des Buchs eintragen, mit Stichwort. Beim Vorlesen tippt einer einfach den nächsten an.</li>
         <li>Hintergrundklänge wie Regen, Meer oder Feuer laufen 15 bis 25 Sekunden. Mit Dauerschleife laufen sie weiter, bis du stoppst. Gut als Hintergrund beim Vorlesen.</li>
@@ -271,7 +274,7 @@ const $=s=>document.querySelector(s);
 let ctx=null, master=null, comp=null;
 const active=new Map(), loading=new Set();
 const store={get(k,d){try{const v=localStorage.getItem("kk-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("kk-"+k,JSON.stringify(v))}catch(e){}}};
-const settings={tab:store.get("tab","alltag"),loop:store.get("loop",false),vol:store.get("vol",70),variant:store.get("variant3",{}),marks:store.get("marks",{}),soft:store.get("soft",true)};
+const settings={tab:store.get("tab","alltag"),loop:store.get("loop",false),vol:store.get("vol",70),variant:store.get("variant3",{}),marks:store.get("marks",{}),hidebad:store.get("hidebad",false),soft:store.get("soft",true)};
 
 /* ---------- Die Klänge: echte Aufnahmen (ESC-50, Blanket, Moodist), teils mit 2 Varianten ----------
    amb = Hintergrundklang, wird nahtlos verlängert; loud = kann erschrecken */
@@ -492,16 +495,20 @@ function tileButton(s){
   const w=document.createElement("div");w.className="tile";w.appendChild(b);
   const m=document.createElement("button");m.className="mark";m.type="button";
   const upd=()=>{const v=settings.marks[s.id];if(v)w.dataset.mark=v;else delete w.dataset.mark;
-    m.setAttribute("aria-label",s.name+": "+(v==="ok"?"erkannt (✓). Tippen für ✗":v==="no"?"nicht erkannt (✗). Tippen zum Löschen":"nicht markiert. Tippen für ✓"))};
+    m.setAttribute("aria-label",s.name+": "+(v==="ok"?"erkannt (✓). Tippen für ✗":v==="no"?"nicht erkannt (✗). Tippen für ✗✗":v==="bad"?"taugt nichts (✗✗). Tippen zum Löschen":"nicht markiert. Tippen für ✓"))};
   m.addEventListener("click",e=>{e.stopPropagation();const v=settings.marks[s.id];
-    if(!v)settings.marks[s.id]="ok";else if(v==="ok")settings.marks[s.id]="no";else delete settings.marks[s.id];
+    if(!v)settings.marks[s.id]="ok";else if(v==="ok")settings.marks[s.id]="no";else if(v==="no")settings.marks[s.id]="bad";else delete settings.marks[s.id];
     store.set("marks",settings.marks);upd();paintMarks()});
   upd();w.appendChild(m);return w;
 }
 function paintMarks(){
-  const v=Object.values(settings.marks),ok=v.filter(x=>x==="ok").length,no=v.length-ok;
+  const v=Object.values(settings.marks),ok=v.filter(x=>x==="ok").length,no=v.filter(x=>x==="no").length,bad=v.filter(x=>x==="bad").length;
   $("#markbar").hidden=v.length===0;
-  $("#mark-count").textContent="Markiert: "+ok+" ✓ · "+no+" ✗";
+  $("#mark-count").textContent="Markiert: "+ok+" ✓ · "+no+" ✗ · "+bad+" ✗✗";
+  $("#mark-reset").hidden=ok+no===0;$("#bad-wrap").hidden=bad===0;
+  $("#opt-hidebad").checked=settings.hidebad;grid.classList.toggle("hidebad",settings.hidebad);
+  const names=allTiles().filter(s=>settings.marks[s.id]==="bad").map(s=>s.name);
+  $("#bad-list").textContent=names.length?"Taugt nichts: "+names.join(", "):"";
 }
 function render(){
   const tab=settings.tab;
@@ -640,7 +647,8 @@ $("#opt-loop").addEventListener("change",e=>{settings.loop=e.target.checked;stor
 $("#opt-vol").value=settings.vol;
 $("#opt-vol").addEventListener("input",e=>{settings.vol=+e.target.value;store.set("vol",settings.vol);if(master)master.gain.setTargetAtTime(volGain(),ctx.currentTime,0.05)});
 $("#stop-all").addEventListener("click",stopAll);
-$("#mark-reset").addEventListener("click",()=>{settings.marks={};store.set("marks",{});render();paintMarks()});
+$("#mark-reset").addEventListener("click",()=>{for(const k in settings.marks)if(settings.marks[k]!=="bad")delete settings.marks[k];store.set("marks",settings.marks);render();paintMarks()});
+$("#opt-hidebad").addEventListener("change",e=>{settings.hidebad=e.target.checked;store.set("hidebad",settings.hidebad);paintMarks()});
 paintMarks();
 renderCredits();
 render();
