@@ -85,16 +85,26 @@ main{padding-bottom:70px}
 .ico{font-size:52px;line-height:1}
 .nm{font-weight:700;font-size:20px;line-height:1.15;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word;max-width:100%}
 .tile{position:relative;display:flex}.tile>.play{flex:1;width:100%}
-.mark{position:absolute;top:4px;right:4px;width:44px;height:44px;border-radius:50%;border:2px solid var(--muted);background:var(--surface);color:var(--muted);font-size:22px;font-weight:800;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.75}
-.mark::before{content:"○"}
-.tile[data-mark="ok"] .mark{background:#2f8f46;border-color:#2f8f46;color:#fff;opacity:1}.tile[data-mark="ok"] .mark::before{content:"✓"}
-.tile[data-mark="no"] .mark{background:#c0392b;border-color:#c0392b;color:#fff;opacity:1}.tile[data-mark="no"] .mark::before{content:"✗"}
-.tile[data-mark="bad"] .mark{background:#5b1a12;border-color:#5b1a12;color:#fff;opacity:1;font-size:17px;letter-spacing:-2px}.tile[data-mark="bad"] .mark::before{content:"✗✗"}
+.mark{position:absolute;top:6px;right:6px;width:40px;height:40px;border-radius:50%;color:#fff;font-size:22px;font-weight:800;line-height:1;display:none;align-items:center;justify-content:center;pointer-events:none}
+.tile[data-mark] .mark{display:flex}
+.tile[data-mark="ok"] .mark{background:#2f8f46}.tile[data-mark="ok"] .mark::before{content:"✓"}
+.tile[data-mark="no"] .mark{background:#c0392b}.tile[data-mark="no"] .mark::before{content:"✗"}
+.tile[data-mark="bad"] .mark{background:#5b1a12;font-size:17px;letter-spacing:-2px}.tile[data-mark="bad"] .mark::before{content:"✗✗"}
 .tile[data-mark="bad"]{outline:3px dashed #c0392b;outline-offset:-3px;border-radius:18px}
 .hidebad .tile[data-mark="bad"]{display:none}
 .tile[data-mark] .play{opacity:.45;filter:grayscale(1)}
 .tile[data-mark] .play[aria-pressed="true"]{opacity:1;filter:none}
 .markbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 0}
+#mark-mode[aria-pressed="true"]{background:#2f8f46;color:#fff;border-color:#2f8f46}
+.markhint{margin:8px 0 0;padding:10px 12px;border-radius:12px;background:#2f8f46;color:#fff;font-weight:700}
+.markmode .tile{outline:3px dashed #2f8f46;outline-offset:-3px;border-radius:18px}
+.markmode .tile[data-mark="bad"]{outline-color:#c0392b}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);color:var(--fg);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:10px}
+.sheet h3{margin:0 0 4px;font-size:22px}
+.sheet button{font:700 20px/1.2 var(--f-body);min-height:60px;border-radius:14px;border:0;cursor:pointer;text-align:left;padding:12px 16px;color:#fff}
+.sheet .s-ok{background:#2f8f46}.sheet .s-no{background:#c0392b}.sheet .s-bad{background:#5b1a12}
+.sheet .s-clear,.sheet .s-cancel{background:transparent;color:var(--fg);border:2px solid var(--line)}
 .tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .tag:empty{display:none}
 .play[aria-busy="true"]{opacity:.6}
@@ -188,7 +198,8 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
     </div>
     <div class="search"><input type="search" id="search" placeholder="Klang suchen, z.B. Kuh oder Regen" aria-label="Klang suchen" autocomplete="off"><button class="btn ghost" id="search-clear" hidden aria-label="Suche löschen">✕</button></div>
     <p class="small" id="load" role="status"></p>
-    <div class="markbar small" id="markbar" hidden><span id="mark-count"></span><button class="btn ghost" id="mark-reset">✓ und ✗ löschen</button><label class="switch" id="bad-wrap"><input type="checkbox" id="opt-hidebad"> ✗✗ ausblenden</label><span id="bad-list"></span></div>
+    <div class="markbar small" id="markbar"><button class="btn ghost" id="mark-mode" aria-pressed="false">✏️ Markieren</button><span id="mark-count"></span><button class="btn ghost" id="mark-reset">✓ und ✗ löschen</button><label class="switch" id="bad-wrap"><input type="checkbox" id="opt-hidebad"> ✗✗ ausblenden</label><span id="bad-list"></span></div>
+    <p class="markhint" id="mark-hint" hidden>Markier-Modus: Kachel antippen und auswählen. Es wird nichts abgespielt. Zum Beenden oben „Fertig“ drücken.</p>
     <p class="msg" id="status" role="alert"></p>
   </div>
 
@@ -256,7 +267,7 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
         <li>„Sanft einblenden“ (an) lässt Hintergrundklänge und laute Klänge langsam lauter werden, damit niemand erschrickt. Beim Stoppen wird jeder Klang kurz ausgeblendet.</li>
         <li>Suche: Oben einen Namen eintippen, zum Beispiel „Kuh“. Dann erscheinen passende Klänge aus allen Bereichen.</li>
         <li>Leise anfangen. Plötzliche laute Klänge (markiert mit „plötzlich“) können Menschen mit Demenz erschrecken.</li>
-        <li>Markieren: Oben rechts auf jeder Kachel ist ein kleiner Kreis. Einmal tippen = ✓ (benutzt/erkannt), noch einmal = ✗ (nicht erkannt), noch einmal = ✗✗ (taugt nichts), noch einmal = wieder leer. Markierte Klänge werden grau. „✓ und ✗ löschen“ setzt für den nächsten Besuch zurück, ✗✗ bleibt stehen. Mit „✗✗ ausblenden“ verschwinden die schlechten Klänge. Oben steht eine Liste der ✗✗-Klänge, die könnt ihr mir schicken, dann suche ich bessere.</li>
+        <li>Markieren: Oben auf „✏️ Markieren“ drücken. Dann spielt beim Antippen einer Kachel nichts ab, sondern es öffnet sich eine Auswahl mit großen Knöpfen: ✓ benutzt, ✗ nicht erkannt, ✗✗ taugt nichts, oder Markierung entfernen. Danach „Fertig mit Markieren“ drücken. Beim normalen Abspielen kann so nichts aus Versehen markiert werden. Markierte Klänge werden grau. „✓ und ✗ löschen“ setzt für den nächsten Besuch zurück, ✗✗ bleibt stehen und lässt sich ausblenden. Die Liste „Taugt nichts“ könnt ihr mir schicken, dann suche ich bessere.</li>
         <li>Ratespiel: Ihr spielt ab, die Gruppe rät. Den Namen und einen Tipp seht nur ihr auf dem Handy.</li>
         <li>Geschichte: Klänge vorher in der Reihenfolge des Buchs eintragen, mit Stichwort. Beim Vorlesen tippt einer einfach den nächsten an.</li>
         <li>Hintergrundklänge wie Regen, Meer oder Feuer laufen 15 bis 25 Sekunden. Mit Dauerschleife laufen sie weiter, bis du stoppst. Gut als Hintergrund beim Vorlesen.</li>
@@ -491,20 +502,40 @@ const norm=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 function tileButton(s){
   const b=document.createElement("button");b.className="play";b.dataset.cat=s.cat;b.dataset.id=s.id;if(s.custom)b.dataset.custom="";
   b.innerHTML=(s.loud?'<span class="warnchip">plötzlich</span>':"")+'<span class="ico" aria-hidden="true">'+s.ico+'</span><span class="nm"></span><span class="tag">'+(s.custom||s.real?"eigene Aufnahme":"")+'</span>';
-  b.querySelector(".nm").textContent=s.name;b.addEventListener("click",()=>play(s.id));
-  const w=document.createElement("div");w.className="tile";w.appendChild(b);
-  const m=document.createElement("button");m.className="mark";m.type="button";
-  const upd=()=>{const v=settings.marks[s.id];if(v)w.dataset.mark=v;else delete w.dataset.mark;
-    m.setAttribute("aria-label",s.name+": "+(v==="ok"?"erkannt (✓). Tippen für ✗":v==="no"?"nicht erkannt (✗). Tippen für ✗✗":v==="bad"?"taugt nichts (✗✗). Tippen zum Löschen":"nicht markiert. Tippen für ✓"))};
-  m.addEventListener("click",e=>{e.stopPropagation();const v=settings.marks[s.id];
-    if(!v)settings.marks[s.id]="ok";else if(v==="ok")settings.marks[s.id]="no";else if(v==="no")settings.marks[s.id]="bad";else delete settings.marks[s.id];
-    store.set("marks",settings.marks);upd();paintMarks()});
-  upd();w.appendChild(m);return w;
+  b.querySelector(".nm").textContent=s.name;
+  b.addEventListener("click",()=>{if(markMode)openMarkSheet(s);else play(s.id)});
+  const w=document.createElement("div");w.className="tile";w.dataset.tile=s.id;w.appendChild(b);
+  const m=document.createElement("span");m.className="mark";m.setAttribute("aria-hidden","true");w.appendChild(m);
+  const v=settings.marks[s.id];if(v)w.dataset.mark=v;
+  return w;
+}
+let markMode=false;
+function setMarkMode(on){
+  markMode=on;document.body.classList.toggle("markmode",on);
+  const b=$("#mark-mode");b.setAttribute("aria-pressed",String(on));b.textContent=on?"✓ Fertig mit Markieren":"✏️ Markieren";
+  $("#mark-hint").hidden=!on;
+}
+function setMark(id,v){
+  if(v)settings.marks[id]=v;else delete settings.marks[id];store.set("marks",settings.marks);
+  document.querySelectorAll('.tile[data-tile="'+id+'"]').forEach(w=>{if(v)w.dataset.mark=v;else delete w.dataset.mark});
+  paintMarks();
+}
+function openMarkSheet(s){
+  const bg=document.createElement("div");bg.className="sheet-bg";
+  const cur=settings.marks[s.id];
+  bg.innerHTML='<div class="sheet" role="dialog" aria-modal="true"><h3></h3><button class="s-ok">✓ Benutzt / erkannt</button><button class="s-no">✗ Nicht erkannt</button><button class="s-bad">✗✗ Taugt nichts</button>'+(cur?'<button class="s-clear">Markierung entfernen</button>':'')+'<button class="s-cancel">Abbrechen</button></div>';
+  bg.querySelector("h3").textContent=s.ico+" "+s.name;
+  const close=()=>bg.remove();
+  bg.addEventListener("click",e=>{if(e.target===bg)close()});
+  const act=(c,v)=>{const x=bg.querySelector(c);if(x)x.addEventListener("click",()=>{setMark(s.id,v);close()})};
+  act(".s-ok","ok");act(".s-no","no");act(".s-bad","bad");act(".s-clear",null);
+  bg.querySelector(".s-cancel").addEventListener("click",close);
+  document.body.appendChild(bg);bg.querySelector(".s-cancel").focus();
 }
 function paintMarks(){
   const v=Object.values(settings.marks),ok=v.filter(x=>x==="ok").length,no=v.filter(x=>x==="no").length,bad=v.filter(x=>x==="bad").length;
-  $("#markbar").hidden=v.length===0;
-  $("#mark-count").textContent="Markiert: "+ok+" ✓ · "+no+" ✗ · "+bad+" ✗✗";
+  $("#mark-count").hidden=v.length===0;
+  $("#mark-count").textContent=ok+" ✓ · "+no+" ✗ · "+bad+" ✗✗";
   $("#mark-reset").hidden=ok+no===0;$("#bad-wrap").hidden=bad===0;
   $("#opt-hidebad").checked=settings.hidebad;grid.classList.toggle("hidebad",settings.hidebad);
   const names=allTiles().filter(s=>settings.marks[s.id]==="bad").map(s=>s.name);
@@ -648,6 +679,8 @@ $("#opt-vol").value=settings.vol;
 $("#opt-vol").addEventListener("input",e=>{settings.vol=+e.target.value;store.set("vol",settings.vol);if(master)master.gain.setTargetAtTime(volGain(),ctx.currentTime,0.05)});
 $("#stop-all").addEventListener("click",stopAll);
 $("#mark-reset").addEventListener("click",()=>{for(const k in settings.marks)if(settings.marks[k]!=="bad")delete settings.marks[k];store.set("marks",settings.marks);render();paintMarks()});
+$("#mark-mode").addEventListener("click",()=>setMarkMode(!markMode));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){const x=document.querySelector(".sheet-bg");if(x)x.remove()}});
 $("#opt-hidebad").addEventListener("change",e=>{settings.hidebad=e.target.checked;store.set("hidebad",settings.hidebad);paintMarks()});
 paintMarks();
 renderCredits();
