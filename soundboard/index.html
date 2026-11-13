@@ -84,6 +84,14 @@ main{padding-bottom:70px}
 .play:focus-visible,.tab:focus-visible,.stop:focus-visible,.qplay:focus-visible,.sbtn:focus-visible,.seg label:focus-within,.btn:focus-visible{outline:3px solid var(--play);outline-offset:3px}
 .ico{font-size:52px;line-height:1}
 .nm{font-weight:700;font-size:20px;line-height:1.15;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word;max-width:100%}
+.tile{position:relative;display:flex}.tile>.play{flex:1;width:100%}
+.mark{position:absolute;top:4px;right:4px;width:44px;height:44px;border-radius:50%;border:2px solid var(--muted);background:var(--surface);color:var(--muted);font-size:22px;font-weight:800;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.75}
+.mark::before{content:"○"}
+.tile[data-mark="ok"] .mark{background:#2f8f46;border-color:#2f8f46;color:#fff;opacity:1}.tile[data-mark="ok"] .mark::before{content:"✓"}
+.tile[data-mark="no"] .mark{background:#c0392b;border-color:#c0392b;color:#fff;opacity:1}.tile[data-mark="no"] .mark::before{content:"✗"}
+.tile[data-mark] .play{opacity:.45;filter:grayscale(1)}
+.tile[data-mark] .play[aria-pressed="true"]{opacity:1;filter:none}
+.markbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 0}
 .tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .tag:empty{display:none}
 .play[aria-busy="true"]{opacity:.6}
@@ -93,7 +101,7 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
 #credits{font-size:14px;color:var(--muted)}
 #credits a{overflow-wrap:anywhere}
 .vbtn[aria-pressed="true"]{background:var(--alltag);color:var(--surface);border-color:var(--alltag)}
-.warnchip{position:absolute;top:8px;right:8px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--warn);background:var(--surface);border-radius:999px;padding:2px 8px}
+.warnchip{position:absolute;top:8px;left:8px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--warn);background:var(--surface);border-radius:999px;padding:2px 8px}
 .num{position:absolute;top:8px;left:10px;font:800 20px/1 var(--f-display);color:var(--c)}
 .play[aria-pressed="true"]{background:var(--play);color:var(--play-ink);border-color:var(--play-ink)}
 .play[aria-pressed="true"] .tag,.play[aria-pressed="true"] .num{color:var(--play-ink)}
@@ -177,6 +185,7 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
     </div>
     <div class="search"><input type="search" id="search" placeholder="Klang suchen, z.B. Kuh oder Regen" aria-label="Klang suchen" autocomplete="off"><button class="btn ghost" id="search-clear" hidden aria-label="Suche löschen">✕</button></div>
     <p class="small" id="load" role="status"></p>
+    <div class="markbar small" id="markbar" hidden><span id="mark-count"></span><button class="btn ghost" id="mark-reset">Markierungen löschen</button></div>
     <p class="msg" id="status" role="alert"></p>
   </div>
 
@@ -244,6 +253,7 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
         <li>„Sanft einblenden“ (an) lässt Hintergrundklänge und laute Klänge langsam lauter werden, damit niemand erschrickt. Beim Stoppen wird jeder Klang kurz ausgeblendet.</li>
         <li>Suche: Oben einen Namen eintippen, zum Beispiel „Kuh“. Dann erscheinen passende Klänge aus allen Bereichen.</li>
         <li>Leise anfangen. Plötzliche laute Klänge (markiert mit „plötzlich“) können Menschen mit Demenz erschrecken.</li>
+        <li>Markieren: Oben rechts auf jeder Kachel ist ein kleiner Kreis. Einmal tippen = ✓ (benutzt/erkannt), noch einmal = ✗ (nicht erkannt), noch einmal = wieder leer. Markierte Klänge werden grau, damit ihr seht, was schon dran war. Die Markierungen bleiben gespeichert, bis ihr oben „Markierungen löschen“ drückt.</li>
         <li>Ratespiel: Ihr spielt ab, die Gruppe rät. Den Namen und einen Tipp seht nur ihr auf dem Handy.</li>
         <li>Geschichte: Klänge vorher in der Reihenfolge des Buchs eintragen, mit Stichwort. Beim Vorlesen tippt einer einfach den nächsten an.</li>
         <li>Hintergrundklänge wie Regen, Meer oder Feuer laufen 15 bis 25 Sekunden. Mit Dauerschleife laufen sie weiter, bis du stoppst. Gut als Hintergrund beim Vorlesen.</li>
@@ -261,7 +271,7 @@ const $=s=>document.querySelector(s);
 let ctx=null, master=null, comp=null;
 const active=new Map(), loading=new Set();
 const store={get(k,d){try{const v=localStorage.getItem("kk-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("kk-"+k,JSON.stringify(v))}catch(e){}}};
-const settings={tab:store.get("tab","alltag"),loop:store.get("loop",false),vol:store.get("vol",70),variant:store.get("variant3",{}),soft:store.get("soft",true)};
+const settings={tab:store.get("tab","alltag"),loop:store.get("loop",false),vol:store.get("vol",70),variant:store.get("variant3",{}),marks:store.get("marks",{}),soft:store.get("soft",true)};
 
 /* ---------- Die Klänge: echte Aufnahmen (ESC-50, Blanket, Moodist), teils mit 2 Varianten ----------
    amb = Hintergrundklang, wird nahtlos verlängert; loud = kann erschrecken */
@@ -478,7 +488,20 @@ const norm=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 function tileButton(s){
   const b=document.createElement("button");b.className="play";b.dataset.cat=s.cat;b.dataset.id=s.id;if(s.custom)b.dataset.custom="";
   b.innerHTML=(s.loud?'<span class="warnchip">plötzlich</span>':"")+'<span class="ico" aria-hidden="true">'+s.ico+'</span><span class="nm"></span><span class="tag">'+(s.custom||s.real?"eigene Aufnahme":"")+'</span>';
-  b.querySelector(".nm").textContent=s.name;b.addEventListener("click",()=>play(s.id));return b;
+  b.querySelector(".nm").textContent=s.name;b.addEventListener("click",()=>play(s.id));
+  const w=document.createElement("div");w.className="tile";w.appendChild(b);
+  const m=document.createElement("button");m.className="mark";m.type="button";
+  const upd=()=>{const v=settings.marks[s.id];if(v)w.dataset.mark=v;else delete w.dataset.mark;
+    m.setAttribute("aria-label",s.name+": "+(v==="ok"?"erkannt (✓). Tippen für ✗":v==="no"?"nicht erkannt (✗). Tippen zum Löschen":"nicht markiert. Tippen für ✓"))};
+  m.addEventListener("click",e=>{e.stopPropagation();const v=settings.marks[s.id];
+    if(!v)settings.marks[s.id]="ok";else if(v==="ok")settings.marks[s.id]="no";else delete settings.marks[s.id];
+    store.set("marks",settings.marks);upd();paintMarks()});
+  upd();w.appendChild(m);return w;
+}
+function paintMarks(){
+  const v=Object.values(settings.marks),ok=v.filter(x=>x==="ok").length,no=v.length-ok;
+  $("#markbar").hidden=v.length===0;
+  $("#mark-count").textContent="Markiert: "+ok+" ✓ · "+no+" ✗";
 }
 function render(){
   const tab=settings.tab;
@@ -617,6 +640,8 @@ $("#opt-loop").addEventListener("change",e=>{settings.loop=e.target.checked;stor
 $("#opt-vol").value=settings.vol;
 $("#opt-vol").addEventListener("input",e=>{settings.vol=+e.target.value;store.set("vol",settings.vol);if(master)master.gain.setTargetAtTime(volGain(),ctx.currentTime,0.05)});
 $("#stop-all").addEventListener("click",stopAll);
+$("#mark-reset").addEventListener("click",()=>{settings.marks={};store.set("marks",{});render();paintMarks()});
+paintMarks();
 renderCredits();
 render();
 preload();
